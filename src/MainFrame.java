@@ -15,11 +15,11 @@ import java.util.regex.Pattern;
  */
 public class MainFrame {
 
-    String model = "2pos";
-    int w = 1;
-    int h = 1;
-    int numPoints = 4;
-    int numLabels = 3;
+    String model;
+    int w;
+    int h;
+    int numPoints;
+    int numLabels;
     ArrayList<Point> points = new ArrayList<>();
     Iterator<Point> iter;
 
