@@ -7,7 +7,7 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
-import java.util.regex.Pattern;
+
 
 /**
  *
@@ -22,6 +22,7 @@ public class MainFrame {
     int numLabels;
     ArrayList<Point> points = new ArrayList<>();
     Iterator<Point> iter;
+    Algorithm alg;
 
     public void readInput() {
         int firstPoint;
@@ -43,6 +44,20 @@ public class MainFrame {
             secondPoint = input.nextInt();
             points.add(new Point(firstPoint, secondPoint));
         }
+    }
+    public void processOutput() {
+        if(model.equals("2pos")) {
+            alg = new TwoPos();
+        } else if (model.equals("4pos")) {
+            alg = new FourPos();
+        } else if (model.equals("1slider")) {
+            alg = new OneSlider();
+        } else {
+            System.out.println(model + " is not a valid model");
+        }
+        alg.determineLabels(w, h, points);
+        numLabels = alg.getNumLabels();
+     
     }
 
     public void giveOutput() {
@@ -73,6 +88,7 @@ public class MainFrame {
     public static void main(String[] args) {
         MainFrame mainFrame = new MainFrame();
         mainFrame.readInput();
+        mainFrame.processOutput();
         mainFrame.giveOutput();
     }
 
