@@ -13,8 +13,8 @@ import java.util.Iterator;
  */
 public class Point {
     
-    int xCoord;
-    int yCoord;
+    double xCoord;
+    double yCoord;
     String labelPos = "NIL";
     
 
@@ -23,7 +23,7 @@ public class Point {
     * @param x x-coordinate of the point
     * @param y y-coordinate of the point
     */
-    public Point(int x, int y){
+    public Point(double x, double y){
         xCoord = x;
         yCoord = y;
     }
@@ -31,14 +31,14 @@ public class Point {
     /**
     * Getter for x coordinate
     */
-    public int getxCoord() {
+    public double getxCoord() {
         return xCoord;
     }
 
     /**
     * Getter for y coordinate
     */
-    public int getyCoord() {
+    public double getyCoord() {
         return yCoord;
     }
     
