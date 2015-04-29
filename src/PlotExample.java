@@ -21,7 +21,7 @@ public class PlotExample extends JPanel {
 
         int i = 0;
         //generate Gaussian points (see: Cluster.java)
-        while(i < 1000) {
+        while(i < 10000) {
             cluster.generatePoint(); 
             i++;
         }

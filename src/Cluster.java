@@ -58,8 +58,8 @@ public class Cluster {
     *
     */
     public void generatePoint() {
-        double xCoord = random.nextGaussian() * stdDev + origin[0];
-        double yCoord = random.nextGaussian() * stdDev + origin[1];
+        int xCoord = (int) random.nextGaussian() * stdDev + origin[0];
+        int yCoord = (int) random.nextGaussian() * stdDev + origin[1];
         pointCollection.add(new Point(xCoord, yCoord));
     }
     
