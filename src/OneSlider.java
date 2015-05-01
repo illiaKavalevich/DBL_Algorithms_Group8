@@ -13,8 +13,8 @@ import java.util.ArrayList;
  */
 public class OneSlider extends Algorithm {
 
-    public OneSlider(int w, int h, ArrayList<Point> points) {
-        super(w, h, points);
+    public OneSlider(int w, int h, ArrayList<Point> points, ConflictList cL) {
+        super(w, h, points, cL);
     }
     
     @Override

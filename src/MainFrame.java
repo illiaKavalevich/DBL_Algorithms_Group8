@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 
-
 /**
  *
  * @author s131061
@@ -23,6 +22,7 @@ public class MainFrame {
     ArrayList<Point> points = new ArrayList<>();
     Iterator<Point> iter;
     Algorithm alg;
+    ConflictList cL;
 
     public void readInput() {
         int firstPoint;
@@ -30,7 +30,7 @@ public class MainFrame {
         Scanner input = new Scanner(System.in);
         //pattern used to skip input "...: "
         String template = "\\n*[a-zA-Z\\s]*[^\\w\\s]\\s*";
-        
+
         input.skip(template);
         model = input.next();
         input.skip(template);
@@ -39,25 +39,39 @@ public class MainFrame {
         h = input.nextInt();
         input.skip(template);
         numPoints = input.nextInt();
-        while (input.hasNext()) {
-            firstPoint = input.nextInt();
-            secondPoint = input.nextInt();
-            points.add(new Point(firstPoint, secondPoint));
-        }
-    }
-    public void processOutput() {
-        if(model.equals("2pos")) {
-            alg = new TwoPos(w, h, points);
-        } else if (model.equals("4pos")) {
-            alg = new FourPos(w, h, points);
+        if (model.equals("2pos") || model.equals("4pos")) {
+            while (input.hasNext()) {
+                firstPoint = input.nextInt();
+                secondPoint = input.nextInt();
+                points.add(new PosPoint(firstPoint, secondPoint, model, w, h));
+            }
         } else if (model.equals("1slider")) {
-            alg = new OneSlider(w, h, points);
+            while (input.hasNext()) {
+                firstPoint = input.nextInt();
+                secondPoint = input.nextInt();
+                points.add(new SliderPoint(firstPoint, secondPoint, model, w, h));
+            }
+        } else {
+            System.out.println("MainFrame.readInput: no valid model provided");
+        }
+        cL = new ConflictList(points, model);
+        processOutput();
+        giveOutput();
+    }
+
+    public void processOutput() {
+        if (model.equals("2pos")) {
+            alg = new TwoPos(w, h, points, cL);
+        } else if (model.equals("4pos")) {
+            alg = new FourPos(w, h, points, cL);
+        } else if (model.equals("1slider")) {
+            alg = new OneSlider(w, h, points, cL);
         } else {
             System.out.println(model + " is not a valid model");
         }
         alg.determineLabels();
         numLabels = alg.getNumLabels();
-     
+
     }
 
     public void giveOutput() {
@@ -75,10 +89,20 @@ public class MainFrame {
         iter = points.iterator();
 
         //loop over all points to print their values
-        while (iter.hasNext()) {
-            curPoint = iter.next();
-            System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
-                    + " " + curPoint.getLabelPos());
+        if (model.equals("2pos") || model.equals("4pos")) {
+            while (iter.hasNext()) {
+                curPoint = iter.next();
+                System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
+                        + " " + curPoint.getActiveLabelPos().getPlacement());
+            }
+        } else if (model.equals("1slider")) {
+            while (iter.hasNext()) {
+                curPoint = iter.next();
+                System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
+                        + " " + curPoint.getActiveLabelSlider().getPlacement());
+            }
+        } else {
+            System.out.println("MainFrame.giveOutput: no valid model provided");
         }
     }
 
@@ -88,8 +112,6 @@ public class MainFrame {
     public static void main(String[] args) {
         MainFrame mainFrame = new MainFrame();
         mainFrame.readInput();
-        mainFrame.processOutput();
-        mainFrame.giveOutput();
-    }
+     }
 
 }

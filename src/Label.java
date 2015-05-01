@@ -8,12 +8,22 @@
  *
  * @author s130604
  */
-public class Label {
+public abstract class Label {
+
     int minX, minY, maxX, maxY;
+    int w;
+    int h;
     Point p;    //the point this label labels
-    public Label(int w, int h, Point p, int quadrant){
+
+    public Label(int w, int h, Point p) {
+        this.w = w;
+        this.h = h;
         this.p = p;
-        switch(quadrant){
+    }
+
+    public Label(int w, int h, Point p, int quadrant) {
+        this.p = p;
+        switch (quadrant) {
             case 1:
                 minX = p.getxCoord();
                 minY = p.getyCoord();
@@ -34,25 +44,32 @@ public class Label {
                 minY = p.getyCoord() - h;
                 maxX = p.getxCoord() + w;
                 maxY = p.getyCoord();
-                
+
         }
     }
-    public int getMinX(){
+
+    public int getMinX() {
         return minX;
     }
-    public int getMaxX(){
+
+    public int getMaxX() {
         return maxX;
     }
-    public int getMinY(){
+
+    public int getMinY() {
         return minY;
     }
-    public int getMaxY(){
+
+    public int getMaxY() {
         return maxY;
     }
-    public Point getPoint(){
+
+    public Point getPoint() {
         return p;
     }
-    public boolean overlaps(Label l){
+
+    public boolean overlaps(Label l) {
         return minX < l.getMaxX() && maxX > l.getMinX() && minY < l.getMaxY() && maxY > l.getMinY();
     }
+
 }

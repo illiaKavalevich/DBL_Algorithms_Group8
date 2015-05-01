@@ -13,8 +13,8 @@ import java.util.ArrayList;
  */
 public class TwoPos extends Algorithm {
 
-    public TwoPos(int w, int h, ArrayList<Point> points) {
-        super(w, h, points);
+    public TwoPos(int w, int h, ArrayList<Point> points, ConflictList cL) {
+        super(w, h, points, cL);
     }
     
     @Override

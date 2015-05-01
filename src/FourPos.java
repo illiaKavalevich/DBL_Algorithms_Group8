@@ -13,8 +13,8 @@ import java.util.ArrayList;
  */
 public class FourPos extends Algorithm {
 
-    public FourPos(int w, int h, ArrayList<Point> points) {
-        super(w, h, points);
+    public FourPos(int w, int h, ArrayList<Point> points, ConflictList cL) {
+        super(w, h, points, cL);
     }
     
     @Override
