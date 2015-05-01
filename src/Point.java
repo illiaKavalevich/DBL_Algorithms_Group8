@@ -15,6 +15,7 @@ public class Point {
     
     int xCoord;
     int yCoord;
+    //should be one of NIL, NW, NE, SW, SE or float number in range [0, 1]
     String labelPos = "NIL";
     
 

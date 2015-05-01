@@ -47,15 +47,15 @@ public class MainFrame {
     }
     public void processOutput() {
         if(model.equals("2pos")) {
-            alg = new TwoPos();
+            alg = new TwoPos(w, h, points);
         } else if (model.equals("4pos")) {
-            alg = new FourPos();
+            alg = new FourPos(w, h, points);
         } else if (model.equals("1slider")) {
-            alg = new OneSlider();
+            alg = new OneSlider(w, h, points);
         } else {
             System.out.println(model + " is not a valid model");
         }
-        alg.determineLabels(w, h, points);
+        alg.determineLabels();
         numLabels = alg.getNumLabels();
      
     }

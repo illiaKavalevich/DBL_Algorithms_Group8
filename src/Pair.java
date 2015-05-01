@@ -1,6 +1,3 @@
-
-import java.util.ArrayList;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -11,15 +8,13 @@ import java.util.ArrayList;
  *
  * @author s131061
  */
-public class FourPos extends Algorithm {
-
-    public FourPos(int w, int h, ArrayList<Point> points) {
-        super(w, h, points);
-    }
+public class Pair {
+    Point p1;
+    Point p2;
     
-    @Override
-    public void determineLabels() {
-        
+    public Pair(Point point1, Point point2) {
+        p1 = point1;
+        p2 = point2;
     }
     
 }

@@ -12,9 +12,13 @@ import java.util.ArrayList;
  * @author s131061
  */
 public class TwoPos extends Algorithm {
+
+    public TwoPos(int w, int h, ArrayList<Point> points) {
+        super(w, h, points);
+    }
     
     @Override
-    public void determineLabels(int w, int h, ArrayList<Point> points) {
+    public void determineLabels() {
         
     }
     
