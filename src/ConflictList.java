@@ -109,4 +109,22 @@ public final class ConflictList {
             }
         }
     }
+    public Set<Label> getPosConflictLabels(Label l){
+        return posConflict.get(l);
+    }
+    public int getPosDegree(Label l){
+        return posConflict.get(l).size();
+    }
+    public boolean hasPosConflicts(Label l){
+        return posConflict.get(l).size() > 0;
+    }
+    public Set<Label> getActConflictLabels(Label l){
+        return actConflict.get(l);
+    }
+    public int getActDegree(Label l){
+        return actConflict.get(l).size();
+    }
+    public boolean hasActPosConflicts(Label l){
+        return actConflict.get(l).size() > 0;
+    }
 }
