@@ -245,4 +245,8 @@ public final class ConflictList {
             actLpairs.remove(removePair);
         }
     }
+    //update the conflictList when changing the active label of a point
+    void update(Point p){
+        
+    }
 }
