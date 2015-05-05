@@ -1,4 +1,6 @@
 
+
+
 import java.util.*;
 
 /**
@@ -22,12 +24,12 @@ public final class ConflictList {
     
     //copy constructor
     public ConflictList(ConflictList cl){
-        this.actConflict = cl.actConflict;
-        this.posConflict = cl.posConflict;
-        this.actLpairs = cl.actLpairs;
-        this.posLpairs = cl.posLpairs;
-        this.activeLabels = cl.activeLabels;
-        this.possibleLabels = cl.possibleLabels;
+        this.actConflict = new HashMap<>(cl.actConflict);
+        this.posConflict = new HashMap<>(cl.posConflict);
+        this.actLpairs = new ArrayList<>(cl.actLpairs);
+        this.posLpairs = new ArrayList<>(cl.posLpairs);
+        this.activeLabels = new ArrayList<>(cl.activeLabels);
+        this.possibleLabels = new ArrayList<>(cl.possibleLabels);
         this.model = cl.model;
     }
     
@@ -95,6 +97,7 @@ public final class ConflictList {
                 if (isNew) {
                     posLpairs.add(new LabelPair(label1, label2));
                 }
+                isNew = true;
             }
         }
     }
@@ -120,6 +123,7 @@ public final class ConflictList {
                 if (isNew) {
                     actLpairs.add(new LabelPair(label1, label2));
                 }
+                isNew = true;
             }
         }
     }
@@ -240,7 +244,7 @@ public final class ConflictList {
         if (model.equals("1slider")) {
             removeLabel = p.getActiveLabelSlider();
         } else {
-            removeLabel = p.getActiveLabelSlider();
+            removeLabel = p.getActiveLabelPos();
         }
         actConflict.remove(removeLabel);
         activeLabels.remove(removeLabel);

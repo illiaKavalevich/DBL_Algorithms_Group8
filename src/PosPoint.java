@@ -13,7 +13,7 @@ public class PosPoint extends Point {
      * Holds the place of the actual placed label. In case of 2pos or 4 pos,
      * this label is one of the labels contained in possibleLabels.
      */
-    PosLabel activeLabel;
+    Label activeLabel;
 
     
     public PosPoint(int x, int y, String model, int w, int h) {
@@ -34,8 +34,12 @@ public class PosPoint extends Point {
     }
     
     @Override
-    public PosLabel getActiveLabelPos() {
+    public Label getActiveLabelPos() {
         return activeLabel;
+    }
+    @Override
+    public void setActiveLabelPos(Label l){
+        activeLabel = l;
     }
 
     @Override
