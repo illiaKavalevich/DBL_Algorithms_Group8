@@ -19,6 +19,18 @@ public final class ConflictList {
     ArrayList<LabelPair> actLpairs = new ArrayList<>();            //List of all pairs of active labels
     String model;
 
+    
+    //copy constructor
+    public ConflictList(ConflictList cl){
+        this.actConflict = cl.actConflict;
+        this.posConflict = cl.posConflict;
+        this.actLpairs = cl.actLpairs;
+        this.posLpairs = cl.posLpairs;
+        this.activeLabels = cl.activeLabels;
+        this.possibleLabels = cl.possibleLabels;
+        this.model = cl.model;
+    }
+    
     //width and height refers to the width and height of the label
     //In the constructor the adjacency list is filled
     public ConflictList(List<Point> points, String model) {
@@ -244,6 +256,30 @@ public final class ConflictList {
         for (LabelPair removePair : removeSet) {
             actLpairs.remove(removePair);
         }
+    }
+    void removeLabel(Label l){
+            posConflict.remove(l);
+            possibleLabels.remove(l);
+            for (Label label : possibleLabels) {
+                posConflict.remove(label, l);
+            }
+            HashSet<LabelPair> removeSet = new HashSet<>();
+            for (LabelPair pair : posLpairs) {
+                if (pair.l1.equals(l) || pair.l2.equals(l)) {
+                    removeSet.add(pair);
+                }
+            }
+            for (LabelPair removePair : removeSet) {
+                posLpairs.remove(removePair);
+            }
+            for (LabelPair pair : actLpairs) {
+                if (pair.l1.equals(l) || pair.l2.equals(l)) {
+                    removeSet.add(pair);
+                }
+            }
+            for (LabelPair removePair : removeSet) {
+                actLpairs.remove(removePair);
+            }
     }
     //update the conflictList when changing the active label of a point
     void update(Point p){
