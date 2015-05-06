@@ -1,6 +1,4 @@
 
-
-
 import java.util.*;
 
 /**
@@ -21,9 +19,8 @@ public final class ConflictList {
     ArrayList<LabelPair> actLpairs = new ArrayList<>();            //List of all pairs of active labels
     String model;
 
-    
     //copy constructor
-    public ConflictList(ConflictList cl){
+    public ConflictList(ConflictList cl) {
         this.actConflict = new HashMap<>(cl.actConflict);
         this.posConflict = new HashMap<>(cl.posConflict);
         this.actLpairs = new ArrayList<>(cl.actLpairs);
@@ -32,7 +29,7 @@ public final class ConflictList {
         this.possibleLabels = new ArrayList<>(cl.possibleLabels);
         this.model = cl.model;
     }
-    
+
     //width and height refers to the width and height of the label
     //In the constructor the adjacency list is filled
     public ConflictList(List<Point> points, String model) {
@@ -89,10 +86,9 @@ public final class ConflictList {
                         isNew = false;
                         break;
                     }
-                    if (label1.p == label2.p) {
-                        isNew = false;
-                        break;
-                    }
+                }
+                if (label1.p == label2.p) {
+                    isNew = false;
                 }
                 if (isNew) {
                     posLpairs.add(new LabelPair(label1, label2));
@@ -261,32 +257,53 @@ public final class ConflictList {
             actLpairs.remove(removePair);
         }
     }
-    void removeLabel(Label l){
-            posConflict.remove(l);
-            possibleLabels.remove(l);
-            for (Label label : possibleLabels) {
-                posConflict.remove(label, l);
+
+    void removeLabel(Label l) {
+        posConflict.remove(l);
+        possibleLabels.remove(l);
+        for (Label label : possibleLabels) {
+            posConflict.remove(label, l);
+        }
+        HashSet<LabelPair> removeSet = new HashSet<>();
+        for (LabelPair pair : posLpairs) {
+            if (pair.l1.equals(l) || pair.l2.equals(l)) {
+                removeSet.add(pair);
             }
-            HashSet<LabelPair> removeSet = new HashSet<>();
-            for (LabelPair pair : posLpairs) {
-                if (pair.l1.equals(l) || pair.l2.equals(l)) {
-                    removeSet.add(pair);
-                }
-            }
-            for (LabelPair removePair : removeSet) {
-                posLpairs.remove(removePair);
-            }
-            for (LabelPair pair : actLpairs) {
-                if (pair.l1.equals(l) || pair.l2.equals(l)) {
-                    removeSet.add(pair);
-                }
-            }
-            for (LabelPair removePair : removeSet) {
-                actLpairs.remove(removePair);
-            }
-    }
-    //update the conflictList when changing the active label of a point
-    void update(Point p){
+        }
+        for (LabelPair removePair : removeSet) {
+            posLpairs.remove(removePair);
+        }
         
+        actConflict.remove(l);
+        activeLabels.remove(l);
+        for (Label label :activeLabels) {
+            actConflict.remove(label, l);
+        }
+        HashSet<LabelPair> removeSet2 = new HashSet<>();
+        for (LabelPair pair : actLpairs) {
+            if (pair.l1.equals(l) || pair.l2.equals(l)) {
+                removeSet2.add(pair);
+            }
+        }
+        for (LabelPair removePair : removeSet2) {
+            actLpairs.remove(removePair);
+        }
+    }
+
+    public void removeActiveLabel(Label l){
+        actConflict.remove(l);
+        activeLabels.remove(l);
+        for (Label label :activeLabels) {
+            actConflict.remove(label, l);
+        }
+        HashSet<LabelPair> removeSet2 = new HashSet<>();
+        for (LabelPair pair : actLpairs) {
+            if (pair.l1.equals(l) || pair.l2.equals(l)) {
+                removeSet2.add(pair);
+            }
+        }
+        for (LabelPair removePair : removeSet2) {
+            actLpairs.remove(removePair);
+        }
     }
 }

@@ -46,4 +46,10 @@ public class Falp extends Algorithm {
         System.out.println("points without label: "+noActiveLabelPoints.size());
         
     }
+    //step 2 of FALP:
+    //Give all points that did not yet have a label an active label
+    //this label may have conflicts with other labels
+    public void giveActiveLabel(){
+        
+    }
 }
