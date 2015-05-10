@@ -48,7 +48,7 @@ public abstract class AnnealingSimulator extends Algorithm {
     
     protected void doInitialPlacement(ArrayList<Point> points){
         for(int i = 0; i < points.size(); i++) {
-            if(points.get(i).labelPos == "") { //NEEDS UPDATE
+            if(points.get(i).getActiveLabelSlider() == null) { //NEEDS UPDATE
                 moveLabelRandomly(points.get(i));
             }
         }

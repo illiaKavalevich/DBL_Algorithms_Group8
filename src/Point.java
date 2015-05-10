@@ -57,9 +57,9 @@ public abstract class Point {
         return possibleLabels;
     }
     
-    public abstract Label getActiveLabelPos();
+    public abstract PosLabel getActiveLabelPos();
     
-    public abstract void setActiveLabelPos(Label l);
+    public abstract void setActiveLabelPos(PosLabel l);
     
     public abstract SliderLabel getActiveLabelSlider();
 

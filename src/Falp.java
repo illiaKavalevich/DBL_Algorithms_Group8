@@ -41,7 +41,8 @@ public class Falp extends Algorithm {
             clCopy.removePoint(p);
             noActiveLabelPoints.remove(p);
             noOverlapPoints.add(p);
-            p.setActiveLabelPos(bestLabel);
+            p.getActiveLabelPos().setLabel(bestLabel.getQuadrant());
+            
         }
         System.out.println("points without label: "+noActiveLabelPoints.size());
         

@@ -18,6 +18,10 @@ public abstract class Algorithm {
     int w;
     int h;
     ConflictList cL;
+    
+    public Algorithm() {
+        //needed for extending classes
+    }
 
     /**
      * Creates a new Algorithm object

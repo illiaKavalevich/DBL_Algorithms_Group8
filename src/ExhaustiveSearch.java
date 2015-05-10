@@ -24,10 +24,12 @@ public abstract class ExhaustiveSearch extends Algorithm {
     
     protected int computeNC() {
         //compute number of labels with conflicts in ActiveLabelPositions
+        return 0;
     }
     
     protected int computeNSC() {
         //compute number of no
+        return 0;
     }
     
     protected void determineLabels(int w, int h, ArrayList<Point> points) {
