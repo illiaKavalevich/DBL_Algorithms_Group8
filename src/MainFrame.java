@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -121,7 +122,16 @@ public class MainFrame {
     }
 
     public void plotLabels() {
+        //just for testing purposes
+        model = "2pos";
+        points.add(new PosPoint(12, 4, "2pos", 1, 1));
+        points.add(new PosPoint(1, 16, "2pos", 1, 1));
+        points.add(new PosPoint(7, 2, "2pos", 1, 1));
+        points.add(new PosPoint(4, 11, "2pos", 1, 1));
+        points.add(new PosPoint(5, 9, "2pos", 1, 1));
+        
         int count = 1;
+        XYDataset label;
         
         XYDataset plotPoints = createPointDataSet();
         XYLineAndShapeRenderer rendererP = new XYLineAndShapeRenderer(false, true);
@@ -130,9 +140,16 @@ public class MainFrame {
         XYPlot plot = new XYPlot(plotPoints, domain, range, rendererP);
         
         for (Point point : points) {
-            point.getActiveLabelPos().setLabel(3);
-            XYDataset label = createLabelDataSet(point.getActiveLabelPos());
+            if (model.equals("1slider")) {
+                label = createSliderLabelDataSet(point.getActiveLabelSlider());
+            } else {
+                point.getActiveLabelPos().setLabel(1);
+                label = createPosLabelDataSet(point.getActiveLabelPos());
+            }
+            
             XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
+            rendererL.setSeriesPaint(0, Color.BLACK);
+            rendererL.setSeriesVisibleInLegend(Boolean.FALSE);
             plot.setDataset(count, label);
             plot.setRenderer(count, rendererL);
             count++;
@@ -145,11 +162,6 @@ public class MainFrame {
     }
 
     private XYDataset createPointDataSet() {
-        points.add(new PosPoint(12, 4, "2pos", 1, 1));
-        points.add(new PosPoint(1, 16, "2pos", 1, 1));
-        points.add(new PosPoint(7, 2, "2pos", 1, 1));
-        points.add(new PosPoint(4, 11, "2pos", 1, 1));
-        points.add(new PosPoint(5, 9, "2pos", 1, 1));
         XYSeriesCollection plotPoints = new XYSeriesCollection();
         XYSeries series = new XYSeries("Points");
         for (Point point : points) {
@@ -159,7 +171,7 @@ public class MainFrame {
         return plotPoints;
     }
 
-    private XYDataset createLabelDataSet(Label label) {
+    private XYDataset createPosLabelDataSet(PosLabel label) {
         XYSeriesCollection currentLabel = new XYSeriesCollection();
         XYSeries series = new XYSeries("", false, true);
         series.add(label.minX, label.minY);
@@ -167,6 +179,20 @@ public class MainFrame {
         series.add(label.maxX, label.maxY);
         series.add(label.maxX, label.minY);
         series.add(label.minX, label.minY);
+        currentLabel.addSeries(series);
+        return currentLabel;
+    }
+    
+    private XYDataset createSliderLabelDataSet(SliderLabel label) {
+        XYSeriesCollection currentLabel = new XYSeriesCollection();
+        XYSeries series = new XYSeries("", false, true);
+        double minX = label.miniX;
+        double maxX = label.maxiX;
+        series.add(minX, label.minY);
+        series.add(minX, label.maxY);
+        series.add(maxX, label.maxY);
+        series.add(maxX, label.minY);
+        series.add(minX, label.minY);
         currentLabel.addSeries(series);
         return currentLabel;
     }
