@@ -1,4 +1,5 @@
 
+
 import java.util.*;
 
 /**
@@ -36,7 +37,9 @@ public final class ConflictList {
         this.model = model;
         for (Point p : points) {
             for (Label label : p.possibleLabels) {
-                posConflict.put(label, new HashSet());
+                HashSet<Label> newSet = new HashSet<>();
+                posConflict.put(label, newSet);
+                actConflict.put(label, newSet);
                 possibleLabels.add(label);
             }
             if (model.equals("1slider")) {
@@ -151,7 +154,7 @@ public final class ConflictList {
     public void addPoint(Point p) {
         ArrayList<LabelPair> posNLpairs = new ArrayList<>();            //List of all pairs of possible labels with new labels
         for (Label label : p.possibleLabels) {
-            posConflict.put(label, new HashSet());
+            posConflict.put(label, new HashSet<Label>());
             possibleLabels.add(label);
         }
         if (model.equals("1slider")) {
@@ -273,10 +276,10 @@ public final class ConflictList {
         for (LabelPair removePair : removeSet) {
             posLpairs.remove(removePair);
         }
-        
+
         actConflict.remove(l);
         activeLabels.remove(l);
-        for (Label label :activeLabels) {
+        for (Label label : activeLabels) {
             actConflict.remove(label, l);
         }
         HashSet<LabelPair> removeSet2 = new HashSet<>();
@@ -290,10 +293,10 @@ public final class ConflictList {
         }
     }
 
-    public void removeActiveLabel(Label l){
+    public void removeActiveLabel(Label l) {
         actConflict.remove(l);
         activeLabels.remove(l);
-        for (Label label :activeLabels) {
+        for (Label label : activeLabels) {
             actConflict.remove(label, l);
         }
         HashSet<LabelPair> removeSet2 = new HashSet<>();
@@ -304,6 +307,41 @@ public final class ConflictList {
         }
         for (LabelPair removePair : removeSet2) {
             actLpairs.remove(removePair);
+        }
+    }
+
+    public void addActiveLabel(Label l) {
+        activeLabels.add(l);
+
+        boolean isNew = true;
+        for (Label label : activeLabels) {
+            /**
+             * for each pair check if it does not already exist the other way
+             * around (i.e pair(p1, p2) is same as (pair(p2, p1)) if not, add to
+             * pairs
+             */
+            for (LabelPair pair : actLpairs) {
+                if (pair.l1.equals(l) && pair.l2.equals(label)) {
+                    isNew = false;
+                    break;
+                }
+
+            }
+            if (isNew) {
+                actLpairs.add(new LabelPair(label, l));
+            }
+            isNew = true;
+        }
+        for(Label label : activeLabels){
+            if(label.overlaps(l)){
+                System.out.println(actConflict.get(label)==null);
+                Set labelSet = actConflict.get(label);
+                labelSet.add(l);
+                actConflict.put(label, labelSet);
+                Set labelSet2 = actConflict.get(l);
+                labelSet2.add(l);
+                actConflict.put(l, labelSet2);
+            }
         }
     }
 }

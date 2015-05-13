@@ -1,12 +1,14 @@
 
 
 
+
+
 import java.util.*;
 
 public class Falp extends Algorithm {
 
     HashSet<Point> noActiveLabelPoints = new HashSet<>();                       //all the points that do not have an active label
-    HashSet<Point> noOverlapPoints = new HashSet<>();                           //all the points that have an active label that doesn't overlap
+    HashSet<Point> labeledPoints = new HashSet<>();                           //all the points that have an active label that doesn't overlap
 
     public Falp(int w, int h, ArrayList<Point> points, ConflictList cL) {
         super(w, h, points, cL);
@@ -37,10 +39,11 @@ public class Falp extends Algorithm {
             for(Label l : clCopy.getPosConflictLabels(bestLabel)){
                 clCopy.removeLabel(l);
             }
+            bestLabel.getPoint().setActiveLabelPos((PosLabel) bestLabel, cL);
             Point p = bestLabel.getPoint();
             clCopy.removePoint(p);
             noActiveLabelPoints.remove(p);
-            noOverlapPoints.add(p);
+            labeledPoints.add(p);
             p.getActiveLabelPos().setLabel(bestLabel.getQuadrant());
             
         }
@@ -51,6 +54,19 @@ public class Falp extends Algorithm {
     //Give all points that did not yet have a label an active label
     //this label may have conflicts with other labels
     public void giveActiveLabel(){
-        
+        while(!noActiveLabelPoints.isEmpty()){
+            int minDegree = Integer.MAX_VALUE;
+            Label bestLabel = cL.possibleLabels.get(0);                         //just to intialize bestLabel
+            for(Point p :noActiveLabelPoints){
+                for(Label l: p.getPossibleLabels()){
+                    int degree = cL.getActDegree(l);
+                    if(degree < minDegree){
+                        bestLabel = l;
+                        minDegree = degree;
+                    }
+                }
+            }
+            bestLabel.getPoint().setActiveLabelPos((PosLabel)bestLabel, cL);
+        }
     }
 }

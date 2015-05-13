@@ -1,3 +1,5 @@
+
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -38,12 +40,19 @@ public class PosPoint extends Point {
         return activeLabel;
     }
     @Override
-    public void setActiveLabelPos(PosLabel l){
+    public void setActiveLabelPos(PosLabel l, ConflictList list){
+        list.removeActiveLabel(activeLabel);
+        list.addActiveLabel(l);
         activeLabel = l;
     }
 
     @Override
     public SliderLabel getActiveLabelSlider() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setActiveLabelPos(PosLabel l) {
+        activeLabel = l;
     }
 }

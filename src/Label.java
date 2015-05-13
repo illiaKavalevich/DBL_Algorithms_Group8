@@ -1,9 +1,10 @@
+
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author s130604
@@ -16,7 +17,6 @@ public abstract class Label {
     Point p;    //the point this label labels
     int quadrant;
 
-    
     public Label(int w, int h, Point p) {
         this.w = w;
         this.h = h;
@@ -26,6 +26,10 @@ public abstract class Label {
     public Label(int w, int h, Point p, int quadrant) {
         this.p = p;
         this.quadrant = quadrant;
+        this.w = w;
+        this.h = h;
+        //System.out.println("quadrant: " + quadrant);
+        
         switch (quadrant) {
             case 1:
                 minX = p.getxCoord();
