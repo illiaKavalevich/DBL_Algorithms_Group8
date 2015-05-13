@@ -49,23 +49,39 @@ public final class ConflictList {
         setPairsAct(points);
         for (LabelPair pair : posLpairs) {
             if (pair.l1.overlaps(pair.l2)) {
+                if (! posConflict.containsKey(pair.l1)) {
+                    posConflict.put(pair.l1, new HashSet<Label>());
+                }
                 Set labelSet = posConflict.get(pair.l1);
                 labelSet.add(pair.l2);
                 posConflict.put(pair.l1, labelSet);
+                if (! posConflict.containsKey(pair.l2)) {
+                    posConflict.put(pair.l2, new HashSet<Label>());
+                }
                 Set labelSet2 = posConflict.get(pair.l2);
                 labelSet2.add(pair.l1);
                 posConflict.put(pair.l2, labelSet2);
             }
         }
         for (LabelPair pair : actLpairs) {
+            System.out.println("pair1: " + pair.l1.p.xCoord + " " + pair.l1.p.yCoord);
+            System.out.println("pair2: " + pair.l2.p.xCoord + " " + pair.l2.p.yCoord);
             if (pair.l1.overlaps(pair.l2)) {
+                System.out.println("overlap");
+                if (! actConflict.containsKey(pair.l1)) {
+                    actConflict.put(pair.l1, new HashSet<Label>());
+                }
                 Set labelSet = actConflict.get(pair.l1);
                 labelSet.add(pair.l2);
                 actConflict.put(pair.l1, labelSet);
+                if (! actConflict.containsKey(pair.l2)) {
+                    actConflict.put(pair.l2, new HashSet<Label>());
+                }
                 Set labelSet2 = actConflict.get(pair.l2);
                 labelSet2.add(pair.l1);
                 actConflict.put(pair.l2, labelSet2);
             }
+            
         }
     }
 
