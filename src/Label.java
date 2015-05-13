@@ -14,7 +14,9 @@ public abstract class Label {
     int w;
     int h;
     Point p;    //the point this label labels
+    int quadrant;
 
+    
     public Label(int w, int h, Point p) {
         this.w = w;
         this.h = h;
@@ -23,27 +25,32 @@ public abstract class Label {
 
     public Label(int w, int h, Point p, int quadrant) {
         this.p = p;
+        this.quadrant = quadrant;
         switch (quadrant) {
             case 1:
                 minX = p.getxCoord();
                 minY = p.getyCoord();
                 maxX = p.getxCoord() + w;
                 maxY = p.getyCoord() + h;
+                break;
             case 2:
                 minX = p.getxCoord() - w;
                 minY = p.getyCoord();
                 maxX = p.getxCoord();
                 maxY = p.getyCoord() + h;
+                break;
             case 3:
                 minX = p.getxCoord() - w;
                 minY = p.getyCoord() - h;
                 maxX = p.getxCoord();
                 maxY = p.getyCoord();
+                break;
             case 4:
                 minX = p.getxCoord();
                 minY = p.getyCoord() - h;
                 maxX = p.getxCoord() + w;
                 maxY = p.getyCoord();
+                break;
 
         }
     }
@@ -70,6 +77,10 @@ public abstract class Label {
 
     public boolean overlaps(Label l) {
         return minX < l.getMaxX() && maxX > l.getMinX() && minY < l.getMaxY() && maxY > l.getMinY();
+    }
+
+    public int getQuadrant() {
+        return quadrant;
     }
 
 }

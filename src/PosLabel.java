@@ -25,6 +25,8 @@ public class PosLabel extends Label {
             placement = "SW";
         } else if (quadrant == 4) {
             placement = "SE";
+        } else if (quadrant == 0) {
+            placement = "#"; //needed for exhaustive search
         } else {
             System.out.println("PosLabel.PosLabel: no valid quadrant provided");
         }
@@ -37,21 +39,25 @@ public class PosLabel extends Label {
                 minY = p.getyCoord();
                 maxX = p.getxCoord() + w;
                 maxY = p.getyCoord() + h;
+                break;
             case 2:
                 minX = p.getxCoord() - w;
                 minY = p.getyCoord();
                 maxX = p.getxCoord();
                 maxY = p.getyCoord() + h;
+                break;
             case 3:
                 minX = p.getxCoord() - w;
                 minY = p.getyCoord() - h;
                 maxX = p.getxCoord();
                 maxY = p.getyCoord();
+                break;
             case 4:
                 minX = p.getxCoord();
                 minY = p.getyCoord() - h;
                 maxX = p.getxCoord() + w;
                 maxY = p.getyCoord();
+                break;
 
         }
     }
