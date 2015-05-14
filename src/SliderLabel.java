@@ -10,7 +10,7 @@
  */
 public class SliderLabel extends Label {
 
-    Float placement; //returns float number in range [0, 1]
+    Float placement = (float)0; //returns float number in range [0, 1]
     Float miniX, maxiX;
 
     //sets the xcoordinates of the label to float for sliding purposes

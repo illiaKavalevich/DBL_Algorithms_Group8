@@ -45,17 +45,17 @@ public final class ConflictList {
                 activeLabels.add(p.getActiveLabelPos());
             }
         }
-        setPairsPos(points);
-        setPairsAct(points);
+        setPairsPos();
+        setPairsAct();
         for (LabelPair pair : posLpairs) {
             if (pair.l1.overlaps(pair.l2)) {
-                if (! posConflict.containsKey(pair.l1)) {
+                if (!posConflict.containsKey(pair.l1)) {
                     posConflict.put(pair.l1, new HashSet<Label>());
                 }
                 Set labelSet = posConflict.get(pair.l1);
                 labelSet.add(pair.l2);
                 posConflict.put(pair.l1, labelSet);
-                if (! posConflict.containsKey(pair.l2)) {
+                if (!posConflict.containsKey(pair.l2)) {
                     posConflict.put(pair.l2, new HashSet<Label>());
                 }
                 Set labelSet2 = posConflict.get(pair.l2);
@@ -65,24 +65,46 @@ public final class ConflictList {
         }
         for (LabelPair pair : actLpairs) {
             if (pair.l1.overlaps(pair.l2)) {
-                if (! actConflict.containsKey(pair.l1)) {
+                if (!actConflict.containsKey(pair.l1)) {
                     actConflict.put(pair.l1, new HashSet<Label>());
                 }
                 Set labelSet = actConflict.get(pair.l1);
                 labelSet.add(pair.l2);
                 actConflict.put(pair.l1, labelSet);
-                if (! actConflict.containsKey(pair.l2)) {
+                if (!actConflict.containsKey(pair.l2)) {
                     actConflict.put(pair.l2, new HashSet<Label>());
                 }
                 Set labelSet2 = actConflict.get(pair.l2);
                 labelSet2.add(pair.l1);
                 actConflict.put(pair.l2, labelSet2);
             }
-            
+
         }
     }
 
-    public void setPairsPos(List<Point> points) {
+    public void updateActConflicts(Label l) {
+        for (LabelPair pair : actLpairs) {
+            if (pair.l1 == l || pair.l2 == l) {
+                if (pair.l1.overlaps(pair.l2)) {
+                    if (!actConflict.containsKey(pair.l1)) {
+                        actConflict.put(pair.l1, new HashSet<Label>());
+                    }
+                    Set labelSet = actConflict.get(pair.l1);
+                    labelSet.add(pair.l2);
+                    actConflict.put(pair.l1, labelSet);
+                    if (!actConflict.containsKey(pair.l2)) {
+                        actConflict.put(pair.l2, new HashSet<Label>());
+                    }
+                    Set labelSet2 = actConflict.get(pair.l2);
+                    labelSet2.add(pair.l1);
+                    actConflict.put(pair.l2, labelSet2);
+                }
+
+            }
+        }
+    }
+
+    public void setPairsPos() {
         boolean isNew = true;
 
         //add all possible labels
@@ -111,7 +133,7 @@ public final class ConflictList {
         }
     }
 
-    public void setPairsAct(List<Point> points) {
+    public void setPairsAct() {
         boolean isNew = true;
 
         //add all possible labels
@@ -145,11 +167,14 @@ public final class ConflictList {
     }
 
     public int getPosDegree(Label l) {
-        return posConflict.get(l).size();
+        if (hasPosConflicts(l)) { 
+            return posConflict.get(l).size();
+        }
+        return 0;
     }
 
     public boolean hasPosConflicts(Label l) {
-        return posConflict.get(l).size() > 0;
+        return posConflict.containsKey(l);
     }
 
     public Set<Label> getActConflictLabels(Label l) {
@@ -157,11 +182,14 @@ public final class ConflictList {
     }
 
     public int getActDegree(Label l) {
-        return actConflict.get(l).size();
+        if (hasActConflicts(l)) { 
+            return actConflict.get(l).size();
+        }
+        return 0;
     }
 
     public boolean hasActConflicts(Label l) {
-        return actConflict.get(l).size() > 0;
+        return actConflict.containsKey(l);
     }
 
     public void addPoint(Point p) {
@@ -289,10 +317,10 @@ public final class ConflictList {
         for (LabelPair removePair : removeSet) {
             posLpairs.remove(removePair);
         }
-        
+
         actConflict.remove(l);
         activeLabels.remove(l);
-        for (Label label :activeLabels) {
+        for (Label label : activeLabels) {
             actConflict.remove(label, l);
         }
         HashSet<LabelPair> removeSet2 = new HashSet<>();
@@ -306,10 +334,10 @@ public final class ConflictList {
         }
     }
 
-    public void removeActiveLabel(Label l){
+    public void removeActiveLabel(Label l) {
         actConflict.remove(l);
         activeLabels.remove(l);
-        for (Label label :activeLabels) {
+        for (Label label : activeLabels) {
             actConflict.remove(label, l);
         }
         HashSet<LabelPair> removeSet2 = new HashSet<>();
@@ -322,4 +350,5 @@ public final class ConflictList {
             actLpairs.remove(removePair);
         }
     }
+
 }

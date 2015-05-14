@@ -9,7 +9,7 @@
  * @author s131061
  */
 public class PosLabel extends Label {
-    String placement;
+    String placement = "NIL";
     
     public PosLabel(int w, int h, Point p) {
         super(w, h, p);
@@ -40,24 +40,28 @@ public class PosLabel extends Label {
                 minY = p.getyCoord();
                 maxX = p.getxCoord() + w;
                 maxY = p.getyCoord() + h;
+                placement = "NE";
                 break;
             case 2:
                 minX = p.getxCoord() - w;
                 minY = p.getyCoord();
                 maxX = p.getxCoord();
                 maxY = p.getyCoord() + h;
+                placement = "NW";
                 break;
             case 3:
                 minX = p.getxCoord() - w;
                 minY = p.getyCoord() - h;
                 maxX = p.getxCoord();
                 maxY = p.getyCoord();
+                placement = "SW";
                 break;
             case 4:
                 minX = p.getxCoord();
                 minY = p.getyCoord() - h;
                 maxX = p.getxCoord() + w;
                 maxY = p.getyCoord();
+                placement = "SE";
                 break;
 
         }
