@@ -36,7 +36,7 @@ public final class ConflictList {
         this.model = model;
         for (Point p : points) {
             for (Label label : p.possibleLabels) {
-                posConflict.put(label, new HashSet());
+                //posConflict.put(label, new HashSet());
                 possibleLabels.add(label);
             }
             if (model.equals("1slider")) {
@@ -64,10 +64,7 @@ public final class ConflictList {
             }
         }
         for (LabelPair pair : actLpairs) {
-            System.out.println("pair1: " + pair.l1.p.xCoord + " " + pair.l1.p.yCoord);
-            System.out.println("pair2: " + pair.l2.p.xCoord + " " + pair.l2.p.yCoord);
             if (pair.l1.overlaps(pair.l2)) {
-                System.out.println("overlap");
                 if (! actConflict.containsKey(pair.l1)) {
                     actConflict.put(pair.l1, new HashSet<Label>());
                 }
@@ -131,6 +128,9 @@ public final class ConflictList {
                         break;
                     }
 
+                }
+                if (label1.p == label2.p) {
+                    isNew = false;
                 }
                 if (isNew) {
                     actLpairs.add(new LabelPair(label1, label2));

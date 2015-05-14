@@ -33,6 +33,7 @@ public class PosLabel extends Label {
     }
     
     public void setLabel(int quadrant) {
+        this.quadrant = quadrant;
         switch (quadrant) {
             case 1:
                 minX = p.getxCoord();
