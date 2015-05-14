@@ -18,10 +18,12 @@ public abstract class AnnealingSimulator extends Algorithm {
     protected double T; //temperature
     protected double E; //score of the current itteration
     protected double deltaE; //the change in score
-    protected int iterations;
+    protected int iterationsSinceTempChange;
     protected Random rand;
 
-    public AnnealingSimulator() {
+    public AnnealingSimulator(int w, int h, ArrayList<Point> points, 
+            ConflictList cL) {
+        super(w, h, points, cL);
         this.rand = new Random(56467984);
         this.T = 2.50;
     }
@@ -30,23 +32,31 @@ public abstract class AnnealingSimulator extends Algorithm {
         this.T = temperature;
     }
     
-    public void determineLabels(int w, int h, ArrayList<Point> points) {
+    @Override
+    public void determineLabels() {
         Point point; //current point being altered
-        doInitialPlacement(points);
-        while(true) { //TO DO: determine when to stop treshold or time
+        iterationsSinceTempChange = 0;
+        doInitialPlacement();
+        
+        //algorithm that optimizes the number of labels
+        while(T > 0) {
             point = points.get(rand.nextInt(points.size()));
             moveLabelRandomly(point);
-            computeDeltaE();
+            //update adjancancy matrix
+            computeScore();
             if(deltaE < 0) {
                 if(rand.nextDouble() <= (1 - Math.pow(Math.E, -(deltaE/T)))) {
                 //undo
                 }
             }
-            //TO DO: lower temperature systematically
+            iterationsSinceTempChange ++;
+            updateTemperature();
         }
+        
+        removeOverlap();
     }
     
-    protected void doInitialPlacement(ArrayList<Point> points){
+    protected void doInitialPlacement(){
         for(int i = 0; i < points.size(); i++) {
             if(points.get(i).getActiveLabelSlider() == null) { //NEEDS UPDATE
                 moveLabelRandomly(points.get(i));
@@ -54,7 +64,25 @@ public abstract class AnnealingSimulator extends Algorithm {
         }
     }
     
-    protected abstract void moveLabelRandomly(Point p);
-    protected abstract void computeDeltaE();
+    //Moves a label randomly to a new position that is not the old position
+    protected void moveLabelRandomly(SliderPoint p){};
+    protected void moveLabelRandomly(Point p){};
+    
+    //calculates the difference in score and stores it in deltaE
+    protected abstract void computeScore();
 
+    protected void removeOverlap() {
+        
+    }
+    
+    protected void updateTemperature() {
+        if(iterationsSinceTempChange == (50 * numLabels)) {
+            if(T < 0.2) {
+                T -= 0.05;
+            } else {
+                T = 0.9 * T;
+            }
+            iterationsSinceTempChange = 0;
+        }
+    }
 }

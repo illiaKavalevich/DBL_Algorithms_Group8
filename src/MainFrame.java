@@ -121,41 +121,28 @@ public class MainFrame {
         }
     }
 
+    /*
+         Used for data visualization
+         COMMENT BEFORE SUBMITTING TO PEACH
+         */
     public void plotLabels() {
-        //just for testing purposes
-        model = "2pos";
-        points.add(new PosPoint(12, 4, "2pos", 2, 2));
-        points.add(new PosPoint(1, 16, "2pos", 2, 2));
-        points.add(new PosPoint(7, 2, "2pos", 2, 2));
-        points.add(new PosPoint(4, 11, "2pos", 2, 2));
-        points.add(new PosPoint(5, 10, "2pos", 2, 2));
-        points.add(new PosPoint(9, 4, "2pos", 2, 2));
-        points.add(new PosPoint(2, 7, "2pos", 2, 2));
-        points.add(new PosPoint(3, 5, "2pos", 2, 2));
-        points.add(new PosPoint(4, 2, "2pos", 2, 2));
-        points.add(new PosPoint(8, 8, "2pos", 2, 2));
-        points.add(new PosPoint(8, 8, "2pos", 2, 2));
-        for (Point point : points) {
-            point.getActiveLabelPos().setLabel(1);
-        }
-        cL = new ConflictList(points, model);
-        
         int count = 1;
         XYDataset label;
-        
+
+        //sets basics for graph display and plot all points
         XYDataset plotPoints = createPointDataSet();
         XYLineAndShapeRenderer rendererP = new XYLineAndShapeRenderer(false, true);
         ValueAxis domain = new NumberAxis("");
         ValueAxis range = new NumberAxis("");
         XYPlot plot = new XYPlot(plotPoints, domain, range, rendererP);
-        
+
         for (Point point : points) {
             if (model.equals("1slider")) {
                 label = createSliderLabelDataSet(point.getActiveLabelSlider());
             } else {
                 label = createPosLabelDataSet(point.getActiveLabelPos());
             }
-            
+
             XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
             if (cL.actConflict.get(label) == null) {
                 System.out.println("no conflict");
@@ -170,13 +157,46 @@ public class MainFrame {
             plot.setRenderer(count, rendererL);
             count++;
         }
-        
+
+        /* for each point plot the active label
+         if it has a conflict with >=1 other active label(s) make the label red
+         otherwise black
+         */
+        for (Point point : points) {
+            if (model.equals("1slider")) {
+                label = createSliderLabelDataSet(point.getActiveLabelSlider());
+                XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
+                if (cL.actConflict.containsKey(point.getActiveLabelSlider())) {
+                    rendererL.setSeriesPaint(0, Color.RED);
+                } else {
+                    rendererL.setSeriesPaint(0, Color.BLACK);
+                }
+                rendererL.setSeriesVisibleInLegend(Boolean.FALSE);
+                plot.setDataset(count, label);
+                plot.setRenderer(count, rendererL);
+            } else {
+                label = createPosLabelDataSet(point.getActiveLabelPos());
+                XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
+                if (cL.actConflict.containsKey(point.getActiveLabelPos())) {
+                    rendererL.setSeriesPaint(0, Color.RED);
+                } else {
+                    rendererL.setSeriesPaint(0, Color.BLACK);
+                }
+                rendererL.setSeriesVisibleInLegend(Boolean.FALSE);
+                plot.setDataset(count, label);
+                plot.setRenderer(count, rendererL);
+            }
+            count++;
+        }
+
+        //draw the graph
         JFreeChart chart = new JFreeChart("Label Placement", JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         ChartFrame frame = new ChartFrame("DBL Algorithms", chart);
         frame.pack();
         frame.setVisible(true);
     }
 
+    //create a data set containing all the points
     private XYDataset createPointDataSet() {
         XYSeriesCollection plotPoints = new XYSeriesCollection();
         XYSeries series = new XYSeries("Points");
@@ -187,6 +207,7 @@ public class MainFrame {
         return plotPoints;
     }
 
+    //create a data set containing the four points of the PosLabel
     private XYDataset createPosLabelDataSet(PosLabel label) {
         XYSeriesCollection currentLabel = new XYSeriesCollection();
         XYSeries series = new XYSeries("", false, true);
@@ -198,7 +219,8 @@ public class MainFrame {
         currentLabel.addSeries(series);
         return currentLabel;
     }
-    
+
+    //create a data set containing the four points of the SliderLabel
     private XYDataset createSliderLabelDataSet(SliderLabel label) {
         XYSeriesCollection currentLabel = new XYSeriesCollection();
         XYSeries series = new XYSeries("", false, true);
@@ -214,11 +236,14 @@ public class MainFrame {
     }
 
     /**
-     * @param args the command line arguments
+     * @param args the command line arguments COMMENT PLOTLABELS BEFORE
+     * SUBMITTING TO PEACH
      */
     public static void main(String[] args) {
         MainFrame mainFrame = new MainFrame();
+
         //mainFrame.readInput();
+        mainFrame.readInput();
         mainFrame.plotLabels();
     }
 
