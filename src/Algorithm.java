@@ -52,7 +52,5 @@ public abstract class Algorithm {
 
     public int getNumLabels() {
         return numLabels;
-    }
-
-    
+    }    
 }
