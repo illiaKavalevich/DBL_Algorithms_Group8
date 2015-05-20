@@ -1,10 +1,12 @@
 
 import java.util.ArrayList;
 import java.lang.Math;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 /**
- * Date last modified: 30-4-2015
+ * Date last modified: 20-5-2015
  * @author Mark Bouwman
  * 
  * Simulated Annealing is used in this class to solve the Point Feature Label
@@ -15,17 +17,21 @@ import java.util.Random;
  */
 public abstract class AnnealingSimulator extends Algorithm {
     
+    protected Point lastPoint;
+    Set<Label> labelsAffectedLastChange = new HashSet();
     protected double T; //temperature
-    protected double E; //score of the current itteration
-    protected double deltaE; //the change in score
+    protected int oldE; 
+    protected int E; //score of the current itteration
+    protected int deltaE; //the change in score
     protected int iterationsSinceTempChange;
     protected Random rand;
+    public boolean complicatedScoring = true;
 
     public AnnealingSimulator(int w, int h, ArrayList<Point> points, 
             ConflictList cL) {
         super(w, h, points, cL);
         this.rand = new Random(56467984);
-        this.T = 2.50;
+        this.T = 2.0;
     }
     
     public void setTemperature(double temperature) {
@@ -37,16 +43,15 @@ public abstract class AnnealingSimulator extends Algorithm {
         Point point; //current point being altered
         iterationsSinceTempChange = 0;
         doInitialPlacement();
+        computeInitialScore();
         
         //algorithm that optimizes the number of labels
         while(T > 0) {
             point = points.get(rand.nextInt(points.size()));
             moveLabelRandomly(point);
-            //update adjancancy matrix
-            computeScore();
             if(deltaE < 0) {
                 if(rand.nextDouble() <= (1 - Math.pow(Math.E, -(deltaE/T)))) {
-                //undo
+                undoLastPlacement();
                 }
             }
             iterationsSinceTempChange ++;
@@ -57,9 +62,10 @@ public abstract class AnnealingSimulator extends Algorithm {
     }
     
     protected void doInitialPlacement(){
-        for(int i = 0; i < points.size(); i++) {
-            if(points.get(i).getActiveLabelSlider() == null) { //NEEDS UPDATE
-                moveLabelRandomly(points.get(i));
+        for (Point point : points) {
+            if (point.getActiveLabelSlider() == null) {
+                //NEEDS UPDATE to make it general
+                moveLabelRandomly(point);
             }
         }
     }
@@ -68,8 +74,8 @@ public abstract class AnnealingSimulator extends Algorithm {
     protected void moveLabelRandomly(SliderPoint p){};
     protected void moveLabelRandomly(Point p){};
     
-    //calculates the difference in score and stores it in deltaE
-    protected abstract void computeScore();
+    //calculates the score and stores it in E
+    protected abstract void computeInitialScore();
 
     protected void removeOverlap() {
         
@@ -85,4 +91,6 @@ public abstract class AnnealingSimulator extends Algorithm {
             iterationsSinceTempChange = 0;
         }
     }
+    
+    abstract protected void undoLastPlacement();
 }
