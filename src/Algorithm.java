@@ -43,6 +43,26 @@ public abstract class Algorithm {
      * @result \result = max amount of labels placed (using point.setLabelPos)
      * without overlap
      */
+    
+    public void removeOverlap(){
+        while(true){
+            Label worstLabel = cL.activeLabels.get(0);
+            int worstDegree = 0;
+            boolean noMoreOverlap = true;
+            for(Label label : cL.activeLabels){
+                int labelDegree = cL.getActDegree(label);
+                if(labelDegree > worstDegree){
+                    worstLabel = label;
+                    worstDegree = labelDegree;
+                    noMoreOverlap = false;
+                }
+            }
+            if(noMoreOverlap){
+                break;
+            }
+        }
+    }
+    
     public void determineLabels() {
         //place labels...
         

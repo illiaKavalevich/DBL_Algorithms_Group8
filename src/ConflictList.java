@@ -12,17 +12,20 @@ public final class ConflictList {
      */
 
     HashMap<Label, Set<Label>> posConflict = new HashMap<>();      //lists all possible conflicts     
-    HashMap<Label, Set<Label>> actConflict = new HashMap<>();      //lists all actual conflicts
+    HashMap<Label, Set<Label>> actConflict = new HashMap<>();      //lists all actual conflicts 
+    HashMap<Label, Set<Label>> posActConflict = new HashMap<>();   //lists all conflict from possible labels with active labels
     ArrayList<Label> possibleLabels = new ArrayList<>();           //List of all possible labels
     ArrayList<Label> activeLabels = new ArrayList<>();             //List of all active labels
     ArrayList<LabelPair> posLpairs = new ArrayList<>();            //List of all pairs of possible labels
     ArrayList<LabelPair> actLpairs = new ArrayList<>();            //List of all pairs of active labels
+
     String model;
 
     //copy constructor
     public ConflictList(ConflictList cl) {
         this.actConflict = new HashMap<>(cl.actConflict);
         this.posConflict = new HashMap<>(cl.posConflict);
+        this.posActConflict = new HashMap<>(cl.posActConflict);
         this.actLpairs = new ArrayList<>(cl.actLpairs);
         this.posLpairs = new ArrayList<>(cl.posLpairs);
         this.activeLabels = new ArrayList<>(cl.activeLabels);
@@ -80,7 +83,21 @@ public final class ConflictList {
             }
 
         }
+        for (Label posLabel : possibleLabels) {
+            for (Label actLabel : activeLabels) {
+                if (posLabel.overlaps(actLabel)) {
+                    if (!posActConflict.containsKey(posLabel)) {
+                        posActConflict.put(posLabel, new HashSet<Label>());
+                    }
+                    Set labelSet = posActConflict.get(posLabel);
+                    labelSet.add(actLabel);
+                    posActConflict.put(posLabel, labelSet);
+                }
+            }
+        }
     }
+
+    
 
     public void updateActConflicts(Label l) {
         for (LabelPair pair : actLpairs) {
@@ -167,7 +184,7 @@ public final class ConflictList {
     }
 
     public int getPosDegree(Label l) {
-        if (hasPosConflicts(l)) { 
+        if (hasPosConflicts(l)) {
             return posConflict.get(l).size();
         }
         return 0;
@@ -182,7 +199,7 @@ public final class ConflictList {
     }
 
     public int getActDegree(Label l) {
-        if (hasActConflicts(l)) { 
+        if (hasActConflicts(l)) {
             return actConflict.get(l).size();
         }
         return 0;
