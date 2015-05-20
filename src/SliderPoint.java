@@ -41,11 +41,6 @@ public class SliderPoint extends Point {
     public void setActiveLabelPos(PosLabel l) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    @Override
-    public void setActiveLabelPos(PosLabel l, ConflictList list) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
     
 }
