@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
@@ -11,8 +11,8 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
     float lastPosition;
     
     public AnnealingSimulatorSlider(int w, int h, ArrayList<Point> points, 
-            ConflictList cL) {
-        super(w, h, points, cL);
+            ConflictList cL, Timer timer) {
+        super(w, h, points, cL, timer);
     }
     
     @Override
@@ -88,31 +88,3 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
         }
     }
 }
-=======
-import java.util.ArrayList;
-import java.util.Random;
-
-/**
- *
- * @author s133524
- */
-public class AnnealingSimulatorSlider extends AnnealingSimulator {
-    
-    public AnnealingSimulatorSlider(int w, int h, ArrayList<Point> points, 
-            ConflictList cL, Timer timer) {
-        super(w, h, points, cL, timer);
-    }
-    
-    @Override
-    protected void moveLabelRandomly(SliderPoint p) {
-        float random = rand.nextFloat();
-        p.activeLabel.setPlacement(random);
-    }
-    
-    @Override
-    protected void computeScore() {
-        
-    }
-    
-}
->>>>>>> origin/master

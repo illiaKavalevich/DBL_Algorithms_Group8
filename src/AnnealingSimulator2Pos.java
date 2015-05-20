@@ -5,8 +5,8 @@ public class AnnealingSimulator2Pos extends AnnealingSimulatorDiscrete{
     int lastPosition;
     
     public AnnealingSimulator2Pos(int w, int h, ArrayList<Point> points, 
-            ConflictList cL) {
-        super(w, h, points, cL);
+            ConflictList cL, Timer timer) {
+        super(w, h, points, cL, timer);
     }
     
     @Override
