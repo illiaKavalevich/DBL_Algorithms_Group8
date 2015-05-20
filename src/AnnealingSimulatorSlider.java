@@ -8,8 +8,8 @@ import java.util.Random;
 public class AnnealingSimulatorSlider extends AnnealingSimulator {
     
     public AnnealingSimulatorSlider(int w, int h, ArrayList<Point> points, 
-            ConflictList cL) {
-        super(w, h, points, cL);
+            ConflictList cL, Timer timer) {
+        super(w, h, points, cL, timer);
     }
     
     @Override

@@ -7,11 +7,10 @@ public class Falp extends Algorithm {
     HashSet<Point> noOverlapPoints = new HashSet<>();                           //all the points that have an active label that doesn't overlap
     ConflictList clCopy = new ConflictList(cL);
 
-    public Falp(int w, int h, ArrayList<Point> points, ConflictList cL) {
-        super(w, h, points, cL);
+    public Falp(int w, int h, ArrayList<Point> points, ConflictList cL, Timer timer) {
+        super(w, h, points, cL, timer);
 
     }
-    
 
     @Override
     public void determineLabels() {
@@ -63,7 +62,6 @@ public class Falp extends Algorithm {
     //step 2 of FALP:
     //Give all points that did not yet have a label an active label
     //this label may have conflicts with other labels
-
     public void giveActiveLabel() {
         for (Point point : noActiveLabelPoints) {
             for (Label label : point.possibleLabels) {
@@ -73,7 +71,8 @@ public class Falp extends Algorithm {
                     break;
                 }
             }
-
         }
+
     }
+
 }

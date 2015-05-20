@@ -38,7 +38,7 @@ public class MainFrame {
     Iterator<Point> iter;
     Algorithm alg;
     ConflictList cL;
-    boolean done = false;
+    Timer timer;
 
     public void readInput() {
 //        model = "2pos";
@@ -52,7 +52,8 @@ public class MainFrame {
 //        points.add(point2);
 //        points.add(point3);
 //        points.add(point4);
-
+//        
+        timer = new Timer(250);
         int firstPoint;
         int secondPoint;
         Scanner input = new Scanner(System.in);
@@ -84,58 +85,56 @@ public class MainFrame {
         }
         cL = new ConflictList(points, model);
         processOutput();
-        giveOutput();
     }
 
     public void processOutput() {
         if (model.equals("2pos")) {
-            alg = new Falp(w, h, points, cL);
+            alg = new Falp(w, h, points, cL, timer);
         } else if (model.equals("4pos")) {
-            alg = new Falp(w, h, points, cL);
+            alg = new Falp(w, h, points, cL, timer);
         } else if (model.equals("1slider")) {
-            alg = new Falp(w, h, points, cL);
+            alg = new Falp(w, h, points, cL, timer);
         } else {
             System.out.println(model + " is not a valid model");
         }
         alg.determineLabels();
         numLabels = alg.getNumLabels();
+        giveOutput();
 
     }
 
     public void giveOutput() {
-        if (!done) {
 
-            //stores the current point being visited by the iterator
-            Point curPoint;
+        //stores the current point being visited by the iterator
+        Point curPoint;
 
-            //print the required information
-            System.out.println("placement model: " + model);
-            System.out.println("width: " + w);
-            System.out.println("height: " + h);
-            System.out.println("number of points: " + numPoints);
-            System.out.println("number of labels: " + numLabels);
+        //print the required information
+        System.out.println("placement model: " + model);
+        System.out.println("width: " + w);
+        System.out.println("height: " + h);
+        System.out.println("number of points: " + numPoints);
+        System.out.println("number of labels: " + numLabels);
 
-            //creates new iterator to iterate over all points
-            iter = points.iterator();
+        //creates new iterator to iterate over all points
+        iter = points.iterator();
 
-            //loop over all points to print their values
-            if (model.equals("2pos") || model.equals("4pos")) {
-                while (iter.hasNext()) {
-                    curPoint = iter.next();
-                    System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
-                            + " " + curPoint.getActiveLabelPos().getPlacement());
-                }
-            } else if (model.equals("1slider")) {
-                while (iter.hasNext()) {
-                    curPoint = iter.next();
-                    System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
-                            + " " + curPoint.getActiveLabelSlider().getPlacement());
-                }
-            } else {
-                System.out.println("MainFrame.giveOutput: no valid model provided");
+        //loop over all points to print their values
+        if (model.equals("2pos") || model.equals("4pos")) {
+            while (iter.hasNext()) {
+                curPoint = iter.next();
+                System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
+                        + " " + curPoint.getActiveLabelPos().getPlacement());
             }
-            done = true;
+        } else if (model.equals("1slider")) {
+            while (iter.hasNext()) {
+                curPoint = iter.next();
+                System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
+                        + " " + curPoint.getActiveLabelSlider().getPlacement());
+            }
+        } else {
+            System.out.println("MainFrame.giveOutput: no valid model provided");
         }
+
     }
 
     /*
@@ -251,27 +250,14 @@ public class MainFrame {
 //        currentLabel.addSeries(series);
 //        return currentLabel;
 //    }
-
     /**
-     * @param args the command line arguments COMMENT PLOTLABELS BEFORE
-     * SUBMITTING TO PEACH
+     * @param args the command line arguments 
+     *
      */
     public static void main(String[] args) {
         MainFrame mainFrame = new MainFrame();
-        Thread runAlgorithm = new Thread(new Runnable() {
-            public void run() {
-                mainFrame.readInput();
-            }
-        });
-        long start = System.currentTimeMillis();
-        long end = start + 300 * 1000;
-        runAlgorithm.start();
-        while (System.currentTimeMillis() < end) {
-            //do nothing
-        }
-        runAlgorithm.stop();
-        System.out.println("5 minutes passed");
-        mainFrame.giveOutput();
+        mainFrame.readInput();
+//       
     }
 
 }
