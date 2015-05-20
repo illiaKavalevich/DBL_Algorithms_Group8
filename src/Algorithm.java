@@ -18,6 +18,7 @@ public abstract class Algorithm {
     int w;
     int h;
     ConflictList cL;
+    Timer timer;
     
     public Algorithm() {
         //needed for extending classes
@@ -30,11 +31,12 @@ public abstract class Algorithm {
      * @param h height of the labels
      * @param points arraylist with all the points
      */
-    public Algorithm(int w, int h, ArrayList<Point> points, ConflictList cL) {
+    public Algorithm(int w, int h, ArrayList<Point> points, ConflictList cL, Timer timer) {
         this.w = w;
         this.h = h;
         this.points = points;
         this.cL = cL;
+        this.timer = timer;
     }
 
     /**
@@ -51,6 +53,8 @@ public abstract class Algorithm {
     public int getNumLabels() {
         return numLabels;
     }
+    
+    
 
     
 }
