@@ -1,6 +1,4 @@
 
-
-
 import java.util.ArrayList;
 
 /*
@@ -53,6 +51,8 @@ public abstract class Algorithm {
     public int getNumLabels() {
         return numLabels;
     }
+    
+    
 
     
 }

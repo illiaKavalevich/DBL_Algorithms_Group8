@@ -8,20 +8,20 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
-//import org.jfree.chart.*;
-//import org.jfree.chart.ChartFactory;
-//import org.jfree.chart.JFreeChart;
-//import org.jfree.chart.axis.DateAxis;
-//import org.jfree.chart.axis.DateTickMarkPosition;
-//import org.jfree.chart.axis.NumberAxis;
-//import org.jfree.chart.axis.ValueAxis;
-//import org.jfree.chart.plot.PlotOrientation;
-//import org.jfree.chart.plot.XYPlot;
-//import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-//import org.jfree.data.xy.DefaultXYDataset;
-//import org.jfree.data.xy.XYDataset;
-//import org.jfree.data.xy.XYSeries;
-//import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.chart.*;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.DateTickMarkPosition;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.xy.DefaultXYDataset;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
@@ -38,9 +38,33 @@ public class MainFrame {
     Iterator<Point> iter;
     Algorithm alg;
     ConflictList cL;
-
+    boolean done = false;
+    
     public void readInput() {
-        int firstPoint;
+        model = "2pos";
+        w = 2;
+        h = 2;
+        Point point1 = new PosPoint(5, 4, model, w, h);
+        Point point2 = new PosPoint(2, 3, model, w, h);
+        Point point3 = new PosPoint(1, 6, model, w, h);
+        Point point4 = new PosPoint(10, 12, model, w, h);
+        Point point5 = new PosPoint(4, 4, model, w, h);
+        Point point6 = new PosPoint(1, 3, model, w, h);
+        Point point7 = new PosPoint(10, 11, model, w, h);
+        Point point8 = new PosPoint(5, 5, model, w, h);
+        Point point9 = new PosPoint(4, 5, model, w, h);
+        points.add(point1);
+        points.add(point2);
+        points.add(point3);
+        points.add(point4);
+        points.add(point5);
+        points.add(point6);
+        points.add(point7);
+        points.add(point8);
+        points.add(point9);
+//        
+        
+        /*int firstPoint;
         int secondPoint;
         Scanner input = new Scanner(System.in);
         //pattern used to skip input "...: "
@@ -68,10 +92,9 @@ public class MainFrame {
             }
         } else {
             System.out.println("MainFrame.readInput: no valid model provided");
-        }
+        }*/
         cL = new ConflictList(points, model);
         processOutput();
-        giveOutput();
     }
 
     public void processOutput() {
@@ -85,125 +108,184 @@ public class MainFrame {
             System.out.println(model + " is not a valid model");
         }
         alg.determineLabels();
+        System.out.println("5 minutes passed");
         numLabels = alg.getNumLabels();
+        giveOutput();
 
     }
 
     public void giveOutput() {
-        //stores the current point being visited by the iterator
-        Point curPoint;
+        if (!done) {
 
-        //print the required information
-        System.out.println("placement model: " + model);
-        System.out.println("width: " + w);
-        System.out.println("height: " + h);
-        System.out.println("number of points: " + numPoints);
-        System.out.println("number of labels: " + numLabels);
+            //stores the current point being visited by the iterator
+            Point curPoint;
 
-        //creates new iterator to iterate over all points
-        iter = points.iterator();
+            //print the required information
+            System.out.println("placement model: " + model);
+            System.out.println("width: " + w);
+            System.out.println("height: " + h);
+            System.out.println("number of points: " + numPoints);
+            System.out.println("number of labels: " + numLabels);
 
-        //loop over all points to print their values
-        if (model.equals("2pos") || model.equals("4pos")) {
-            while (iter.hasNext()) {
-                curPoint = iter.next();
-                System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
-                        + " " + curPoint.getActiveLabelPos().getPlacement());
+            //creates new iterator to iterate over all points
+            iter = points.iterator();
+
+            //loop over all points to print their values
+            if (model.equals("2pos") || model.equals("4pos")) {
+                while (iter.hasNext()) {
+                    curPoint = iter.next();
+                    System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
+                            + " " + curPoint.getActiveLabelPos().getPlacement());
+                }
+            } else if (model.equals("1slider")) {
+                while (iter.hasNext()) {
+                    curPoint = iter.next();
+                    System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
+                            + " " + curPoint.getActiveLabelSlider().getPlacement());
+                }
+            } else {
+                System.out.println("MainFrame.giveOutput: no valid model provided");
             }
-        } else if (model.equals("1slider")) {
-            while (iter.hasNext()) {
-                curPoint = iter.next();
-                System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
-                        + " " + curPoint.getActiveLabelSlider().getPlacement());
-            }
-        } else {
-            System.out.println("MainFrame.giveOutput: no valid model provided");
+            done = true;
         }
+        plotLabels();
     }
 
-//    public void plotLabels() {
-//        //just for testing purposes
-//        model = "2pos";
-//        points.add(new PosPoint(12, 4, "2pos", 1, 1));
-//        points.add(new PosPoint(1, 16, "2pos", 1, 1));
-//        points.add(new PosPoint(7, 2, "2pos", 1, 1));
-//        points.add(new PosPoint(4, 11, "2pos", 1, 1));
-//        points.add(new PosPoint(5, 9, "2pos", 1, 1));
-//        
-//        int count = 1;
-//        XYDataset label;
-//        
-//        XYDataset plotPoints = createPointDataSet();
-//        XYLineAndShapeRenderer rendererP = new XYLineAndShapeRenderer(false, true);
-//        ValueAxis domain = new NumberAxis("");
-//        ValueAxis range = new NumberAxis("");
-//        XYPlot plot = new XYPlot(plotPoints, domain, range, rendererP);
-//        
-//        for (Point point : points) {
-//            if (model.equals("1slider")) {
-//                label = createSliderLabelDataSet(point.getActiveLabelSlider());
-//            } else {
-//                point.getActiveLabelPos().setLabel(1);
-//                label = createPosLabelDataSet(point.getActiveLabelPos());
-//            }
-//            
-//            XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
-//            rendererL.setSeriesPaint(0, Color.BLACK);
-//            rendererL.setSeriesVisibleInLegend(Boolean.FALSE);
-//            plot.setDataset(count, label);
-//            plot.setRenderer(count, rendererL);
-//            count++;
-//        }
-//        
-//        JFreeChart chart = new JFreeChart("Label Placement", JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-//        ChartFrame frame = new ChartFrame("DBL Algorithms", chart);
-//        frame.pack();
-//        frame.setVisible(true);
-//    }
-//
-//    private XYDataset createPointDataSet() {
-//        XYSeriesCollection plotPoints = new XYSeriesCollection();
-//        XYSeries series = new XYSeries("Points");
-//        for (Point point : points) {
-//            series.add(point.getxCoord(), point.getyCoord());
-//        }
-//        plotPoints.addSeries(series);
-//        return plotPoints;
-//    }
-//
-//    private XYDataset createPosLabelDataSet(PosLabel label) {
-//        XYSeriesCollection currentLabel = new XYSeriesCollection();
-//        XYSeries series = new XYSeries("", false, true);
-//        series.add(label.minX, label.minY);
-//        series.add(label.minX, label.maxY);
-//        series.add(label.maxX, label.maxY);
-//        series.add(label.maxX, label.minY);
-//        series.add(label.minX, label.minY);
-//        currentLabel.addSeries(series);
-//        return currentLabel;
-//    }
-//    
-//    private XYDataset createSliderLabelDataSet(SliderLabel label) {
-//        XYSeriesCollection currentLabel = new XYSeriesCollection();
-//        XYSeries series = new XYSeries("", false, true);
-//        double minX = label.miniX;
-//        double maxX = label.maxiX;
-//        series.add(minX, label.minY);
-//        series.add(minX, label.maxY);
-//        series.add(maxX, label.maxY);
-//        series.add(maxX, label.minY);
-//        series.add(minX, label.minY);
-//        currentLabel.addSeries(series);
-//        return currentLabel;
-//    }
+    /*
+     Used for data visualization
+     COMMENT BEFORE SUBMITTING TO PEACH
+     */
+    public void plotLabels() {
+        int count = 1;
+        XYDataset label;
+        Label label1;
 
+        //sets basics for graph display and plot all points
+        XYDataset plotPoints = createPointDataSet();
+        XYLineAndShapeRenderer rendererP = new XYLineAndShapeRenderer(false, true);
+        ValueAxis domain = new NumberAxis("");
+        ValueAxis range = new NumberAxis("");
+        XYPlot plot = new XYPlot(plotPoints, domain, range, rendererP);
+
+        for (Point point : points) {
+            if (model.equals("1slider")) {
+                label1 = point.getActiveLabelSlider();
+                label = createSliderLabelDataSet(point.getActiveLabelSlider());
+            } else {
+                label1 = point.getActiveLabelPos();
+                label = createPosLabelDataSet(point.getActiveLabelPos());
+            }
+
+            XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
+            if (! cL.actConflict.containsKey(label1)) {
+                System.out.println("no conflict");
+                System.out.println(cL.actConflict.get(label));
+                rendererL.setSeriesPaint(0, Color.BLACK);
+            } else {
+                System.out.println("conflict");
+                rendererL.setSeriesPaint(0, Color.RED);
+            }
+            rendererL.setSeriesVisibleInLegend(Boolean.FALSE);
+            plot.setDataset(count, label);
+            plot.setRenderer(count, rendererL);
+            count++;
+        }
+
+        /* for each point plot the active label
+         if it has a conflict with >=1 other active label(s) make the label red
+         otherwise black
+         */
+        for (Point point : points) {
+            if (model.equals("1slider")) {
+                label = createSliderLabelDataSet(point.getActiveLabelSlider());
+                XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
+                if (cL.actConflict.containsKey(point.getActiveLabelSlider())) {
+                    rendererL.setSeriesPaint(0, Color.RED);
+                } else {
+                    rendererL.setSeriesPaint(0, Color.BLACK);
+                }
+                rendererL.setSeriesVisibleInLegend(Boolean.FALSE);
+                plot.setDataset(count, label);
+                plot.setRenderer(count, rendererL);
+            } else {
+                label = createPosLabelDataSet(point.getActiveLabelPos());
+                XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
+                if (cL.actConflict.containsKey(point.getActiveLabelPos())) {
+                    rendererL.setSeriesPaint(0, Color.RED);
+                } else {
+                    rendererL.setSeriesPaint(0, Color.BLACK);
+                }
+                rendererL.setSeriesVisibleInLegend(Boolean.FALSE);
+                plot.setDataset(count, label);
+                plot.setRenderer(count, rendererL);
+            }
+            count++;
+        }
+
+        //draw the graph
+        JFreeChart chart = new JFreeChart("Label Placement", JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+        ChartFrame frame = new ChartFrame("DBL Algorithms", chart);
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    //create a data set containing all the points
+    private XYDataset createPointDataSet() {
+        XYSeriesCollection plotPoints = new XYSeriesCollection();
+        XYSeries series = new XYSeries("Points");
+        for (Point point : points) {
+            series.add(point.getxCoord(), point.getyCoord());
+        }
+        plotPoints.addSeries(series);
+        return plotPoints;
+    }
+
+    //create a data set containing the four points of the PosLabel
+    private XYDataset createPosLabelDataSet(PosLabel label) {
+        XYSeriesCollection currentLabel = new XYSeriesCollection();
+        XYSeries series = new XYSeries("", false, true);
+        series.add(label.minX, label.minY);
+        series.add(label.minX, label.maxY);
+        series.add(label.maxX, label.maxY);
+        series.add(label.maxX, label.minY);
+        series.add(label.minX, label.minY);
+        currentLabel.addSeries(series);
+        return currentLabel;
+    }
+
+    //create a data set containing the four points of the SliderLabel
+    private XYDataset createSliderLabelDataSet(SliderLabel label) {
+        XYSeriesCollection currentLabel = new XYSeriesCollection();
+        XYSeries series = new XYSeries("", false, true);
+        double minX = label.miniX;
+        double maxX = label.maxiX;
+        series.add(minX, label.minY);
+        series.add(minX, label.maxY);
+        series.add(maxX, label.maxY);
+        series.add(maxX, label.minY);
+        series.add(minX, label.minY);
+        currentLabel.addSeries(series);
+        return currentLabel;
+    }
     /**
-     * @param args the command line arguments
+     * @param args the command line arguments COMMENT PLOTLABELS BEFORE
+     * SUBMITTING TO PEACH
      */
     public static void main(String[] args) {
         MainFrame mainFrame = new MainFrame();
-        mainFrame.readInput();
-        //mainFrame.plotLabels();
+        Thread runAlgorithm = new Thread(new Runnable() {
+            public void run() {
+                mainFrame.readInput();
+            }
+        });
+        long start = System.currentTimeMillis();
+        long end = start + 280 * 1000;
+        runAlgorithm.start();
+        while (System.currentTimeMillis() < end) {
+            //do nothing
+        }
+        runAlgorithm.interrupt();
+        mainFrame.giveOutput();
     }
 
 }

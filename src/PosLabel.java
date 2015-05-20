@@ -1,5 +1,3 @@
-
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -11,14 +9,13 @@
  * @author s131061
  */
 public class PosLabel extends Label {
-    String placement;
+    String placement = "NIL";
     
     public PosLabel(int w, int h, Point p) {
         super(w, h, p);
     }
 
     public PosLabel(int w, int h, Point p, int quadrant) {
-        
         super(w, h, p, quadrant);
         if (quadrant == 1) {
             placement = "NE";
@@ -36,30 +33,35 @@ public class PosLabel extends Label {
     }
     
     public void setLabel(int quadrant) {
+        this.quadrant = quadrant;
         switch (quadrant) {
             case 1:
                 minX = p.getxCoord();
                 minY = p.getyCoord();
                 maxX = p.getxCoord() + w;
                 maxY = p.getyCoord() + h;
+                placement = "NE";
                 break;
             case 2:
                 minX = p.getxCoord() - w;
                 minY = p.getyCoord();
                 maxX = p.getxCoord();
                 maxY = p.getyCoord() + h;
+                placement = "NW";
                 break;
             case 3:
                 minX = p.getxCoord() - w;
                 minY = p.getyCoord() - h;
                 maxX = p.getxCoord();
                 maxY = p.getyCoord();
+                placement = "SW";
                 break;
             case 4:
                 minX = p.getxCoord();
                 minY = p.getyCoord() - h;
                 maxX = p.getxCoord() + w;
                 maxY = p.getyCoord();
+                placement = "SE";
                 break;
 
         }

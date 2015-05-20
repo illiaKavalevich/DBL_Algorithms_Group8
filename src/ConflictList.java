@@ -1,5 +1,4 @@
 
-
 import java.util.*;
 
 /**
@@ -37,9 +36,7 @@ public final class ConflictList {
         this.model = model;
         for (Point p : points) {
             for (Label label : p.possibleLabels) {
-                HashSet<Label> newSet = new HashSet<>();
-                posConflict.put(label, newSet);
-                actConflict.put(label, newSet);
+                //posConflict.put(label, new HashSet());
                 possibleLabels.add(label);
             }
             if (model.equals("1slider")) {
@@ -48,13 +45,19 @@ public final class ConflictList {
                 activeLabels.add(p.getActiveLabelPos());
             }
         }
-        setPairsPos(points);
-        setPairsAct(points);
+        setPairsPos();
+        setPairsAct();
         for (LabelPair pair : posLpairs) {
             if (pair.l1.overlaps(pair.l2)) {
+                if (!posConflict.containsKey(pair.l1)) {
+                    posConflict.put(pair.l1, new HashSet<Label>());
+                }
                 Set labelSet = posConflict.get(pair.l1);
                 labelSet.add(pair.l2);
                 posConflict.put(pair.l1, labelSet);
+                if (!posConflict.containsKey(pair.l2)) {
+                    posConflict.put(pair.l2, new HashSet<Label>());
+                }
                 Set labelSet2 = posConflict.get(pair.l2);
                 labelSet2.add(pair.l1);
                 posConflict.put(pair.l2, labelSet2);
@@ -62,17 +65,46 @@ public final class ConflictList {
         }
         for (LabelPair pair : actLpairs) {
             if (pair.l1.overlaps(pair.l2)) {
+                if (!actConflict.containsKey(pair.l1)) {
+                    actConflict.put(pair.l1, new HashSet<Label>());
+                }
                 Set labelSet = actConflict.get(pair.l1);
                 labelSet.add(pair.l2);
                 actConflict.put(pair.l1, labelSet);
+                if (!actConflict.containsKey(pair.l2)) {
+                    actConflict.put(pair.l2, new HashSet<Label>());
+                }
                 Set labelSet2 = actConflict.get(pair.l2);
                 labelSet2.add(pair.l1);
                 actConflict.put(pair.l2, labelSet2);
             }
+
         }
     }
 
-    public void setPairsPos(List<Point> points) {
+    public void updateActConflicts(Label l) {
+        for (LabelPair pair : actLpairs) {
+            if (pair.l1 == l || pair.l2 == l) {
+                if (pair.l1.overlaps(pair.l2)) {
+                    if (!actConflict.containsKey(pair.l1)) {
+                        actConflict.put(pair.l1, new HashSet<Label>());
+                    }
+                    Set labelSet = actConflict.get(pair.l1);
+                    labelSet.add(pair.l2);
+                    actConflict.put(pair.l1, labelSet);
+                    if (!actConflict.containsKey(pair.l2)) {
+                        actConflict.put(pair.l2, new HashSet<Label>());
+                    }
+                    Set labelSet2 = actConflict.get(pair.l2);
+                    labelSet2.add(pair.l1);
+                    actConflict.put(pair.l2, labelSet2);
+                }
+
+            }
+        }
+    }
+
+    public void setPairsPos() {
         boolean isNew = true;
 
         //add all possible labels
@@ -101,7 +133,7 @@ public final class ConflictList {
         }
     }
 
-    public void setPairsAct(List<Point> points) {
+    public void setPairsAct() {
         boolean isNew = true;
 
         //add all possible labels
@@ -119,6 +151,9 @@ public final class ConflictList {
                     }
 
                 }
+                if (label1.p == label2.p) {
+                    isNew = false;
+                }
                 if (isNew) {
                     actLpairs.add(new LabelPair(label1, label2));
                 }
@@ -132,11 +167,14 @@ public final class ConflictList {
     }
 
     public int getPosDegree(Label l) {
-        return posConflict.get(l).size();
+        if (hasPosConflicts(l)) { 
+            return posConflict.get(l).size();
+        }
+        return 0;
     }
 
     public boolean hasPosConflicts(Label l) {
-        return posConflict.get(l).size() > 0;
+        return posConflict.containsKey(l);
     }
 
     public Set<Label> getActConflictLabels(Label l) {
@@ -144,17 +182,20 @@ public final class ConflictList {
     }
 
     public int getActDegree(Label l) {
-        return actConflict.get(l).size();
+        if (hasActConflicts(l)) { 
+            return actConflict.get(l).size();
+        }
+        return 0;
     }
 
     public boolean hasActConflicts(Label l) {
-        return actConflict.get(l).size() > 0;
+        return actConflict.containsKey(l);
     }
 
     public void addPoint(Point p) {
         ArrayList<LabelPair> posNLpairs = new ArrayList<>();            //List of all pairs of possible labels with new labels
         for (Label label : p.possibleLabels) {
-            posConflict.put(label, new HashSet<Label>());
+            posConflict.put(label, new HashSet());
             possibleLabels.add(label);
         }
         if (model.equals("1slider")) {
@@ -310,38 +351,4 @@ public final class ConflictList {
         }
     }
 
-    public void addActiveLabel(Label l) {
-        activeLabels.add(l);
-
-        boolean isNew = true;
-        for (Label label : activeLabels) {
-            /**
-             * for each pair check if it does not already exist the other way
-             * around (i.e pair(p1, p2) is same as (pair(p2, p1)) if not, add to
-             * pairs
-             */
-            for (LabelPair pair : actLpairs) {
-                if (pair.l1.equals(l) && pair.l2.equals(label)) {
-                    isNew = false;
-                    break;
-                }
-
-            }
-            if (isNew) {
-                actLpairs.add(new LabelPair(label, l));
-            }
-            isNew = true;
-        }
-        for(Label label : activeLabels){
-            if(label.overlaps(l)){
-                System.out.println(actConflict.get(label)==null);
-                Set labelSet = actConflict.get(label);
-                labelSet.add(l);
-                actConflict.put(label, labelSet);
-                Set labelSet2 = actConflict.get(l);
-                labelSet2.add(l);
-                actConflict.put(l, labelSet2);
-            }
-        }
-    }
 }

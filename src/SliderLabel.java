@@ -1,5 +1,3 @@
-
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,7 +10,7 @@
  */
 public class SliderLabel extends Label {
 
-    Float placement; //returns float number in range [0, 1]
+    Float placement = (float)0; //returns float number in range [0, 1]
     Float miniX, maxiX;
 
     //sets the xcoordinates of the label to float for sliding purposes

@@ -1,6 +1,4 @@
 
-
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -60,8 +58,6 @@ public abstract class Point {
     }
     
     public abstract PosLabel getActiveLabelPos();
-    
-    public abstract void setActiveLabelPos(PosLabel l, ConflictList list);
     
     public abstract void setActiveLabelPos(PosLabel l);
     
