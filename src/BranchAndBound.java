@@ -12,26 +12,18 @@ import java.util.List;
 /**
  *
  * @author s106010
+ * This algorithm will give optimal solutions for the label placement problem
+ * It makes use of the optimization algorithm "Simplex"
  */
-public abstract class ExhaustiveSearch extends Algorithm {
+public abstract class BranchAndBound extends Algorithm {
     
     protected List<PosLabel> ActiveLabelPositions = new ArrayList(); //set of active label positions
     
-    public ExhaustiveSearch() {
+    public BranchAndBound() {
        
         
     }
-    
-    protected int computeNC() {
-        //compute number of labels with conflicts in ActiveLabelPositions
-        return 0;
-    }
-    
-    protected int computeNSC() {
-        //compute number of no
-        return 0;
-    }
-    
+
     protected void determineLabels(int w, int h, ArrayList<Point> points) {
         
         
