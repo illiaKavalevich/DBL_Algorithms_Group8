@@ -10,9 +10,8 @@ import java.util.Set;
 public class AnnealingSimulatorSlider extends AnnealingSimulator {
     float lastPosition;
     
-    public AnnealingSimulatorSlider(int w, int h, ArrayList<Point> points, 
-            ConflictList cL, Timer timer) {
-        super(w, h, points, cL, timer);
+    public AnnealingSimulatorSlider() {
+
     }
     
     @Override

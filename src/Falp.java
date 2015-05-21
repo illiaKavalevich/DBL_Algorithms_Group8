@@ -7,8 +7,7 @@ public class Falp extends Algorithm {
     HashSet<Point> noOverlapPoints = new HashSet<>();                           //all the points that have an active label that doesn't overlap
     ConflictList clCopy = new ConflictList(cL);
 
-    public Falp(int w, int h, ArrayList<Point> points, ConflictList cL, Timer timer) {
-        super(w, h, points, cL, timer);
+    public Falp() {
 
     }
 

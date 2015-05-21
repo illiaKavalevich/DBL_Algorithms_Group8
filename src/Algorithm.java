@@ -24,31 +24,21 @@ public abstract class Algorithm {
         //needed for extending classes
     }
 
-    /**
-     * Creates a new Algorithm object
-     *
-     * @param w width of the labels
-     * @param h height of the labels
-     * @param points arraylist with all the points
-     */
-    public Algorithm(int w, int h, ArrayList<Point> points, ConflictList cL, Timer timer) {
+    public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Timer timer) {
         this.w = w;
         this.h = h;
         this.points = points;
         this.cL = cL;
         this.timer = timer;
     }
-
+    
     /**
      * determines the positions of the labels
      *
      * @result \result = max amount of labels placed (using point.setLabelPos)
      * without overlap
      */
-    public void determineLabels() {
-        //place labels...
-        
-    }
+    public abstract void determineLabels();
 
     public int getNumLabels() {
         return numLabels;

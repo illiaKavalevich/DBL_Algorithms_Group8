@@ -4,9 +4,8 @@ import java.util.Random;
 public abstract class AnnealingSimulatorDiscrete extends AnnealingSimulator {
     int lastPosition;
     
-    public AnnealingSimulatorDiscrete(int w, int h, ArrayList<Point> points, 
-            ConflictList cL, Timer timer) {
-        super(w, h, points, cL, timer);
+    public AnnealingSimulatorDiscrete() {
+
     }
     
     @Override

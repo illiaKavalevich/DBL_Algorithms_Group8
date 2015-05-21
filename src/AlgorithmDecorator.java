@@ -24,5 +24,10 @@ public class AlgorithmDecorator extends Algorithm {
     public int getNumLabels() {
         return decoratedAlgorithm.getNumLabels();
     } 
+    
+    @Override
+    public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Timer timer) {
+        decoratedAlgorithm.setParameters(w, h, points, cL, timer);
+    }
         
 }

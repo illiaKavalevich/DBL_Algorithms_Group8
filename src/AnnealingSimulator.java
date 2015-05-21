@@ -27,9 +27,7 @@ public abstract class AnnealingSimulator extends Algorithm {
     protected Random rand;
     public boolean complicatedScoring = true;
 
-    public AnnealingSimulator(int w, int h, ArrayList<Point> points, 
-            ConflictList cL, Timer timer) {
-        super(w, h, points, cL, timer);
+    public AnnealingSimulator() {
         this.rand = new Random(56467984);
         this.T = 2.0;
     }

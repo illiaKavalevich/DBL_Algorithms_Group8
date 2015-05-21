@@ -89,14 +89,15 @@ public class MainFrame {
 
     public void processOutput() {
         if (model.equals("2pos")) {
-            alg = new Falp(w, h, points, cL, timer);
+            alg = new Falp();
         } else if (model.equals("4pos")) {
-            alg = new Falp(w, h, points, cL, timer);
+            alg = new Falp();
         } else if (model.equals("1slider")) {
-            alg = new Falp(w, h, points, cL, timer);
+            alg = new Falp();
         } else {
             System.out.println(model + " is not a valid model");
         }
+        alg.setParameters(w, h, points, cL, timer);
         alg.determineLabels();
         numLabels = alg.getNumLabels();
         giveOutput();
