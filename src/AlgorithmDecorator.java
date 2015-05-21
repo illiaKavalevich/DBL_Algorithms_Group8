@@ -11,9 +11,8 @@ public class AlgorithmDecorator extends Algorithm {
     Algorithm decoratedAlgorithm;
     ConflictList cL;
     
-    public AlgorithmDecorator(Algorithm decoratedAlgorithm, ConflictList cL) {
+    public AlgorithmDecorator(Algorithm decoratedAlgorithm) {
         this.decoratedAlgorithm = decoratedAlgorithm;
-        this.cL = cL;
     }
     
     @Override

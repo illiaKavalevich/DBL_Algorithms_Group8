@@ -5,13 +5,10 @@
  * 
  */
 
-public class SubProblemDecorator extends Algorithm {
-    Algorithm decoratedAlgorithm;
-
+public class SubProblemDecorator extends AlgorithmDecorator {
     
-    public SubProblemDecorator(Algorithm decoratedAlgorithm, ConflictList cL) {
-        this.decoratedAlgorithm = decoratedAlgorithm;
-        this.cL = cL;
+    public SubProblemDecorator(Algorithm decoratedAlgorithm) {
+        super(decoratedAlgorithm);
     }
     
     @Override
@@ -19,9 +16,8 @@ public class SubProblemDecorator extends Algorithm {
         super.determineLabels();
     }
     
-        @Override
+    @Override
     public int getNumLabels() {
-        return decoratedAlgorithm.getNumLabels();
-    } 
-    
+        return super.getNumLabels();
+    }  
 }
