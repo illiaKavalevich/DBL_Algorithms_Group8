@@ -167,7 +167,7 @@ public final class ConflictList {
     }
 
     public int getPosDegree(Label l) {
-        if (hasPosConflicts(l)) { 
+        if (hasPosConflicts(l)) {
             return posConflict.get(l).size();
         }
         return 0;
@@ -182,7 +182,7 @@ public final class ConflictList {
     }
 
     public int getActDegree(Label l) {
-        if (hasActConflicts(l)) { 
+        if (hasActConflicts(l)) {
             return actConflict.get(l).size();
         }
         return 0;
@@ -190,6 +190,33 @@ public final class ConflictList {
 
     public boolean hasActConflicts(Label l) {
         return actConflict.containsKey(l);
+    }
+
+    //get all active labels Label l overlaps with
+    //l may also be a possible label
+    public Set<Label> getPosActConflictLabels(Label l) {
+        Set<Label> labelSet = posConflict.get(l);
+        Set<Label> resultSet = new HashSet<>();
+        for (Label label : labelSet) {
+            if (label == label.getPoint().getActiveLabelPos()) {
+                resultSet.add(label);
+            }
+        }
+        return resultSet;
+    }
+
+    public int getPosActDegree(Label l) {
+        if (hasPosConflicts(l)) {
+            Set<Label> labelSet = posConflict.get(l);
+            Set<Label> resultSet = new HashSet<>();
+            for (Label label : labelSet) {
+                if (label == label.getPoint().getActiveLabelPos()) {
+                    resultSet.add(label);
+                }
+            }
+            return resultSet.size();
+        }
+        return 0;
     }
 
     public void addPoint(Point p) {

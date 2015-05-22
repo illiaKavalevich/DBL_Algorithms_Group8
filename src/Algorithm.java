@@ -41,6 +41,7 @@ public abstract class Algorithm {
     public abstract void determineLabels();
     
     public void removeOverlap(){
+        System.out.println("Started to remove overlap");
         while(true){
             Label worstLabel = cL.activeLabels.get(0);
             int worstDegree = 0;
