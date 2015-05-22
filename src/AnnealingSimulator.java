@@ -75,7 +75,7 @@ public abstract class AnnealingSimulator extends Algorithm {
     //calculates the score and stores it in E
     protected abstract void computeInitialScore();
 
-    protected void removeOverlap() {
+    public void removeOverlap() {
         
     }
     
