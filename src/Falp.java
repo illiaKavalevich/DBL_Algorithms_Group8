@@ -73,5 +73,40 @@ public class Falp extends Algorithm {
         }
 
     }
-
+//step 3 of FALP: the local search
+    //Check for each point if it has a label with less overlap than the current active one.
+    public void localSearch() {
+        while (true) {
+            boolean changed = false;                                            //indicates if for any point its active label was changed
+            for (Point point : noOverlapPoints) {
+                Label bestLabel = cL.possibleLabels.get(0);                     //this will be the best label of a point
+                for(Label posLabel : point.getPossibleLabels()){
+                    bestLabel = posLabel;                                       //initialize bestLabel to some random possible label of that point
+                }
+                int bestDegree = Integer.MAX_VALUE;
+                for (Label label : point.getPossibleLabels()) {
+                    int labelDegree = cL.getActDegree(label);
+                    //System.out.println("degree of possible label: "+labelDegree);
+                    if (labelDegree < bestDegree) {
+                        bestLabel = label;                                      //update bestlabel if there is a label with lower degree
+                        bestDegree = labelDegree;
+                    }
+                }
+                if (bestLabel != point.getActiveLabelPos()) {
+                    point.getActiveLabelPos().setLabel(bestLabel.getQuadrant());
+                    cL.updateActConflicts(point.getActiveLabelPos());
+                    changed = true;
+                    /*System.out.println("Changed a label");
+                    System.out.println("x point: "+point.xCoord);
+                    System.out.println("y point: "+point.yCoord);
+                    System.out.println("quadrant label: "+bestLabel.getQuadrant());*/
+                }
+            }
+            System.out.println(cL.actConflict.size());
+            //Stop the local search if none of the active labels have overlap, or if none of the active labels got changed in the last iteration
+            /*if (cL.actConflict.isEmpty() || changed) {
+                break;
+            }*/
+        }
+    }
 }
