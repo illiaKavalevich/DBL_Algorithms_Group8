@@ -82,6 +82,28 @@ public final class ConflictList {
         }
     }
 
+    public void ActConflicts(Label l) {
+        for (LabelPair pair : actLpairs) {
+            if (pair.l1 == l || pair.l2 == l) {
+                if (pair.l1.overlaps(pair.l2)) {
+                    if (!actConflict.containsKey(pair.l1)) {
+                        actConflict.put(pair.l1, new HashSet<Label>());
+                    }
+                    Set labelSet = actConflict.get(pair.l1);
+                    labelSet.add(pair.l2);
+                    actConflict.put(pair.l1, labelSet);
+                    if (!actConflict.containsKey(pair.l2)) {
+                        actConflict.put(pair.l2, new HashSet<Label>());
+                    }
+                    Set labelSet2 = actConflict.get(pair.l2);
+                    labelSet2.add(pair.l1);
+                    actConflict.put(pair.l2, labelSet2);
+                }
+
+            }
+        }
+    }
+    
     public void updateActConflicts(Label l) {
         for (LabelPair pair : actLpairs) {
             if (pair.l1 == l || pair.l2 == l) {
@@ -152,6 +174,7 @@ public final class ConflictList {
 
                 }
                 if (label1.p == label2.p) {
+                    System.out.println("label 1 and label 2 are the same");
                     isNew = false;
                 }
                 if (isNew) {
@@ -198,7 +221,7 @@ public final class ConflictList {
         Set<Label> labelSet = posConflict.get(l);
         Set<Label> resultSet = new HashSet<>();
         for (Label label : labelSet) {
-            if (label == label.getPoint().getActiveLabelPos()) {
+            if (label.minX == label.getPoint().getActiveLabelPos().minX && label.minY == label.getPoint().getActiveLabelPos().minY) {
                 resultSet.add(label);
             }
         }
@@ -210,7 +233,7 @@ public final class ConflictList {
             Set<Label> labelSet = posConflict.get(l);
             Set<Label> resultSet = new HashSet<>();
             for (Label label : labelSet) {
-                if (label == label.getPoint().getActiveLabelPos()) {
+                if (label.minX == label.getPoint().getActiveLabelPos().minX && label.minY == label.getPoint().getActiveLabelPos().minY) {
                     resultSet.add(label);
                 }
             }
@@ -364,16 +387,18 @@ public final class ConflictList {
     public void removeActiveLabel(Label l) {
         actConflict.remove(l);
         activeLabels.remove(l);
-        for (Label label : activeLabels) {
-            actConflict.remove(label, l);
+        for (Label label : actConflict.keySet()) {
+            Set labelSet = actConflict.get(label);
+            labelSet.remove(l);
+            actConflict.put(label, labelSet);
         }
-        HashSet<LabelPair> removeSet2 = new HashSet<>();
+        HashSet<LabelPair> removeSet = new HashSet<>();
         for (LabelPair pair : actLpairs) {
-            if (pair.l1.equals(l) || pair.l2.equals(l)) {
-                removeSet2.add(pair);
+            if (pair.l1 == l || pair.l2 == l) {
+                removeSet.add(pair);
             }
         }
-        for (LabelPair removePair : removeSet2) {
+        for (LabelPair removePair : removeSet) {
             actLpairs.remove(removePair);
         }
     }

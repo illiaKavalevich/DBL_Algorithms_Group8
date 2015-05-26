@@ -43,7 +43,14 @@ public abstract class Algorithm {
     public void removeOverlap(){
         System.out.println("Started to remove overlap");
         while(true){
+        //System.out.println("actConflict size: "+cL.actConflict.size());
+            int i = 0;
+            for(Label l:cL.actConflict.keySet()){
+                i+=cL.actConflict.get(l).size();
+            }
+            System.out.println("total overlap: "+i);
             Label worstLabel = cL.activeLabels.get(0);
+            //System.out.println("nr of active labels: "+cL.activeLabels.size());
             int worstDegree = 0;
             boolean noMoreOverlap = true;
             for(Label label : cL.activeLabels){
@@ -54,7 +61,12 @@ public abstract class Algorithm {
                     noMoreOverlap = false;
                 }
             }
-            if(noMoreOverlap){
+            System.out.println("degree: "+worstDegree+" minX: "+worstLabel.minX+" minY: "+worstLabel.minY);
+            if(!noMoreOverlap){
+                cL.removeActiveLabel(worstLabel);
+                worstLabel.getPoint().setActiveLabelPos(new PosLabel(w, h, worstLabel.getPoint()));                
+            }
+            else{
                 break;
             }
         }
