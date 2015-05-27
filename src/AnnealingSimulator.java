@@ -25,11 +25,12 @@ public abstract class AnnealingSimulator extends Algorithm {
     protected int deltaE; //the change in score
     protected int iterationsSinceTempChange;
     protected Random rand;
-    public boolean complicatedScoring = true;
+    public boolean complicatedScoring = false;
+    protected int numPoints;
 
     public AnnealingSimulator() {
         this.rand = new Random(56467984);
-        this.T = 2.0;
+        this.T = 1.0;
     }
     
     public void setTemperature(double temperature) {
@@ -38,6 +39,8 @@ public abstract class AnnealingSimulator extends Algorithm {
     
     @Override
     public void determineLabels() {
+        System.out.println("started labelling");
+        numPoints = points.size();
         Point point; //current point being altered
         iterationsSinceTempChange = 0;
         doInitialPlacement();
@@ -45,8 +48,8 @@ public abstract class AnnealingSimulator extends Algorithm {
         
         //algorithm that optimizes the number of labels
         while(T > 0) {
-            point = points.get(rand.nextInt(points.size()));
-            moveLabelRandomly(point);
+            point = points.get(rand.nextInt(numPoints));
+            moveLabelRandomly((SliderPoint) point);
             if(deltaE < 0) {
                 if(rand.nextDouble() <= (1 - Math.pow(Math.E, -(deltaE/T)))) {
                 undoLastPlacement();
@@ -56,35 +59,25 @@ public abstract class AnnealingSimulator extends Algorithm {
             updateTemperature();
         }
         
-        removeOverlap();
+        //removeOverlap();
     }
     
-    protected void doInitialPlacement(){
-        for (Point point : points) {
-            if (point.getActiveLabelSlider() == null) {
-                //NEEDS UPDATE to make it general
-                moveLabelRandomly(point);
-            }
-        }
-    }
+    protected abstract void doInitialPlacement();
     
     //Moves a label randomly to a new position that is not the old position
     protected void moveLabelRandomly(SliderPoint p){};
-    protected void moveLabelRandomly(Point p){};
+    protected void moveLabelRandomly(PosPoint p){};
     
     //calculates the score and stores it in E
     protected abstract void computeInitialScore();
 
-    public void removeOverlap() {
-        
-    }
-    
     protected void updateTemperature() {
-        if(iterationsSinceTempChange == (50 * numLabels)) {
+        //System.out.println("Temp update");
+        if(iterationsSinceTempChange == (10 * numPoints)) {
             if(T < 0.2) {
                 T -= 0.05;
             } else {
-                T = 0.9 * T;
+                T = 0.5 * T;
             }
             iterationsSinceTempChange = 0;
         }

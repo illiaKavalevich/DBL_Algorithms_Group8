@@ -22,12 +22,12 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
             oldLocalE ++;
         }
         int newLocalE = 0;
+        Set<Label> oldConflicts = cL.getActConflictLabels(p.activeLabel);
+        Set<Label> newConflicts;
         
         if(complicatedScoring) {
-            Set<Label> oldConflicts = cL.getActConflictLabels(p.activeLabel);
-            Set<Label> newConflicts;
-
             float random = rand.nextFloat();
+            System.out.println(random);
             p.activeLabel.setPlacement(random);
             
             cL.updateActConflicts(p.activeLabel);
@@ -49,23 +49,26 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
                     }
                 }
             }
-            labelsAffectedLastChange.clear();
-            labelsAffectedLastChange.addAll(newConflicts);
-            labelsAffectedLastChange.addAll(oldConflicts);
-            deltaE = oldLocalE - newLocalE;
         } else {
             float random = rand.nextFloat();
             p.activeLabel.setPlacement(random);
             
-            //still needs to update all label ofter change.
+            newConflicts = cL.getActConflictLabels(p.activeLabel);
+            newConflicts.addAll(oldConflicts); //now holds all labels affected
+            for(Label label: newConflicts) {
+                cL.updateActConflicts(label);
+            }
             cL.updateActConflicts(p.activeLabel);
             newLocalE = cL.getActDegree(p.activeLabel);
             if(newLocalE > 0) {
                 newLocalE ++;
             }
-
-            deltaE = oldLocalE - newLocalE;
         }
+        
+        labelsAffectedLastChange.clear();
+        labelsAffectedLastChange.addAll(newConflicts);
+        labelsAffectedLastChange.addAll(oldConflicts);
+        deltaE = oldLocalE - newLocalE;
     }
     
     @Override
@@ -84,6 +87,15 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
         lastPoint.getActiveLabelSlider().setPlacement(lastPosition);
         for(Label label : labelsAffectedLastChange) {
             cL.updateActConflicts(label);
+        }
+    }
+    
+    @Override
+    protected void doInitialPlacement(){
+        for (Point point : points) {
+            if (point.getActiveLabelSlider() == null) {
+                moveLabelRandomly((SliderPoint) point);
+            }
         }
     }
 }

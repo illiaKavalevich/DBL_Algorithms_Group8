@@ -41,25 +41,37 @@ public class MainFrame {
     Timer timer;
 
     public void readInput() {
-        model = "2pos";
+        model = "1slider";
         w = 2;
         h = 2;
-        for (int x = 0; x < 10; x++) {
-            for (int y = 0; y < 50; y++) {
-                Point point = new PosPoint(x, y, model, w, h);
-                points.add(point);
-            }
-        }/*
-            Point point1 = new PosPoint(5, 4, model, w, h);
-            Point point2 = new PosPoint(2, 3, model, w, h);
-            Point point3 = new PosPoint(1, 6, model, w, h);
-            Point point4 = new PosPoint(10, 12, model, w, h);
-            Point point5 = new PosPoint(4, 4, model, w, h);
-            Point point6 = new PosPoint(3, 3, model, w, h);
-            Point point7 = new PosPoint(2, 6, model, w, h);
-            Point point8 = new PosPoint(11, 12, model, w, h);
-            Point point9 = new PosPoint(2, 4, model, w, h);
-            Point point10 = new PosPoint(1, 5, model, w, h);
+//        for (int x = 0; x < 10; x++) {
+//            for (int y = 0; y < 50; y++) {
+//                Point point = new PosPoint(x, y, model, w, h);
+//                points.add(point);
+//            }
+//        }
+//            Point point1 = new PosPoint(5, 4, model, w, h);
+//            Point point2 = new PosPoint(2, 3, model, w, h);
+//            Point point3 = new PosPoint(1, 6, model, w, h);
+//            Point point4 = new PosPoint(10, 12, model, w, h);
+//            Point point5 = new PosPoint(4, 4, model, w, h);
+//            Point point6 = new PosPoint(3, 3, model, w, h);
+//            Point point7 = new PosPoint(2, 6, model, w, h);
+//            Point point8 = new PosPoint(11, 12, model, w, h);
+//            Point point9 = new PosPoint(2, 4, model, w, h);
+//            Point point10 = new PosPoint(1, 5, model, w, h);
+            
+        //slider points
+            Point point1 = new SliderPoint(5, 4, model, w, h);
+            Point point2 = new SliderPoint(2, 3, model, w, h);
+            Point point3 = new SliderPoint(1, 6, model, w, h);
+            Point point4 = new SliderPoint(10, 12, model, w, h);
+            Point point5 = new SliderPoint(4, 4, model, w, h);
+            Point point6 = new SliderPoint(3, 3, model, w, h);
+            Point point7 = new SliderPoint(2, 6, model, w, h);
+            Point point8 = new SliderPoint(11, 12, model, w, h);
+            Point point9 = new SliderPoint(2, 4, model, w, h);
+            Point point10 = new SliderPoint(1, 5, model, w, h);
             points.add(point1);
             points.add(point2);
             points.add(point3);
@@ -69,7 +81,7 @@ public class MainFrame {
             points.add(point7);
             points.add(point8);
             points.add(point9);
-            points.add(point10);*/
+            points.add(point10);
 
             timer = new Timer(250);
             int firstPoint;
@@ -113,7 +125,7 @@ public class MainFrame {
         } else if (model.equals("4pos")) {
             alg = new Falp();
         } else if (model.equals("1slider")) {
-            alg = new Falp();
+            alg = new AnnealingSimulatorSlider();
         } else {
             System.out.println(model + " is not a valid model");
         }
@@ -121,7 +133,6 @@ public class MainFrame {
         alg.determineLabels();
         numLabels = alg.getNumLabels();
         giveOutput();
-
     }
 
     public void giveOutput() {

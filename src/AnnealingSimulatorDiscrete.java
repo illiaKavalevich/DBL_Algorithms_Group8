@@ -8,8 +8,7 @@ public abstract class AnnealingSimulatorDiscrete extends AnnealingSimulator {
 
     }
     
-    @Override
-    protected abstract void moveLabelRandomly(Point p);
+    protected void moveLabelRandomly(Point p){};
     
     @Override
     protected void computeInitialScore() {
@@ -25,5 +24,15 @@ public abstract class AnnealingSimulatorDiscrete extends AnnealingSimulator {
     @Override 
     protected void undoLastPlacement() {
         //TO DO
+    }
+    
+    @Override
+    protected void doInitialPlacement(){
+        for (Point point : points) {
+            if (point.getActiveLabelPos() == null) {
+                //NEEDS UPDATE to make it general
+                moveLabelRandomly(point);
+            }
+        }
     }
 }
