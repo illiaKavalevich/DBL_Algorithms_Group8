@@ -63,25 +63,25 @@ public class MainFrame {
             
         //slider points
             Point point1 = new SliderPoint(5, 4, model, w, h);
-            Point point2 = new SliderPoint(2, 3, model, w, h);
-            Point point3 = new SliderPoint(1, 6, model, w, h);
-            Point point4 = new SliderPoint(10, 12, model, w, h);
+//            Point point2 = new SliderPoint(2, 3, model, w, h);
+//            Point point3 = new SliderPoint(1, 6, model, w, h);
+//            Point point4 = new SliderPoint(10, 12, model, w, h);
             Point point5 = new SliderPoint(4, 4, model, w, h);
-            Point point6 = new SliderPoint(3, 3, model, w, h);
-            Point point7 = new SliderPoint(2, 6, model, w, h);
-            Point point8 = new SliderPoint(11, 12, model, w, h);
-            Point point9 = new SliderPoint(2, 4, model, w, h);
-            Point point10 = new SliderPoint(1, 5, model, w, h);
+//            Point point6 = new SliderPoint(3, 3, model, w, h);
+//            Point point7 = new SliderPoint(2, 6, model, w, h);
+//            Point point8 = new SliderPoint(11, 12, model, w, h);
+//            Point point9 = new SliderPoint(2, 4, model, w, h);
+//            Point point10 = new SliderPoint(1, 5, model, w, h);
             points.add(point1);
-            points.add(point2);
-            points.add(point3);
-            points.add(point4);
+//            points.add(point2);
+//            points.add(point3);
+//            points.add(point4);
             points.add(point5);
-            points.add(point6);
-            points.add(point7);
-            points.add(point8);
-            points.add(point9);
-            points.add(point10);
+//            points.add(point6);
+//            points.add(point7);
+//            points.add(point8);
+//            points.add(point9);
+//            points.add(point10);
 
             timer = new Timer(250);
             int firstPoint;

@@ -58,7 +58,7 @@ public abstract class AnnealingSimulator extends Algorithm {
             updateTemperature();
         }
         
-        removeOverlap();
+        //removeOverlap();
     }
     
     protected abstract void doInitialPlacement();
