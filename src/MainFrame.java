@@ -44,60 +44,68 @@ public class MainFrame {
         model = "2pos";
         w = 2;
         h = 2;
-        Point point1 = new PosPoint(5, 4, model, w, h);
-        Point point2 = new PosPoint(2, 3, model, w, h);
-        Point point3 = new PosPoint(1, 6, model, w, h);
-        Point point4 = new PosPoint(10, 12, model, w, h);
-        Point point5 = new PosPoint(4, 4, model, w, h);
-        Point point6 = new PosPoint(3, 3, model, w, h);
-        Point point7 = new PosPoint(2, 6, model, w, h);
-        Point point8 = new PosPoint(11, 12, model, w, h);
-        Point point9 = new PosPoint(2, 4, model, w, h);
-        Point point10 = new PosPoint(1, 5, model, w, h);
-        points.add(point1);
-        points.add(point2);
-        points.add(point3);
-        points.add(point4);
-        points.add(point5);
-        points.add(point6);
-        points.add(point7);
-        points.add(point8);
-        points.add(point9);
-        points.add(point10);
-        
-        timer = new Timer(250);
-        int firstPoint;
-        int secondPoint;
-        /*Scanner input = new Scanner(System.in);
-        //pattern used to skip input "...: "
-        String template = "\\n*[a-zA-Z\\s]*[^\\w\\s]\\s*";
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 50; y++) {
+                Point point = new PosPoint(x, y, model, w, h);
+                points.add(point);
+            }
+        }/*
+            Point point1 = new PosPoint(5, 4, model, w, h);
+            Point point2 = new PosPoint(2, 3, model, w, h);
+            Point point3 = new PosPoint(1, 6, model, w, h);
+            Point point4 = new PosPoint(10, 12, model, w, h);
+            Point point5 = new PosPoint(4, 4, model, w, h);
+            Point point6 = new PosPoint(3, 3, model, w, h);
+            Point point7 = new PosPoint(2, 6, model, w, h);
+            Point point8 = new PosPoint(11, 12, model, w, h);
+            Point point9 = new PosPoint(2, 4, model, w, h);
+            Point point10 = new PosPoint(1, 5, model, w, h);
+            points.add(point1);
+            points.add(point2);
+            points.add(point3);
+            points.add(point4);
+            points.add(point5);
+            points.add(point6);
+            points.add(point7);
+            points.add(point8);
+            points.add(point9);
+            points.add(point10);*/
 
-        input.skip(template);
-        model = input.next();
-        input.skip(template);
-        w = input.nextInt();
-        input.skip(template);
-        h = input.nextInt();
-        input.skip(template);
-        numPoints = input.nextInt();
-        if (model.equals("2pos") || model.equals("4pos")) {
-            while (input.hasNext()) {
-                firstPoint = input.nextInt();
-                secondPoint = input.nextInt();
-                points.add(new PosPoint(firstPoint, secondPoint, model, w, h));
-            }
-        } else if (model.equals("1slider")) {
-            while (input.hasNext()) {
-                firstPoint = input.nextInt();
-                secondPoint = input.nextInt();
-                points.add(new SliderPoint(firstPoint, secondPoint, model, w, h));
-            }
-        } else {
-            System.out.println("MainFrame.readInput: no valid model provided");
-        }*/
-        cL = new ConflictList(points, model);
-        processOutput();
-    }
+            timer = new Timer(250);
+            int firstPoint;
+            int secondPoint;
+            /*Scanner input = new Scanner(System.in);
+             //pattern used to skip input "...: "
+             String template = "\\n*[a-zA-Z\\s]*[^\\w\\s]\\s*";
+
+             input.skip(template);
+             model = input.next();
+             input.skip(template);
+             w = input.nextInt();
+             input.skip(template);
+             h = input.nextInt();
+             input.skip(template);
+             numPoints = input.nextInt();
+             if (model.equals("2pos") || model.equals("4pos")) {
+             while (input.hasNext()) {
+             firstPoint = input.nextInt();
+             secondPoint = input.nextInt();
+             points.add(new PosPoint(firstPoint, secondPoint, model, w, h));
+             }
+             } else if (model.equals("1slider")) {
+             while (input.hasNext()) {
+             firstPoint = input.nextInt();
+             secondPoint = input.nextInt();
+             points.add(new SliderPoint(firstPoint, secondPoint, model, w, h));
+             }
+             } else {
+             System.out.println("MainFrame.readInput: no valid model provided");
+             }*/
+            cL = new ConflictList(points, model);
+            processOutput();
+        }
+
+    
 
     public void processOutput() {
         if (model.equals("2pos")) {
@@ -263,8 +271,9 @@ public class MainFrame {
         currentLabel.addSeries(series);
         return currentLabel;
     }
+
     /**
-     * @param args the command line arguments 
+     * @param args the command line arguments
      *
      */
     public static void main(String[] args) {

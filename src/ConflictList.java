@@ -33,6 +33,7 @@ public final class ConflictList {
     //width and height refers to the width and height of the label
     //In the constructor the adjacency list is filled
     public ConflictList(List<Point> points, String model) {
+        System.out.println("Started on conflictList");
         this.model = model;
         for (Point p : points) {
             for (Label label : p.possibleLabels) {
@@ -127,60 +128,19 @@ public final class ConflictList {
     }
 
     public void setPairsPos() {
-        boolean isNew = true;
-
         //add all possible labels
-        for (Label label1 : possibleLabels) {
-            for (Label label2 : possibleLabels) {
-                /**
-                 * for each pair check if it does not already exist the other
-                 * way around (i.e pair(p1, p2) is same as (pair(p2, p1)) and
-                 * check if the labels do not belong to the same point. If not,
-                 * add to pairs
-                 */
-                for (LabelPair pair : posLpairs) {
-                    if (pair.l1.equals(label2) && pair.l2.equals(label1)) {
-                        isNew = false;
-                        break;
-                    }
-                }
-                if (label1.p == label2.p) {
-                    isNew = false;
-                }
-                if (isNew) {
-                    posLpairs.add(new LabelPair(label1, label2));
-                }
-                isNew = true;
+        for (int i =0; i<possibleLabels.size(); i++) {
+            for (int j = i + 1; j < possibleLabels.size(); j++) {
+                    posLpairs.add(new LabelPair(possibleLabels.get(i), possibleLabels.get(j)));
             }
         }
     }
 
     public void setPairsAct() {
-        boolean isNew = true;
-
-        //add all possible labels
-        for (Label label1 : activeLabels) {
-            for (Label label2 : activeLabels) {
-                /**
-                 * for each pair check if it does not already exist the other
-                 * way around (i.e pair(p1, p2) is same as (pair(p2, p1)) if
-                 * not, add to pairs
-                 */
-                for (LabelPair pair : actLpairs) {
-                    if (pair.l1.equals(label2) && pair.l2.equals(label1)) {
-                        isNew = false;
-                        break;
-                    }
-
-                }
-                if (label1.p == label2.p) {
-                    System.out.println("label 1 and label 2 are the same");
-                    isNew = false;
-                }
-                if (isNew) {
-                    actLpairs.add(new LabelPair(label1, label2));
-                }
-                isNew = true;
+        
+        for (int i =0; i<activeLabels.size(); i++) {
+            for (int j = i + 1; j < activeLabels.size(); j++) {
+                    actLpairs.add(new LabelPair(activeLabels.get(i), activeLabels.get(j)));
             }
         }
     }
