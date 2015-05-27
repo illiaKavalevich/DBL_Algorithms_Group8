@@ -26,13 +26,13 @@ public class SliderLabel extends Label {
 
     //changes xcoordinates of label when sliding
     public void setPlacement(Float placement) {
-        if (miniX + placement > maxX || maxiX + placement < minX) {
-            System.out.println("SliderLabel.setPlacement: invalid placement provided");
-        } else {
+//        if (miniX + placement > maxX || maxiX + placement < minX) {
+//            System.out.println("SliderLabel.setPlacement: invalid placement provided");
+//        } else {
             this.placement = placement;
-            miniX = miniX + placement;
-            maxiX = maxiX + placement;
-        }
+            miniX = minX + placement * w;
+            maxiX = miniX + w;
+       //}
 
     }
 

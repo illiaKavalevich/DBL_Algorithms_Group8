@@ -39,7 +39,6 @@ public abstract class AnnealingSimulator extends Algorithm {
     
     @Override
     public void determineLabels() {
-        System.out.println("started labelling");
         numPoints = points.size();
         Point point; //current point being altered
         iterationsSinceTempChange = 0;
@@ -59,7 +58,7 @@ public abstract class AnnealingSimulator extends Algorithm {
             updateTemperature();
         }
         
-        //removeOverlap();
+        removeOverlap();
     }
     
     protected abstract void doInitialPlacement();

@@ -27,7 +27,6 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
         
         if(complicatedScoring) {
             float random = rand.nextFloat();
-            System.out.println(random);
             p.activeLabel.setPlacement(random);
             
             cL.updateActConflicts(p.activeLabel);
