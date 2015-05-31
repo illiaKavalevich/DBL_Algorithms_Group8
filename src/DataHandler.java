@@ -4,10 +4,13 @@
  * and open the template in the editor.
  */
 
+import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Int;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import static java.lang.System.exit;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -153,7 +156,8 @@ public class DataHandler {
               i++;
             }      
        } catch(IOException e) {
-           System.err.println("Caught IOException: " + e.getMessage());
+           System.err.println("Caught IO-Exception: " + e.getMessage());
+           exit(0);
        }
      }
     
@@ -163,21 +167,24 @@ public class DataHandler {
     void writeToFile(String fn, int limit) {
         BufferedWriter writer;
         try {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fn), "utf-8"));
+            File file = new File(fn);
+            if(!file.exists()) {
+                file.createNewFile();
+            } 
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
             int i = 0;
             for(Iterator<GeoPoint> p = pointCol.iterator(); i < limit;) {
                 GeoPoint point = p.next();
-                try {
-                    if(i > 0) {
-                        writer.newLine();
-                    }
-                    writer.write(point.getxCoord()+" "+point.getyCoord());
-                } catch (IOException ex) {
-                    Logger.getLogger(DataHandler.class.getName()).log(Level.SEVERE, null, ex);
+                if(i > 0) {
+                    writer.newLine();
                 }
+                writer.write(point.getxCoord()+" "+point.getyCoord());
+                i++;
             }  
-        } catch (IOException ex) {
-          // report
+            writer.close();
+        } catch (IOException e) {
+            System.err.println("Caught IOException: " + e.getMessage());
+            exit(0);
         } finally {
         }
     }
@@ -187,9 +194,10 @@ public class DataHandler {
     */
     void writeToScreen(int limit) {
         int i = 0;
-        for(Iterator<GeoPoint> p = pointCol.iterator(); i < limit;) {
+        for(Iterator<GeoPoint> p = pointCol.iterator(); i < limit - 1;) {
             GeoPoint point = p.next();
             System.out.println(point.getxCoord()+" "+point.getyCoord());
+            i++;
         }  
     }
    
@@ -209,6 +217,13 @@ public class DataHandler {
         Collections.shuffle(pointCol, new Random(seed));
     }
     
+     /**
+     * Flush
+     */
+    public void flush() {
+        pointCol = new ArrayList();
+    }
+    
     /**
      * Coin flipper, used as dataset randomizer
      * @return
@@ -222,15 +237,82 @@ public class DataHandler {
      *
      * @param args
      */
-    /*
+    
     public static void main(String args[]) {
-        String inputFile = "D:\\\\Cloud\\\\2IO90 - DBL Algorithms\\\\Datasets\\\\cities5000\\cities5000.txt";
-        String outputFile = "D:\\\\Cloud\\\\2IO90 - DBL Algorithms\\\\Datasets\\test.txt";
-        DataHandler dataObject = new DataHandler(inputFile, "\t", 5, 6);
-        dataObject.readDataFile(10000);
-        dataObject.spiralWalk(10000);
-        System.out.println("pointcollection size: " + dataObject.getPointCol().size());
-        dataObject.Plot(10000);
-    }*/
+        //ask for input file
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Give input filename (including path):");
+        String inputFile = scanner.nextLine();
+        System.out.println("Give a CSV delimiter string (leaving blank will default to \\t)");
+        String separator = scanner.nextLine();
+        if(separator.equals("")) {
+            separator = "\t";
+        }
+        System.out.println("Give the position (counting from 1) of the longitude in the file line: (leaving blank will default to 5)");
+        int lonPos = scanner.nextInt();
+        if(lonPos == 0) {
+           lonPos = 5;
+        }
+        System.out.println("Give the position (counting from 1) of the lattitude in the file line: (leaving blank will default to 6)");
+        int latPos = scanner.nextInt();
+        if(latPos == 0) {
+           latPos = 6;
+        }
+        DataHandler dataObject = new DataHandler(inputFile, separator, lonPos, latPos);
+        
+        System.out.println("What's the maximum number of points you want to convert?");
+        int numPoints = scanner.nextInt();
+
+        dataObject.readDataFile(numPoints);
+
+        //String inputFile = "D:\\\\Cloud\\\\2IO90 - DBL Algorithms\\\\Datasets\\\\cities5000\\cities5000.txt";
+        //String outputFile = "D:\\\\Cloud\\\\2IO90 - DBL Algorithms\\\\Datasets\\test.txt";
+        
+        System.out.println("Do you want to print the output to screen (Y/N)? If your answer is no, you will be asked for an output filename.");
+        scanner.nextLine(); //fire empty line
+        String inputType = scanner.nextLine();  
+        int numSets = 0;
+        String opFile = "";
+        if(inputType.equals("Y")) {
+            dataObject.spiralWalk(numPoints);
+            dataObject.writeToScreen(numPoints);
+        } else if(inputType.equals("N")) {
+            System.out.println("Give output filename including path. Please also provide an extension at the end of the filename.");
+            opFile = scanner.nextLine(); 
+            System.out.println("How many datasets do you want? (In case you want multiple sets, multiple files will written with an identifier.");
+            numSets = scanner.nextInt();
+            
+        } else {
+            dataObject.spiralWalk(numPoints);
+            dataObject.writeToScreen(numPoints);
+        }
+        
+        if(numSets > 1) {
+            System.out.println("output file" + opFile);
+            String[] fileArray = opFile.split("\\.");
+            int numberOfSplits = fileArray.length;
+            System.out.println("number of splits: " + numberOfSplits);
+            String baseFilename = "";
+            for(int filenameIndex = 0; filenameIndex < numberOfSplits - 1; filenameIndex++) {
+                if(filenameIndex > 0) {
+                    baseFilename += ".";
+                }
+                baseFilename += fileArray[filenameIndex];
+            }
+            
+            for(int numSetIndex = 0; numSetIndex < numSets; numSetIndex++) {
+                dataObject.spiralWalk(numPoints);
+                String numerator = Integer.toString(numSetIndex);
+                String filename = baseFilename + "_" + numerator + "." + fileArray[numberOfSplits - 1];
+                dataObject.writeToFile(filename, numPoints);
+                dataObject.flush();
+            }
+        } else {
+            dataObject.spiralWalk(numPoints);
+            dataObject.writeToFile(opFile, numPoints);
+        }
+
+        //dataObject.Plot(10000);
+    }
     
 }

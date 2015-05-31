@@ -19,13 +19,11 @@ public abstract class BranchAndBound extends Algorithm {
     
     protected List<PosLabel> ActiveLabelPositions = new ArrayList(); //set of active label positions
     
-    public BranchAndBound() {
-       
-        
+    public BranchAndBound(int w, int h, ArrayList<Point> points, ConflictList cL, Timer timer) {
+       super(w, h, points, cL, timer);
     }
 
-    protected void determineLabels(int w, int h, ArrayList<Point> points) {
-        
+    protected void defineConflictRestrictions() {
         
     }
 }

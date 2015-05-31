@@ -12,7 +12,15 @@
  * It's used as a helper algorithm in the exhaustive branch-and-bound algorithm
  */
 public class Simplex {
-    public Simplex() {
+    public Simplex(int[] c, int[][] A, int[] b) {
+        
+    }
+    
+    void addSlackVariables() {
+        
+    }
+    
+    void initialFeasibleSolution() {
         
     }
 }
