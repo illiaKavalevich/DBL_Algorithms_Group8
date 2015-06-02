@@ -29,5 +29,4 @@ public class AlgorithmDecorator extends Algorithm {
     public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Timer timer, String model) {
         decoratedAlgorithm.setParameters(w, h, points, cL, timer, model);
     }
-        
 }
