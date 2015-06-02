@@ -41,7 +41,7 @@ public class MainFrame {
     Timer timer;
 
     public void readInput() {
-        model = "1slider";
+        model = "4pos";
         w = 1;
         h = 1;
 //        for (int x = 0; x < 10; x++) {
@@ -50,11 +50,11 @@ public class MainFrame {
 //                points.add(point);
 //            }
 //        }
-//            Point point1 = new PosPoint(5, 4, model, w, h);
+            Point point1 = new PosPoint(5, 4, model, w, h);
 //            Point point2 = new PosPoint(2, 3, model, w, h);
 //            Point point3 = new PosPoint(1, 6, model, w, h);
 //            Point point4 = new PosPoint(10, 12, model, w, h);
-//            Point point5 = new PosPoint(4, 4, model, w, h);
+            Point point5 = new PosPoint(4, 4, model, w, h);
 //            Point point6 = new PosPoint(3, 3, model, w, h);
 //            Point point7 = new PosPoint(2, 6, model, w, h);
 //            Point point8 = new PosPoint(11, 12, model, w, h);
@@ -62,11 +62,11 @@ public class MainFrame {
 //            Point point10 = new PosPoint(1, 5, model, w, h);
             
         //slider points
-            Point point1 = new SliderPoint(5, 4, model, w, h);
+//            Point point1 = new SliderPoint(5, 4, model, w, h);
 //            Point point2 = new SliderPoint(2, 3, model, w, h);
 //            Point point3 = new SliderPoint(1, 6, model, w, h);
 //            Point point4 = new SliderPoint(10, 12, model, w, h);
-            Point point5 = new SliderPoint(4, 4, model, w, h);
+//            Point point5 = new SliderPoint(4, 4, model, w, h);
 //            Point point6 = new SliderPoint(3, 3, model, w, h);
 //            Point point7 = new SliderPoint(2, 6, model, w, h);
 //            Point point8 = new SliderPoint(11, 12, model, w, h);
