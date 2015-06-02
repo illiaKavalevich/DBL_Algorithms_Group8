@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
@@ -22,7 +23,10 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
             oldLocalE ++;
         }
         int newLocalE = 0;
-        Set<Label> oldConflicts = cL.getActConflictLabels(p.activeLabel);
+        if(cL.getActConflictLabels(p.activeLabel) == null) {
+            System.out.println("get null");
+        }
+        Set<Label> oldConflicts = new HashSet(cL.getActConflictLabels(p.activeLabel));
         Set<Label> newConflicts;
         
         if(complicatedScoring) {
@@ -30,7 +34,7 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
             p.activeLabel.setPlacement(random);
             
             cL.updateActConflicts(p.activeLabel);
-            newConflicts = cL.getActConflictLabels(p.activeLabel);
+            newConflicts = new HashSet(cL.getActConflictLabels(p.activeLabel));
             for(Label label : oldConflicts) {
                 cL.updateActConflicts(label);
                 if(cL.getActDegree(label) > 0) {
@@ -51,8 +55,9 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
         } else {
             float random = rand.nextFloat();
             p.activeLabel.setPlacement(random);
-            
-            newConflicts = cL.getActConflictLabels(p.activeLabel);
+            System.out.println(p.xCoord + " placement: " + random);
+
+            newConflicts = new HashSet(cL.getActConflictLabels(p.activeLabel));
             newConflicts.addAll(oldConflicts); //now holds all labels affected
             for(Label label: newConflicts) {
                 cL.updateActConflicts(label);
@@ -68,6 +73,7 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
         labelsAffectedLastChange.addAll(newConflicts);
         labelsAffectedLastChange.addAll(oldConflicts);
         deltaE = oldLocalE - newLocalE;
+        System.out.println(newLocalE);
     }
     
     @Override
@@ -78,6 +84,7 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
                 tempE ++;
             }
         }
+        System.out.println(tempE);
         E = tempE;
     }
     

@@ -19,17 +19,19 @@ public abstract class Algorithm {
     int h;
     ConflictList cL;
     Timer timer;
+    String model;
     
     public Algorithm() {
         //needed for extending classes
     }
 
-    public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Timer timer) {
+    public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Timer timer, String model) {
         this.w = w;
         this.h = h;
         this.points = points;
         this.cL = cL;
         this.timer = timer;
+        this.model = model;
     }
     
     /**
@@ -64,9 +66,14 @@ public abstract class Algorithm {
             System.out.println("degree: "+worstDegree+" minX: "+worstLabel.minX+" minY: "+worstLabel.minY);
             if(!noMoreOverlap){
                 cL.removeActiveLabel(worstLabel);
-                worstLabel.getPoint().setActiveLabelPos(new PosLabel(w, h, worstLabel.getPoint()));                
+                if("1slider".equals(model)) {
+                    SliderLabel worstSliderLabel = (SliderLabel) worstLabel;
+                    worstSliderLabel.deactivate();
+                } else {
+                    worstLabel.getPoint().setActiveLabelPos(new PosLabel(w, h, worstLabel.getPoint()));   
+                }               
             }
-            else{
+            else {
                 break;
             }
         }

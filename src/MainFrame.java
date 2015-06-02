@@ -42,8 +42,8 @@ public class MainFrame {
 
     public void readInput() {
         model = "1slider";
-        w = 2;
-        h = 2;
+        w = 1;
+        h = 1;
 //        for (int x = 0; x < 10; x++) {
 //            for (int y = 0; y < 50; y++) {
 //                Point point = new PosPoint(x, y, model, w, h);
@@ -129,7 +129,7 @@ public class MainFrame {
         } else {
             System.out.println(model + " is not a valid model");
         }
-        alg.setParameters(w, h, points, cL, timer);
+        alg.setParameters(w, h, points, cL, timer, model);
         alg.determineLabels();
         numLabels = alg.getNumLabels();
         giveOutput();
@@ -160,8 +160,14 @@ public class MainFrame {
         } else if (model.equals("1slider")) {
             while (iter.hasNext()) {
                 curPoint = iter.next();
-                System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
+                boolean curPointActive = curPoint.getActiveLabelSlider().active;
+                if (curPointActive) {
+                    System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
                         + " " + curPoint.getActiveLabelSlider().getPlacement());
+                } else {
+                    System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
+                        + " NIL");
+                }
             }
         } else {
             System.out.println("MainFrame.giveOutput: no valid model provided");
@@ -274,11 +280,13 @@ public class MainFrame {
         XYSeries series = new XYSeries("", false, true);
         double minX = label.miniX;
         double maxX = label.maxiX;
-        series.add(minX, label.minY);
-        series.add(minX, label.maxY);
-        series.add(maxX, label.maxY);
-        series.add(maxX, label.minY);
-        series.add(minX, label.minY);
+        if(label.active) {
+            series.add(minX, label.minY);
+            series.add(minX, label.maxY);
+            series.add(maxX, label.maxY);
+            series.add(maxX, label.minY);
+            series.add(minX, label.minY);
+        }
         currentLabel.addSeries(series);
         return currentLabel;
     }
