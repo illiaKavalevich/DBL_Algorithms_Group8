@@ -30,8 +30,8 @@ public abstract class AnnealingSimulator extends Algorithm {
 
     public AnnealingSimulator() {
         this.rand = new Random(56467984);
-        this.T = 1.0;
-    }
+        this.T = 0.0;
+    }    
     
     public void setTemperature(double temperature) {
         this.T = temperature;
@@ -46,8 +46,10 @@ public abstract class AnnealingSimulator extends Algorithm {
         computeInitialScore();
         
         //algorithm that optimizes the number of labels
-        while(T > 0) {
+        while(T >= 0) {
             point = points.get(rand.nextInt(numPoints));
+            
+            //System.out.println(point.xCoord);
             moveLabelRandomly((SliderPoint) point);
             if(deltaE < 0) {
                 if(rand.nextDouble() <= (1 - Math.pow(Math.E, -(deltaE/T)))) {
@@ -58,7 +60,7 @@ public abstract class AnnealingSimulator extends Algorithm {
             updateTemperature();
         }
         
-        //removeOverlap();
+        removeOverlap();
     }
     
     protected abstract void doInitialPlacement();
@@ -72,11 +74,11 @@ public abstract class AnnealingSimulator extends Algorithm {
 
     protected void updateTemperature() {
         //System.out.println("Temp update");
-        if(iterationsSinceTempChange == (10 * numPoints)) {
+        if(iterationsSinceTempChange == (50 * numPoints)) {
             if(T < 0.2) {
                 T -= 0.05;
             } else {
-                T = 0.5 * T;
+                T = 0.9 * T;
             }
             iterationsSinceTempChange = 0;
         }

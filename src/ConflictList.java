@@ -41,6 +41,7 @@ public final class ConflictList {
                 possibleLabels.add(label);
             }
             if (model.equals("1slider")) {
+                //System.out.println("label added to conflictlist");
                 activeLabels.add(p.getActiveLabelSlider());
             } else {
                 activeLabels.add(p.getActiveLabelPos());
@@ -64,15 +65,20 @@ public final class ConflictList {
                 posConflict.put(pair.l2, labelSet2);
             }
         }
+        //System.out.println("number of labels in actLpairs: " + actLpairs.size());
         for (LabelPair pair : actLpairs) {
+            
             if (pair.l1.overlaps(pair.l2)) {
+                //System.out.println("we have overlap");
                 if (!actConflict.containsKey(pair.l1)) {
+                    //System.out.println("put label in hashset");
                     actConflict.put(pair.l1, new HashSet<Label>());
                 }
                 Set labelSet = actConflict.get(pair.l1);
                 labelSet.add(pair.l2);
                 actConflict.put(pair.l1, labelSet);
                 if (!actConflict.containsKey(pair.l2)) {
+                    //System.out.println("put label in hashset");
                     actConflict.put(pair.l2, new HashSet<Label>());
                 }
                 Set labelSet2 = actConflict.get(pair.l2);
@@ -140,6 +146,7 @@ public final class ConflictList {
         
         for (int i =0; i<activeLabels.size(); i++) {
             for (int j = i + 1; j < activeLabels.size(); j++) {
+                    //System.out.println("added label pair");
                     actLpairs.add(new LabelPair(activeLabels.get(i), activeLabels.get(j)));
             }
         }

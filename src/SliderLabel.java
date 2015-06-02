@@ -12,6 +12,7 @@ public class SliderLabel extends Label {
 
     Float placement = (float)0; //returns float number in range [0, 1]
     Float miniX, maxiX;
+    boolean active = true;
 
     //sets the xcoordinates of the label to float for sliding purposes
     public SliderLabel(int w, int h, Point p, int quadrant) {
@@ -24,16 +25,27 @@ public class SliderLabel extends Label {
         return placement;
     }
 
+    public void deactivate() {
+        active = false;
+    }
+    
     //changes xcoordinates of label when sliding
     public void setPlacement(Float placement) {
-//        if (miniX + placement > maxX || maxiX + placement < minX) {
-//            System.out.println("SliderLabel.setPlacement: invalid placement provided");
-//        } else {
             this.placement = placement;
-            miniX = minX + placement * w;
-            maxiX = miniX + w;
-       //}
-
+            miniX = p.xCoord - w + placement * w;
+            maxiX = p.xCoord + placement * w;
+    }
+    
+    public float getMaxiX() {
+        return maxiX;
+    }
+    
+    public float getMiniX() {
+        return miniX;
+    }
+    
+    public boolean overlaps(SliderLabel l) {
+        return miniX < l.getMaxiX() && maxiX > l.getMiniX() && minY < l.getMaxY() && maxY > l.getMinY();
     }
 
 }

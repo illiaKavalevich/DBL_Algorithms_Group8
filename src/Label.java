@@ -24,6 +24,8 @@ public abstract class Label {
     }
 
     public Label(int w, int h, Point p, int quadrant) {
+        this.w = w;
+        this.h = h;
         this.p = p;
         this.quadrant = quadrant;
         switch (quadrant) {
