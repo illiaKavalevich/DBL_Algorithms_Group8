@@ -7,7 +7,9 @@
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 import org.jfree.chart.*;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -39,28 +41,40 @@ public class MainFrame {
     Algorithm alg;
     ConflictList cL;
     Timer timer;
-
+    
     public void readInput() {
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+        System.out.println("Number of threads that are still running: "+threadSet.size());
         model = "4pos";
-        w = 1;
-        h = 1;
-//        for (int x = 0; x < 10; x++) {
-//            for (int y = 0; y < 50; y++) {
-//                Point point = new PosPoint(x, y, model, w, h);
-//                points.add(point);
-//            }
-//        }
-            Point point1 = new PosPoint(5, 4, model, w, h);
+        w = 3;
+        h = 3;
+        /*for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                Random rand = new Random();
+                 int x =rand.nextInt(10);
+                 Random rand2 = new Random();
+                 int y =rand2.nextInt(10);
+                 
+                Point point = new PosPoint(x, y, model, w, h);
+                points.add(point);
+            }
+        }*/
+        Point point1 = new PosPoint(4, 4, model, w, h);
+            Point point2 = new PosPoint(3, 4, model, w, h);
+            Point point3 = new PosPoint(4, 6, model, w, h);
+            Point point4 = new PosPoint(4, 5, model, w, h);
+        Point point5 = new PosPoint(5, 5, model, w, h);
+//        Point point1 = new PosPoint(5, 4, model, w, h);
 //            Point point2 = new PosPoint(2, 3, model, w, h);
 //            Point point3 = new PosPoint(1, 6, model, w, h);
 //            Point point4 = new PosPoint(10, 12, model, w, h);
-            Point point5 = new PosPoint(4, 4, model, w, h);
+//        Point point5 = new PosPoint(4, 4, model, w, h);
 //            Point point6 = new PosPoint(3, 3, model, w, h);
 //            Point point7 = new PosPoint(2, 6, model, w, h);
 //            Point point8 = new PosPoint(11, 12, model, w, h);
 //            Point point9 = new PosPoint(2, 4, model, w, h);
 //            Point point10 = new PosPoint(1, 5, model, w, h);
-            
+
         //slider points
 //            Point point1 = new SliderPoint(5, 4, model, w, h);
 //            Point point2 = new SliderPoint(2, 3, model, w, h);
@@ -72,54 +86,16 @@ public class MainFrame {
 //            Point point8 = new SliderPoint(11, 12, model, w, h);
 //            Point point9 = new SliderPoint(2, 4, model, w, h);
 //            Point point10 = new SliderPoint(1, 5, model, w, h);
-            points.add(point1);
-//            points.add(point2);
-//            points.add(point3);
-//            points.add(point4);
-            points.add(point5);
+        points.add(point1);
+        points.add(point2);
+        points.add(point3);
+        points.add(point4);
+        points.add(point5);
 //            points.add(point6);
 //            points.add(point7);
 //            points.add(point8);
 //            points.add(point9);
 //            points.add(point10);
-
-            timer = new Timer(250);
-            int firstPoint;
-            int secondPoint;
-            /*Scanner input = new Scanner(System.in);
-             //pattern used to skip input "...: "
-             String template = "\\n*[a-zA-Z\\s]*[^\\w\\s]\\s*";
-
-             input.skip(template);
-             model = input.next();
-             input.skip(template);
-             w = input.nextInt();
-             input.skip(template);
-             h = input.nextInt();
-             input.skip(template);
-             numPoints = input.nextInt();
-             if (model.equals("2pos") || model.equals("4pos")) {
-             while (input.hasNext()) {
-             firstPoint = input.nextInt();
-             secondPoint = input.nextInt();
-             points.add(new PosPoint(firstPoint, secondPoint, model, w, h));
-             }
-             } else if (model.equals("1slider")) {
-             while (input.hasNext()) {
-             firstPoint = input.nextInt();
-             secondPoint = input.nextInt();
-             points.add(new SliderPoint(firstPoint, secondPoint, model, w, h));
-             }
-             } else {
-             System.out.println("MainFrame.readInput: no valid model provided");
-             }*/
-            cL = new ConflictList(points, model);
-            processOutput();
-        }
-
-    
-
-    public void processOutput() {
         if (model.equals("2pos")) {
             alg = new Falp();
         } else if (model.equals("4pos")) {
@@ -129,7 +105,43 @@ public class MainFrame {
         } else {
             System.out.println(model + " is not a valid model");
         }
+        timer = new Timer(10, alg);
+        timer.start();
+        cL = new ConflictList(points, model);
         alg.setParameters(w, h, points, cL, timer, model);
+        int firstPoint;
+        int secondPoint;
+        /*Scanner input = new Scanner(System.in);
+         //pattern used to skip input "...: "
+         String template = "\\n*[a-zA-Z\\s]*[^\\w\\s]\\s*";
+
+         input.skip(template);
+         model = input.next();
+         input.skip(template);
+         w = input.nextInt();
+         input.skip(template);
+         h = input.nextInt();
+         input.skip(template);
+         numPoints = input.nextInt();
+         if (model.equals("2pos") || model.equals("4pos")) {
+         while (input.hasNext()) {
+         firstPoint = input.nextInt();
+         secondPoint = input.nextInt();
+         points.add(new PosPoint(firstPoint, secondPoint, model, w, h));
+         }
+         } else if (model.equals("1slider")) {
+         while (input.hasNext()) {
+         firstPoint = input.nextInt();
+         secondPoint = input.nextInt();
+         points.add(new SliderPoint(firstPoint, secondPoint, model, w, h));
+         }
+         } else {
+         System.out.println("MainFrame.readInput: no valid model provided");
+         }*/
+        processOutput();
+    }
+
+    public void processOutput() {
         alg.determineLabels();
         numLabels = alg.getNumLabels();
         giveOutput();
@@ -163,10 +175,10 @@ public class MainFrame {
                 boolean curPointActive = curPoint.getActiveLabelSlider().active;
                 if (curPointActive) {
                     System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
-                        + " " + curPoint.getActiveLabelSlider().getPlacement());
+                            + " " + curPoint.getActiveLabelSlider().getPlacement());
                 } else {
                     System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
-                        + " NIL");
+                            + " NIL");
                 }
             }
         } else {
@@ -280,7 +292,7 @@ public class MainFrame {
         XYSeries series = new XYSeries("", false, true);
         double minX = label.miniX;
         double maxX = label.maxiX;
-        if(label.active) {
+        if (label.active) {
             series.add(minX, label.minY);
             series.add(minX, label.maxY);
             series.add(maxX, label.maxY);

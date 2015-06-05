@@ -20,7 +20,7 @@ public abstract class Algorithm {
     ConflictList cL;
     Timer timer;
     String model;
-    
+
     public Algorithm() {
         //needed for extending classes
     }
@@ -33,7 +33,10 @@ public abstract class Algorithm {
         this.timer = timer;
         this.model = model;
     }
-    
+
+    public void stopRunning() {
+    }
+
     /**
      * determines the positions of the labels
      *
@@ -41,39 +44,30 @@ public abstract class Algorithm {
      * without overlap
      */
     public abstract void determineLabels();
-    
-    public void removeOverlap(){
+
+    public void removeOverlap() {
         System.out.println("Started to remove overlap");
-        while(true){
-        //System.out.println("actConflict size: "+cL.actConflict.size());
-            int i = 0;
-            for(Label l:cL.actConflict.keySet()){
-                i+=cL.actConflict.get(l).size();
-            }
-            System.out.println("total overlap: "+i);
+        while (true) {
             Label worstLabel = cL.activeLabels.get(0);
-            //System.out.println("nr of active labels: "+cL.activeLabels.size());
             int worstDegree = 0;
             boolean noMoreOverlap = true;
-            for(Label label : cL.activeLabels){
+            for (Label label : cL.activeLabels) {
                 int labelDegree = cL.getActDegree(label);
-                if(labelDegree > worstDegree){
+                if (labelDegree > worstDegree) {
                     worstLabel = label;
                     worstDegree = labelDegree;
                     noMoreOverlap = false;
                 }
             }
-            System.out.println("degree: "+worstDegree+" minX: "+worstLabel.minX+" minY: "+worstLabel.minY);
-            if(!noMoreOverlap){
+            if (!noMoreOverlap) {
                 cL.removeActiveLabel(worstLabel);
-                if("1slider".equals(model)) {
+                if ("1slider".equals(model)) {
                     SliderLabel worstSliderLabel = (SliderLabel) worstLabel;
                     worstSliderLabel.deactivate();
                 } else {
-                    worstLabel.getPoint().setActiveLabelPos(new PosLabel(w, h, worstLabel.getPoint()));   
-                }               
-            }
-            else {
+                    worstLabel.getPoint().setActiveLabelPos(new PosLabel(w, h, worstLabel.getPoint(), 0));
+                }
+            } else {
                 break;
             }
         }
@@ -82,8 +76,5 @@ public abstract class Algorithm {
     public int getNumLabels() {
         return numLabels;
     }
-    
-    
 
-    
 }

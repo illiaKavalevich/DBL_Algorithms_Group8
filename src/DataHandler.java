@@ -238,7 +238,7 @@ public class DataHandler {
      * @param args
      */
     
-    public static void main(String args[]) {
+    /*public static void main(String args[]) {
         //ask for input file
         Scanner scanner = new Scanner(System.in);
         System.out.println("Give input filename (including path):");
@@ -313,6 +313,6 @@ public class DataHandler {
         }
 
         //dataObject.Plot(10000);
-    }
+    }*/
     
 }

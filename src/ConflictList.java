@@ -18,6 +18,7 @@ public final class ConflictList {
     ArrayList<LabelPair> posLpairs = new ArrayList<>();            //List of all pairs of possible labels
     ArrayList<LabelPair> actLpairs = new ArrayList<>();            //List of all pairs of active labels
     String model;
+    java.util.concurrent.locks.Lock lock = new java.util.concurrent.locks.ReentrantLock();
 
     //copy constructor
     public ConflictList(ConflictList cl) {
@@ -67,7 +68,7 @@ public final class ConflictList {
         }
         //System.out.println("number of labels in actLpairs: " + actLpairs.size());
         for (LabelPair pair : actLpairs) {
-            
+
             if (pair.l1.overlaps(pair.l2)) {
                 //System.out.println("we have overlap");
                 if (!actConflict.containsKey(pair.l1)) {
@@ -110,8 +111,9 @@ public final class ConflictList {
             }
         }
     }
-    
+
     public void updateActConflicts(Label l) {
+        //lock.lock();
         for (LabelPair pair : actLpairs) {
             if (pair.l1 == l || pair.l2 == l) {
                 if (pair.l1.overlaps(pair.l2)) {
@@ -135,19 +137,20 @@ public final class ConflictList {
 
     public void setPairsPos() {
         //add all possible labels
-        for (int i =0; i<possibleLabels.size(); i++) {
+        for (int i = 0; i < possibleLabels.size(); i++) {
             for (int j = i + 1; j < possibleLabels.size(); j++) {
-                    posLpairs.add(new LabelPair(possibleLabels.get(i), possibleLabels.get(j)));
+                posLpairs.add(new LabelPair(possibleLabels.get(i), possibleLabels.get(j)));
+
             }
         }
     }
 
     public void setPairsAct() {
-        
-        for (int i =0; i<activeLabels.size(); i++) {
+
+        for (int i = 0; i < activeLabels.size(); i++) {
             for (int j = i + 1; j < activeLabels.size(); j++) {
-                    //System.out.println("added label pair");
-                    actLpairs.add(new LabelPair(activeLabels.get(i), activeLabels.get(j)));
+                //System.out.println("added label pair");
+                actLpairs.add(new LabelPair(activeLabels.get(i), activeLabels.get(j)));
             }
         }
     }

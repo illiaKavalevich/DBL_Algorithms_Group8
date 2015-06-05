@@ -11,10 +11,23 @@
 public class Timer {
     long start;
     long end;
-    
-    public Timer(int seconds) {
+    Runnable run;
+    public Timer(int seconds, Algorithm a) {
         start = System.currentTimeMillis();
         end = start + seconds * 1000;
+        run = new Runnable() {
+            @Override
+            public void run() {
+                while(System.currentTimeMillis() < end){
+                    //wait
+                }
+                System.out.println("Going to stopRunning");
+                a.stopRunning();
+            }
+        };
     }
-    
+    public void start(){
+        Thread timerThread = new Thread(run,"timerThread");
+        timerThread.start();
+    }
 }

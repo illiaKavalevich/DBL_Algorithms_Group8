@@ -35,6 +35,9 @@ public class PosLabel extends Label {
     public void setLabel(int quadrant) {
         this.quadrant = quadrant;
         switch (quadrant) {
+            case 0:
+                placement = "#";
+                break;
             case 1:
                 minX = p.getxCoord();
                 minY = p.getyCoord();

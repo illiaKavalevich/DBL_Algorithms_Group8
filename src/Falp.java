@@ -4,18 +4,42 @@ import java.util.*;
 public class Falp extends Algorithm {
 
     HashSet<Point> noActiveLabelPoints = new HashSet<>();                       //all the points that do not have an active label
-    HashSet<Point> noOverlapPoints = new HashSet<>();                           //all the points that have an active label that doesn't overlap
+    HashSet<Point> activeLabelPoints = new HashSet<>();                           //all the points that have an active label that doesn't overlap
+    Runnable Run;
+    Thread thread;
 
     public Falp() {
-
+        
     }
 
+    
+    //After the timer stops, determineLables will only stop after a iteration of localsearch has finished, since it cannot be interrupted
+    //During the local search
     @Override
     public void determineLabels() {
-        removeConflicts();
-        giveActiveLabel();
-        localSearch();
+        Run = new Runnable() {
+            @Override
+            public void run() {
+                removeConflicts();
+                giveActiveLabel();
+                while(!thread.isInterrupted()){
+                    localSearch();
+                }
+                
+            }
+        };
+        thread = new Thread(Run,"FalpThread");
+        thread.start();
+        while(!thread.isInterrupted()){
+            //wait
+        }
         removeOverlap();
+    }
+    
+    @Override
+    public void stopRunning(){
+        thread.interrupt();
+        
     }
 
     //first step of the FALP algorithm: 
@@ -49,15 +73,13 @@ public class Falp extends Algorithm {
             Point p = bestLabel.getPoint();
             clCopy.removePoint(p);
             noActiveLabelPoints.remove(p);
-            noOverlapPoints.add(p);
+            activeLabelPoints.add(p);
             PosLabel newActLabel = p.getActiveLabelPos();
             newActLabel.setLabel(bestLabel.getQuadrant());
             //added
             numLabels++;
             cL.updateActConflicts(newActLabel);
-
         }
-        //System.out.println("points without label: " + noActiveLabelPoints.size());
 
     }
 
@@ -71,7 +93,7 @@ public class Falp extends Algorithm {
             int bestDegree = Integer.MAX_VALUE;
             for (Label label : point.possibleLabels) {
                 int labelDegree = cL.getPosActDegree(label);
-                System.out.println(labelDegree);
+                //System.out.println(labelDegree);
                 if (labelDegree < bestDegree) {
                     bestDegree = labelDegree;
                     bestLabel = label;
@@ -79,21 +101,17 @@ public class Falp extends Algorithm {
             }
             point.getActiveLabelPos().setLabel(bestLabel.getQuadrant());
             cL.updateActConflicts(point.getActiveLabelPos());
-            numLabels++;
-            noOverlapPoints.add(point);
+            activeLabelPoints.add(point);
         }
 
     }
 
     //step 3 of FALP: the local search
     //Check for each point if it has a label with less overlap than the current active one.
-
     public void localSearch() {
-        System.out.println("Started local search");
-        int i = 0;                                                              //temporary variable to do the local search 5 times
-        while (i<5) {
+        
             boolean changed = false;                                            //indicates if for any point its active label was changed
-            for (Point point : noOverlapPoints) {
+            for (Point point : activeLabelPoints) {
                 Label bestLabel = cL.possibleLabels.get(0);                     //this will be the best label of a point
                 for (Label posLabel : point.getPossibleLabels()) {
                     bestLabel = posLabel;                                       //initialize bestLabel to some random possible label of that point
@@ -111,18 +129,12 @@ public class Falp extends Algorithm {
                     point.getActiveLabelPos().setLabel(bestLabel.getQuadrant());
                     cL.updateActConflicts(point.getActiveLabelPos());
                     changed = true;
-                    System.out.println("Changed a label");
-                    /* System.out.println("x point: "+point.xCoord);
-                     System.out.println("y point: "+point.yCoord);
-                     System.out.println("quadrant label: "+bestLabel.getQuadrant());*/
                 }
             }
-            i++;
-            //System.out.println(cL.actConflict.size());
             //Stop the local search if none of the active labels have overlap, or if none of the active labels got changed in the last iteration
             /*if (cL.actConflict.isEmpty() || !changed) {
              break;
              }*/
         }
-    }
+   
 }
