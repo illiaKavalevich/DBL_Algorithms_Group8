@@ -173,7 +173,7 @@ public class DataHandler {
             } 
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
             int i = 0;
-            for(Iterator<GeoPoint> p = pointCol.iterator(); i < limit;) {
+            for(Iterator<GeoPoint> p = pointCol.iterator(); i < limit || p.hasNext();) {
                 GeoPoint point = p.next();
                 if(i > 0) {
                     writer.newLine();
