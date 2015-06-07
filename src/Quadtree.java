@@ -76,6 +76,11 @@ public class Quadtree {
         return n;
     }
     
+    /**
+     * This method simply removes a Label
+     * 
+     * @param l label to be removed
+     */
     public void removeLabel(Label l) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
