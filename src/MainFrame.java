@@ -46,16 +46,16 @@ public class MainFrame {
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
         System.out.println("Number of threads that are still running: "+threadSet.size());
         model = "4pos";
-        w = 7;
-        h = 7;
-        for (int i = 0; i < 10; i++) {
+        w = 3;
+        h = 3;
+        for (int i = 0; i < 20; i++) {
             for (int j = 0; j < 10; j++) {
                 Random rand = new Random();
-                 int x =rand.nextInt(10);
+                 int x =rand.nextInt(20);
                  Random rand2 = new Random();
-                 int y =rand2.nextInt(10);
+                 int y =rand2.nextInt(20);
                  
-                Point point = new PosPoint(i, j, model, w, h);
+                Point point = new PosPoint(x, y, model, w, h);
                 points.add(point);
             }
         }
@@ -105,7 +105,7 @@ public class MainFrame {
         } else {
             System.out.println(model + " is not a valid model");
         }
-        timer = new Timer(3, alg);
+        timer = new Timer(30, alg);
         timer.start();
         cL = new ConflictList(points, model);
         alg.setParameters(w, h, points, cL, timer, model);

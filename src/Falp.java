@@ -61,7 +61,7 @@ public class Falp extends Algorithm {
         }
         while (!(clCopy.possibleLabels.isEmpty())) {
             Label bestLabel = clCopy.possibleLabels.get(0);                     //find the label with the lowest degree
-            //System.out.println(clCopy.getPosConflictLabels(bestLabel).size());
+//            System.out.println(clCopy.getPosConflictLabels(bestLabel).size());
             int lowestDegree = Integer.MAX_VALUE;
 
             for (Label l : clCopy.possibleLabels) {
