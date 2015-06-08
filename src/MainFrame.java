@@ -46,24 +46,24 @@ public class MainFrame {
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
         System.out.println("Number of threads that are still running: "+threadSet.size());
         model = "4pos";
-        w = 3;
-        h = 3;
-        /*for (int i = 0; i < 10; i++) {
+        w = 7;
+        h = 7;
+        for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 Random rand = new Random();
                  int x =rand.nextInt(10);
                  Random rand2 = new Random();
                  int y =rand2.nextInt(10);
                  
-                Point point = new PosPoint(x, y, model, w, h);
+                Point point = new PosPoint(i, j, model, w, h);
                 points.add(point);
             }
-        }*/
-        Point point1 = new PosPoint(4, 4, model, w, h);
-            Point point2 = new PosPoint(3, 4, model, w, h);
-            Point point3 = new PosPoint(4, 6, model, w, h);
-            Point point4 = new PosPoint(4, 5, model, w, h);
-        Point point5 = new PosPoint(5, 5, model, w, h);
+        }
+//        Point point1 = new PosPoint(4, 4, model, w, h);
+//            Point point2 = new PosPoint(3, 4, model, w, h);
+//            Point point3 = new PosPoint(4, 6, model, w, h);
+//            Point point4 = new PosPoint(4, 5, model, w, h);
+//        Point point5 = new PosPoint(5, 5, model, w, h);
 //        Point point1 = new PosPoint(5, 4, model, w, h);
 //            Point point2 = new PosPoint(2, 3, model, w, h);
 //            Point point3 = new PosPoint(1, 6, model, w, h);
@@ -86,11 +86,11 @@ public class MainFrame {
 //            Point point8 = new SliderPoint(11, 12, model, w, h);
 //            Point point9 = new SliderPoint(2, 4, model, w, h);
 //            Point point10 = new SliderPoint(1, 5, model, w, h);
-        points.add(point1);
-        points.add(point2);
-        points.add(point3);
-        points.add(point4);
-        points.add(point5);
+//        points.add(point1);
+//        points.add(point2);
+//        points.add(point3);
+//        points.add(point4);
+//        points.add(point5);
 //            points.add(point6);
 //            points.add(point7);
 //            points.add(point8);
@@ -105,7 +105,7 @@ public class MainFrame {
         } else {
             System.out.println(model + " is not a valid model");
         }
-        timer = new Timer(10, alg);
+        timer = new Timer(3, alg);
         timer.start();
         cL = new ConflictList(points, model);
         alg.setParameters(w, h, points, cL, timer, model);
@@ -307,10 +307,10 @@ public class MainFrame {
      * @param args the command line arguments
      *
      */
-    /*public static void main(String[] args) {
+    public static void main(String[] args) {
         MainFrame mainFrame = new MainFrame();
         mainFrame.readInput();
 //       
-    }*/
+    }
 
 }

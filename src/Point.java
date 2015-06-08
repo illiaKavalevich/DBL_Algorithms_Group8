@@ -38,6 +38,13 @@ public abstract class Point {
         yCoord = y;
         possibleLabels = new HashSet<>();
     }
+    
+    //Copy constructor
+    public Point(Point p){
+        this.possibleLabels = p.getPossibleLabels();
+        this.xCoord = p.xCoord;
+        this.yCoord = p.yCoord;
+    }
 
     /**
      * Getter for x coordinate

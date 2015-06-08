@@ -67,6 +67,7 @@ public abstract class Algorithm {
                 } else {
                     worstLabel.getPoint().setActiveLabelPos(new PosLabel(w, h, worstLabel.getPoint(), 0));
                 }
+                numLabels--;
             } else {
                 break;
             }

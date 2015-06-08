@@ -18,7 +18,6 @@ public final class ConflictList {
     ArrayList<LabelPair> posLpairs = new ArrayList<>();            //List of all pairs of possible labels
     ArrayList<LabelPair> actLpairs = new ArrayList<>();            //List of all pairs of active labels
     String model;
-    java.util.concurrent.locks.Lock lock = new java.util.concurrent.locks.ReentrantLock();
 
     //copy constructor
     public ConflictList(ConflictList cl) {

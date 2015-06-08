@@ -16,6 +16,7 @@ public class PosPoint extends Point {
     PosLabel activeLabel;
 
     
+    
     public PosPoint(int x, int y, String model, int w, int h) {
         super(x, y, model, w, h);
         if (model.equals("2pos")) {
@@ -31,6 +32,16 @@ public class PosPoint extends Point {
         } else {
             System.out.println("PosPoint.PosPoint: no valid model provided");
         }
+    }
+    
+    //Copy constructor
+    public PosPoint(Point p){
+        super(p);
+        this.possibleLabels = p.getPossibleLabels();
+        this.xCoord = p.xCoord;
+        this.yCoord = p.yCoord;
+        Label l = p.getActiveLabelPos();
+        setActiveLabelPos(new PosLabel(l.w, l.h, p, l.quadrant));
     }
     
     @Override
