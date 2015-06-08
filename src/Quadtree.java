@@ -2,28 +2,33 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.lang.Math;
 
 /**
- *
- * @author s133524
+ * This class represents an MX quadtree. 
+ * 
  */
 public class Quadtree {
     
     private Node root;
     
+    //quadtree reaches from -size to size on x and y axis
+    private int size = 16384;
+    private int maxDepth = 15;
+    
     Quadtree() {
-
+        root = new Node(0, 0, 0);
     }
     
     //a class that helps to define rectangle in which to search
     private class Rectangle {
         //coordinates defining the rectangle
-        int minX;
-        int maxX;
-        int minY;
-        int maxY;
+        double minX;
+        double maxX;
+        double minY;
+        double maxY;
         
-        Rectangle(int minX, int maxX, int minY, int maxY) {
+        Rectangle(double minX, double maxX, double minY, double maxY) {
             this.minX = minX;
             this.maxX = maxX;
             this.minY = minY;
@@ -31,21 +36,29 @@ public class Quadtree {
         }
         
         //returns true if a given coordinate is contained in the rectangle
-        public boolean contains(int x, int y) {
-            return minX < x && x < maxX && minY < y && y < maxY;
+        public boolean contains(double x, double y) {
+            return minX <= x && x <= maxX && minY <= y && y <= maxY;
         }
     }
     
     public class Node {
-        int x, y; //middle point of node
+        double x, y; //middle point of node
         Node NW, NE, SE, SW; //subtrees
         List<Label> labels; //labels in the node
+        int depth;
+        double nodeSize;
+        boolean hasChildren = false;
 
-        Node(int x, int y, Label label) {
+        Node(double x, double y, int depth) {
             this.x = x;
             this.y = y;
-            this.labels = new ArrayList<>();
-            labels.add(label);
+            this.depth = depth;
+            this.nodeSize = size / Math.pow(2, depth);
+        }
+        
+        public void addLabel(Label l) {
+            if(l == null) labels = new ArrayList<>();
+            labels.add(l);
         }
     }
     
@@ -55,25 +68,38 @@ public class Quadtree {
      * @param l the Label to be inserted
      */
     public void insertLabel(Label l) {
-        root = insert(root, l.getMinX(), l.getMinY(), l);
-        root = insert(root, l.getMaxX(), l.getMaxY(), l);
-        root = insert(root, l.getMinX(), l.getMaxY(), l);
-        root = insert(root, l.getMaxX(), l.getMinY(), l);
+        Rectangle rectLabel = new Rectangle(l.getMinX(), l.getMaxX(), 
+                l.getMinY(), l.getMaxY());
+        insert(root, l, rectLabel);
     }
     
     
-    private Node insert(Node n, int x, int y, Label l) {
-        if (n == null) {
-            return new Node(x, y, l);
-        }
-        if (x == n.x && y == n.y) {
+    private void insert(Node n, Label l, Rectangle rectLabel) {
+        if (n.depth == maxDepth) {
             n.labels.add(l);
-        } 
-        else if (x <  n.x && y >= n.y) n.NW = insert(n.NW, x, y, l);
-        else if (x <  n.x && y <  n.y) n.SW = insert(n.SW, x, y, l);
-        else if (x >= n.x && y <  n.y) n.SE = insert(n.SE, x, y, l);
-        else if (x >= n.x && y >= n.y) n.NE = insert(n.NE, x, y, l);
-        return n;
+            return;
+        }
+        
+        if(!n.hasChildren) {
+            n.NW = new Node(n.x + (n.nodeSize / 2), n.y + (n.nodeSize / 2), n.depth + 1);
+            n.NE = new Node(n.x - (n.nodeSize / 2), n.y + (n.nodeSize / 2), n.depth + 1);
+            n.SE = new Node(n.x - (n.nodeSize / 2), n.y - (n.nodeSize / 2), n.depth + 1);
+            n.SW = new Node(n.x + (n.nodeSize / 2), n.y - (n.nodeSize / 2), n.depth + 1);
+        }
+        
+        if (n.x < l.getMaxX() && n.y < l.getMaxY()) {
+            insert(n.NW, l, rectLabel);
+        }
+        else if (n.x < l.getMaxX() && n.y > l.getMinY()) {
+            insert(n.SW, l, rectLabel);
+        }
+        else if (n.x > l.getMinX() && n.y > l.getMinY()) {
+            insert(n.SE, l, rectLabel);
+        }
+        else if (n.x > l.getMinX() && n.y < l.getMaxY()) {
+            insert(n.NE, l, rectLabel);
+        }
+
     }
     
     /**
@@ -82,7 +108,29 @@ public class Quadtree {
      * @param l label to be removed
      */
     public void removeLabel(Label l) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Rectangle rectLabel = new Rectangle(l.getMinX(), l.getMaxX(), 
+                l.getMinY(), l.getMaxY());
+        remove(root, l, rectLabel);
+    }
+    
+    private void remove(Node n, Label l, Rectangle rectLabel) {
+        if (n.depth == maxDepth) {
+            n.labels.remove(l);
+            return;
+        }
+        
+        if (n.x < l.getMaxX() && n.y < l.getMaxY()) {
+            remove(n.NW, l, rectLabel);
+        }
+        else if (n.x < l.getMaxX() && n.y > l.getMinY()) {
+            remove(n.SW, l, rectLabel);
+        }
+        else if (n.x > l.getMinX() && n.y > l.getMinY()) {
+            remove(n.SE, l, rectLabel);
+        }
+        else if (n.x > l.getMinX() && n.y < l.getMaxY()) {
+            remove(n.NE, l, rectLabel);
+        }
     }
     
     /**
@@ -99,21 +147,23 @@ public class Quadtree {
 
     private void query(Node n, Rectangle rectangle, HashSet<Label> result) {
         if (n == null) return;
-        if (rectangle.contains(n.x, n.y)){
+        if (n.depth == maxDepth && rectangle.contains(n.x, n.y)){
             for (Label l : n.labels){
                 result.add(l);
             }
+            return;
         }
-        if (rectangle.minX < n.x && rectangle.maxY >= n.y) {
+        
+        if (n.x < rectangle.maxX && n.y < rectangle.maxY) {
             query(n.NW, rectangle, result);
         }
-        if (rectangle.maxX >= n.x && rectangle.minY < n.y) {
+        if (n.x > rectangle.minX && n.y > rectangle.minY) {
             query(n.SE, rectangle, result);
         }
-        if (rectangle.minX < n.x && rectangle.minY < n.y) {
+        if (n.x < rectangle.maxX && n.y > rectangle.minY) {
             query(n.SW, rectangle, result);
         }
-        if (rectangle.maxX >= n.x && rectangle.maxY >= n.y) {
+        if (n.x > rectangle.minX && n.y < rectangle.maxY) {
             query(n.NE, rectangle, result);
         }
     }
