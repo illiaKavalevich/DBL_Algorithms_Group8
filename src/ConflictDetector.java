@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Set;
 
 public class ConflictDetector implements ConflictDetectorInterface {
-    String model;
-    List<Point> points;
-    Quadtree quadtree;
+    String model; //model for point placement
+    List<Point> points; //points that are considered
+    Quadtree quadtree; //reference to the quadtree used
     
     public ConflictDetector(List<Point> points, String model, Quadtree quadtree) {
         this.model = model;
@@ -37,17 +37,17 @@ public class ConflictDetector implements ConflictDetectorInterface {
     }
     
     private Set<Label> getActConflictLabelsSlider(SliderLabel l) {
-        Set<Label> result = new HashSet<Label>();
-        Set<Label> posLabels = new HashSet<Label>(l.getPoint().getPossibleLabels());
+        Set<Label> result = new HashSet<Label>(); //result containing SliderLabels 
+        Set<Label> posLabels = new HashSet<Label>(l.getPoint().getPossibleLabels()); //pos labels of point
         Set<Label> posConflicts = new HashSet<Label>(); //pos conflicts of PosLabels
+        Set<SliderLabel> posConflictSlider = new HashSet<SliderLabel>(); //pos conflicts SliderLabels
         
-        //get all the labels the Slider might intersect with
+        //get all the labels pos labels the possible labels of l intersect with
         for (Label label : posLabels) {
             posConflicts.addAll(getPosConflictLabels(l));
         }
         
         //get all the associated Slider Labels
-        Set<SliderLabel> posConflictSlider = new HashSet<SliderLabel>(); //pos conflicts SliderLabels
         for(Label label : posConflicts) {
             posConflictSlider.add(label.getPoint().getActiveLabelSlider());
         }
@@ -62,7 +62,7 @@ public class ConflictDetector implements ConflictDetectorInterface {
     }
     
     private Set<Label> getActConflictLabelsDiscrete(Label l) {
-        Set<Label> result = new HashSet<Label>();
+        Set<Label> result = new HashSet<Label>(); //active labels conflicting with l
         Set<Label> posConflicts = getPosConflictLabels(l); //labels conflicting with given label
         for(Label posLabel : posConflicts) { //for all the conflicting labels...
             if(posLabel.equals(posLabel.getPoint().getActiveLabelPos())) { //...check if label is active
@@ -74,8 +74,8 @@ public class ConflictDetector implements ConflictDetectorInterface {
 
     @Override
     public void removePoint(Point p) {
-        for(Label l : p.getPossibleLabels()) {
-            quadtree.removeLabel(l);
+        for(Label l : p.getPossibleLabels()) { //loop over all labels...
+            quadtree.removeLabel(l); //... and delete them
         }
     }
 
@@ -86,6 +86,8 @@ public class ConflictDetector implements ConflictDetectorInterface {
 
     @Override
     public Set<Label> getPosConflictLabels(Label l) {
-        return quadtree.query(l.getMinX(), l.getMaxX(), l.getMinY(), l.getMaxY());
+        Set<Label> result = quadtree.query(l.getMinX(), l.getMaxX(), l.getMinY(), l.getMaxY()); //query the area of l
+        result.remove(l); //remove the label itself from the result
+        return result;
     }
 }
