@@ -22,7 +22,19 @@ public class Simplex {
     //setting up simplex tableaux (matrix)
     // b contains the values of the constraints
     // c contains the function to maximize
-    public Simplex(int[] c, int[][] A, int[] b) {
+    /*
+     x1 x2 x3 s1 s2 value
+   s1 2  5  7  1  0 1000
+   s2 5  4  3  0  1  800
+   p -2 -3 -5  0  0    0
+    
+    2 5 7 
+    5 4 3 is what gets passed on in A[][]
+    
+    c is the function p = 2 3 5 that is converted to p -2 -3 -5 = 0
+    s1, s2 are the slackvariables, each constraint has a slackvariable
+    */
+    public double Simplex(int[] c, int[][] A, int[] b) {
         this.b = b;
         this.c = c;
         con = b.length;
@@ -36,46 +48,47 @@ public class Simplex {
             } 
         }
         
-       addSlackVariables(t);
+       t = addSlackVariables(t);
        enumerateRowsColumns(t, this.b, this.c); 
      
        compute(); 
-       //--------------------------------
-       //need to return the solution
-      // --------------------------------
+       return t[1+con][1+v+con];// return [p][value]
     }
     
-    private void addSlackVariables(double t[][]) {
-         this.t = t;
+    private double[][] addSlackVariables(double t[][]) {
+       this.t = t;
          for(int i = 0; i < con; i++){
-            t[i+1][1+v+i] = 1.0;
+           this.t[i+1][1+v+i] = 1;
         }
+         return this.t;
+        
     }
-    private void enumerateRowsColumns(double t[][], int b[], int c[]){
+    private double[][] enumerateRowsColumns(double t[][], int b[], int c[]){
            //add on the right side of the matrix the values of the constraints
         this.t = t;
         for(int i = 0; i < con; i++){
-            t[i+1][v+con+1] = b[i];
+            this.t[i+1][v+con+1] = b[i];
           
         }
         //add the function to maximize in the lowest row
         for(int i = 0; i < v; i++){
-            t[con+1][i+1] = c[i];
+            this.t[con+1][i+1] = c[i];
         }
         
         //add in the first row the reference of each possible label
         int labelNr = 0;
         for(int i = 0; i < v; i++){
-            t[0][i+1] = labelNr;
+            this.t[0][i+1] = labelNr;
             labelNr++;
             
         }
         //add the slackvariable references
         int slackNr = 0;
         for(int i = 0; i < con; i++){
-            t[0][1+v+i] = slackNr; 
+            this.t[0][1+v+i] = slackNr; 
             slackNr--; //to avoid confusion with variable references
         }
+        return this.t;
     }
     
     private void compute(){
@@ -88,6 +101,8 @@ public class Simplex {
             int vP = lowestRatio(hP);//vertical pivot
             //Gaussen-Jordan elimination
             gje(hP,vP);
+            
+        
         }
     }
     //initially non optimal solutions contain one or more -1s
@@ -109,15 +124,15 @@ public class Simplex {
         
         for(int i = 0; i < con; i++){
             if(currentLowestRatio == -1){
-                currentLowestRatio =  t[i+1][con+v+1]/t[i+1][c+1]; //first input will be currentLowestRatio, assmued matrix t is not empty
+                currentLowestRatio =  t[i+1][con+v+1]/t[i+1][c]; //first input will be currentLowestRatio, assmued matrix t is not empty
                 index = i+1;
                 continue;
             }
-            else if(t[i+1][c+1] <= 0){
+            else if(t[i+1][c] <= 0){
             continue;
         }
-            else if(t[i+1][con+v+1]/t[i+1][c+1] < currentLowestRatio){
-               currentLowestRatio =  t[i+1][con+v+1]/t[i+1][c+1];
+            else if(t[i+1][con+v+1]/t[i+1][c] < currentLowestRatio){
+               currentLowestRatio =  t[i+1][con+v+1]/t[i+1][c];
                index = i+1;
             } 
        
