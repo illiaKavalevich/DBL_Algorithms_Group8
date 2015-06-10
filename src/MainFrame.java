@@ -40,6 +40,7 @@ public class MainFrame {
     Iterator<Point> iter;
     Algorithm alg;
     ConflictList cL;
+    Quadtree q;
     Timer timer;
     
     public void readInput() {
@@ -48,12 +49,12 @@ public class MainFrame {
         model = "4pos";
         w = 3;
         h = 3;
-        for (int i = 0; i < 20; i++) {
-            for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
                 Random rand = new Random();
-                 int x =rand.nextInt(20);
+                 int x =rand.nextInt(5);
                  Random rand2 = new Random();
-                 int y =rand2.nextInt(20);
+                 int y =rand2.nextInt(5);
                  
                 Point point = new PosPoint(x, y, model, w, h);
                 points.add(point);
@@ -105,10 +106,17 @@ public class MainFrame {
         } else {
             System.out.println(model + " is not a valid model");
         }
-        timer = new Timer(30, alg);
+        timer = new Timer(3, alg);
         timer.start();
+        
         cL = new ConflictList(points, model);
-        alg.setParameters(w, h, points, cL, timer, model);
+        q = new Quadtree();
+        for (Point p : points) {
+            for (Label l : p.possibleLabels) {
+                q.insertLabel(l);
+            }
+        }
+        alg.setParameters(w, h, points, cL, q, timer, model);
         int firstPoint;
         int secondPoint;
         /*Scanner input = new Scanner(System.in);

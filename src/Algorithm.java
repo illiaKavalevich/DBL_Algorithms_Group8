@@ -18,6 +18,7 @@ public abstract class Algorithm {
     int w;
     int h;
     ConflictList cL;
+    Quadtree q;
     Timer timer;
     String model;
 
@@ -25,11 +26,12 @@ public abstract class Algorithm {
         //needed for extending classes
     }
 
-    public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Timer timer, String model) {
+    public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Quadtree q, Timer timer, String model) {
         this.w = w;
         this.h = h;
         this.points = points;
         this.cL = cL;
+        this.q = q;
         this.timer = timer;
         this.model = model;
     }
@@ -48,11 +50,12 @@ public abstract class Algorithm {
     public void removeOverlap() {
         System.out.println("Started to remove overlap");
         while (true) {
-            Label worstLabel = cL.activeLabels.get(0);
+            Label worstLabel = null;
             int worstDegree = 0;
             boolean noMoreOverlap = true;
-            for (Label label : cL.activeLabels) {
-                int labelDegree = cL.getActDegree(label);
+            for (Point p : points) {
+                Label label = p.getActiveLabelPos();
+                int labelDegree = q.getActDegree(label);
                 if (labelDegree > worstDegree) {
                     worstLabel = label;
                     worstDegree = labelDegree;
@@ -60,7 +63,7 @@ public abstract class Algorithm {
                 }
             }
             if (!noMoreOverlap) {
-                cL.removeActiveLabel(worstLabel);
+                q.removeLabel(worstLabel);
                 if ("1slider".equals(model)) {
                     SliderLabel worstSliderLabel = (SliderLabel) worstLabel;
                     worstSliderLabel.deactivate();

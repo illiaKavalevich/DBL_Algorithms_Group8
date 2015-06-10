@@ -30,10 +30,10 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
     }
     
     @Override
-    public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Timer timer, String model) {
+    public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Quadtree q, Timer timer, String model) {
         this.cL = cL;
         this.points = points;
-        decoratedAlgorithm.setParameters(w, h, pointsSubSet, cL, timer, model);
+        decoratedAlgorithm.setParameters(w, h, pointsSubSet, cL, q, timer, model);
     }
     
     /* Gives points a label if there is a label position that has 0 overlap with 

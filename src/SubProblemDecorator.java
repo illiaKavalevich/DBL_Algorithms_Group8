@@ -23,20 +23,20 @@ public class SubProblemDecorator extends AlgorithmDecorator {
     public void determineLabels() {
         while(!pointsSubSet.isEmpty()) {
             determineIndependentSet();
-            decoratedAlgorithm.setParameters(w, h, independentSubSet, cL, timer, model);
+            decoratedAlgorithm.setParameters(w, h, independentSubSet, cL, new Quadtree(), timer, model);
             super.determineLabels();
         }
     }
     
     @Override
-    public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Timer timer, String model) {
+    public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Quadtree q, Timer timer, String model) {
         this.cL = cL;
         this.points = points;
         this.w = w;
         this.h = h;
         this.timer = timer;
         this.model = model;
-        decoratedAlgorithm.setParameters(w, h, independentSubSet, cL, timer, model);
+        decoratedAlgorithm.setParameters(w, h, independentSubSet, cL, q, timer, model);
     }
 
     private void determineIndependentSet() {
