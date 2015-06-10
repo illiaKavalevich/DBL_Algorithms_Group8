@@ -50,18 +50,21 @@ public abstract class Algorithm {
     public void removeOverlap() {
         System.out.println("Started to remove overlap");
         while (true) {
+            System.out.println("removeOverlap loop");
             Label worstLabel = null;
             int worstDegree = 0;
             boolean noMoreOverlap = true;
             for (Point p : points) {
                 Label label = p.getActiveLabelPos();
-                int labelDegree = q.getActDegree(label);
+                int labelDegree = q.getActConflict(label).size();   
+                System.out.println(labelDegree);
                 if (labelDegree > worstDegree) {
                     worstLabel = label;
                     worstDegree = labelDegree;
                     noMoreOverlap = false;
                 }
             }
+            
             if (!noMoreOverlap) {
                 q.removeLabel(worstLabel);
                 if ("1slider".equals(model)) {

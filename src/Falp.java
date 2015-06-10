@@ -22,11 +22,11 @@ public class Falp extends Algorithm {
     public void determineLabels() {
         removeConflicts();
         giveActiveLabel();
-        while (!stop) {
-            localSearch();
-        }
-        removeOverlap();
-        selectBestResult();
+//         while (!stop) {
+         localSearch();
+//         }
+         removeOverlap();
+//         selectBestResult();
     }
 
     @Override
@@ -52,13 +52,12 @@ public class Falp extends Algorithm {
     //otherwise take the label with the least overlap and remove the labels it has overlap with
     //the conflictlist that is used will be empty after this method, so a copy is needed
     public void removeConflicts() {
+        Set<Label> posLabelSet = new HashSet<>();
         Quadtree quadCopy = new Quadtree();
-        int max = 0;                                                            //the number of labels that have to be removed before the quadtree is empty
-        int removeNumber = 0;                                                   //the number of labels that have been removed
         for (Point p : points) {
             for (Label l : p.possibleLabels) {
                 quadCopy.insertLabel(l);
-                max++;
+                posLabelSet.add(l);
             }
         }
         firstNumlabels = 0;
@@ -67,37 +66,45 @@ public class Falp extends Algorithm {
         for (Point point : points) {
             noActiveLabelPoints.add(point);
         }
-        while (removeNumber < max) {
+        while (!posLabelSet.isEmpty()) {
+            System.out.println("loop");
             Label bestLabel = null;
-
-//            System.out.println(clCopy.getPosConflictLabels(bestLabel).size());
             int lowestDegree = Integer.MAX_VALUE;
 
-            for (Point p : points) {
-                for (Label l : p.possibleLabels) {
-                    //System.out.println(clCopy.getPosDegree(l));
-                    if (quadCopy.getPosDegree(l) < lowestDegree) {
-                        bestLabel = l;
-                        lowestDegree = quadCopy.getPosDegree(l);
-                    }
+            for (Label l : posLabelSet) {
+//                System.out.println("degree of l: "+quadCopy.query(l).size());
+//                System.out.println("Quadrant of l: "+l.quadrant);
+                if (quadCopy.query(l).size() < lowestDegree) {
+                    bestLabel = l;
+                    lowestDegree = quadCopy.query(l).size();
+
                 }
+                //System.out.println(quadCopy.getPosDegree(l));
             }
-            //System.out.println("degree of the best label: "+clCopy.getPosDegree(bestLabel));
-            for(Label l : quadCopy.query(bestLabel)){
-                quadCopy.removeLabel(l);
-                removeNumber++;
+//            System.out.println("LowestDegree: " + quadCopy.query(bestLabel).size());
+//            System.out.println("posSet size: " + posLabelSet.size());
+//            System.out.println(bestLabel.minX);
+//            System.out.println(bestLabel.minY);
+
+            for (Label l : quadCopy.query(bestLabel)) {
+                if (l != bestLabel) {
+                    quadCopy.removeLabel(l);                    
+                }
+                posLabelSet.remove(l);
             }
-            for(Label l : bestLabel.getPoint().getPossibleLabels()){
-                quadCopy.removeLabel(l);
-                removeNumber++;
+            for (Label l : bestLabel.getPoint().getPossibleLabels()) {
+                if (l != bestLabel) {
+                    quadCopy.removeLabel(l);     
+                    System.out.println("l!=bestLabel");
+                }
+                posLabelSet.remove(l);
             }
             Point p = bestLabel.getPoint();
             noActiveLabelPoints.remove(p);
             activeLabelPoints.add(p);
             PosLabel newActLabel = p.getActiveLabelPos();
             newActLabel.setLabel(bestLabel.getQuadrant());
-            //added
-            cL.updateActConflicts(newActLabel);
+            //System.out.println(bestLabel.getQuadrant());
             firstNumlabels++;
         }
         for (Point p : points) {
@@ -115,7 +122,7 @@ public class Falp extends Algorithm {
             Label bestLabel = null;
             int bestDegree = Integer.MAX_VALUE;
             for (Label label : point.possibleLabels) {
-                int labelDegree = q.getActDegree(label);
+                int labelDegree = q.getActConflict(label).size();
                 //System.out.println(labelDegree);
                 if (labelDegree < bestDegree) {
                     bestDegree = labelDegree;
@@ -136,13 +143,13 @@ public class Falp extends Algorithm {
         for (Point point : activeLabelPoints) {
             Label bestLabel = null;                                     //this will be the best label of a point
             /*for (Label posLabel : point.getPossibleLabels()) {
-                bestLabel = posLabel;                                       //initialize bestLabel to some random possible label of that point
-            }*/
+             bestLabel = posLabel;                                       //initialize bestLabel to some random possible label of that point
+             }*/
             int bestDegree = Integer.MAX_VALUE;
             for (Label label : point.getPossibleLabels()) {
 
-                int labelDegree = q.getActDegree(label);
-                //System.out.println("degree of possible label: "+labelDegree);
+                int labelDegree = q.getActConflict(label).size();
+                System.out.println("degree of possible label: "+labelDegree);
                 if (labelDegree < bestDegree) {
                     bestLabel = label;                                      //update bestlabel if there is a label with lower degree
                     bestDegree = labelDegree;
