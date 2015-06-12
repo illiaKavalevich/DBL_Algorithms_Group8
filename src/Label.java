@@ -15,6 +15,7 @@ public abstract class Label {
     int h;
     Point p;    //the point this label labels
     int quadrant;
+    boolean active = false;
 
     
     public Label(int w, int h, Point p) {
