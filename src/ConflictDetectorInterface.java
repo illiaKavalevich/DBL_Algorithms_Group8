@@ -1,4 +1,3 @@
-
 import java.util.Set;
 
 /**
@@ -9,7 +8,7 @@ import java.util.Set;
 public interface ConflictDetectorInterface {
     
     /**
-     * Computes the number of labels a given label intersects with
+     * Computes the number of active labels a given label intersects with
      * 
      * @param l
      * @return The number of active labels l overlaps with
@@ -27,6 +26,24 @@ public interface ConflictDetectorInterface {
     public Set<Label> getActConflictLabels(Label l);
     
     /**
+     * Computes the number of possible labels a given label intersects with
+     * 
+     * @param l
+     * @return The number of possible labels l overlaps with
+     * @pre l is not a SliderLabel
+     */
+    public int getPosDegree(Label l);
+    
+    /**
+     * Gets all the possible labels a given label conflicts with and returns them in a Set
+     * 
+     * @param l the Label of interest
+     * @return A set of objects of type Label that l conflicts with.
+     * @pre l is not a SliderLabel
+     */
+    public Set<Label> getPosConflictLabels(Label l);
+    
+    /**
      * Removes a given point and all its associated labels from the data structure
      * 
      * @param p the point to be removed
@@ -40,7 +57,7 @@ public interface ConflictDetectorInterface {
      * 
      * @param p the point to be updated
      */
-    public void updateNotifyPre(Point p);
+    //public void updateNotifyPre(Point p);
     
     /**
      * This method is to be called after a change is made to which label is active,
@@ -49,5 +66,5 @@ public interface ConflictDetectorInterface {
      * 
      * @pre updateNotifyPre is called first
      */
-    public void updateNotifyPost();
+    //public void updateNotifyPost();
 }
