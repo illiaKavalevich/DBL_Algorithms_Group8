@@ -50,35 +50,51 @@ public abstract class Algorithm {
     public void removeOverlap() {
         System.out.println("Started to remove overlap");
         while (true) {
-            System.out.println("removeOverlap loop");
+            //System.out.println("removeOverlap loop");
             Label worstLabel = null;
             int worstDegree = 0;
             boolean noMoreOverlap = true;
             for (Point p : points) {
-                Label label = p.getActiveLabelPos();
-                
-                int labelDegree = cD.getActConflictLabels(label).size();
-                System.out.println(labelDegree);
-                if (labelDegree > worstDegree) {
-                    worstLabel = label;
-                    worstDegree = labelDegree;
-                    noMoreOverlap = false;
-                }
-            }
-
-            if (!noMoreOverlap) {
-                cD.removeLabel(worstLabel);
+                Label label = null;
                 if ("1slider".equals(model)) {
-                    SliderLabel worstSliderLabel = (SliderLabel) worstLabel;
-                    worstSliderLabel.deactivate();
+                    label = p.getActiveLabelSlider();
                 } else {
-                    PosLabel worstPosLabel = (PosLabel) worstLabel;
-                    worstPosLabel.setLabel(0);
+                    for (Label curLabel : p.possibleLabels) {
+                        PosLabel curLabel2 = (PosLabel) curLabel;
+                        if (curLabel2.active == true) {
+                            label = curLabel2;
+                        }
+
+                    }
+                    
+                    if (label != null) {
+
+                        int labelDegree = cD.getActConflictLabels(label).size();
+                        //System.out.println(labelDegree);
+                        if (labelDegree > worstDegree) {
+                            //System.out.println("sup");
+                            worstLabel = label;
+                            worstDegree = labelDegree;
+                            noMoreOverlap = false;
+                        }
+                    }
+                    //System.out.println("worstdegree: " + worstDegree);
                 }
-                numLabels--;
-            } else {
-                break;
             }
+                if (!noMoreOverlap) {
+                    //System.out.println("hier komtie");
+                    cD.removeLabel(worstLabel);
+                    if ("1slider".equals(model)) {
+                        SliderLabel worstSliderLabel = (SliderLabel) worstLabel;
+                        worstSliderLabel.deactivate();
+                    } else {
+                        worstLabel.active = false;;;
+                    }
+                    numLabels--;
+                } else {
+                    break;
+                }
+            
         }
     }
 

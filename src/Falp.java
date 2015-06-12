@@ -67,7 +67,7 @@ public class Falp extends Algorithm {
             noActiveLabelPoints.add(point);
         }
         while (!posLabelSet.isEmpty()) {
-            System.out.println("loop");
+            //System.out.println("loop");
             Label bestLabel = null;
             int lowestDegree = Integer.MAX_VALUE;
 
@@ -95,15 +95,14 @@ public class Falp extends Algorithm {
             for (Label l : bestLabel.getPoint().getPossibleLabels()) {
                 if (l != bestLabel) {
                     quadCopy.removeLabel(l);     
-                    System.out.println("l!=bestLabel");
+                    //System.out.println("l!=bestLabel");
                 }
                 posLabelSet.remove(l);
             }
             Point p = bestLabel.getPoint();
             noActiveLabelPoints.remove(p);
             activeLabelPoints.add(p);
-            PosLabel newActLabel = p.getActiveLabelPos();
-            newActLabel.setLabel(bestLabel.getQuadrant());
+            bestLabel.active = true;
             //System.out.println(bestLabel.getQuadrant());
             firstNumlabels++;
         }
@@ -129,7 +128,7 @@ public class Falp extends Algorithm {
                     bestLabel = label;
                 }
             }
-            point.getActiveLabelPos().setLabel(bestLabel.getQuadrant());
+            bestLabel.active=true;
             activeLabelPoints.add(point);
         }
 
@@ -149,14 +148,17 @@ public class Falp extends Algorithm {
             for (Label label : point.getPossibleLabels()) {
 
                 int labelDegree = cD.getActConflictLabels(label).size();
-                System.out.println("degree of possible label: "+labelDegree);
+                //System.out.println("degree of possible label: "+labelDegree);
                 if (labelDegree < bestDegree) {
                     bestLabel = label;                                      //update bestlabel if there is a label with lower degree
                     bestDegree = labelDegree;
                 }
             }
             if (bestLabel != point.getActiveLabelPos()) {
-                point.getActiveLabelPos().setLabel(bestLabel.getQuadrant());
+                for(Label l:point.possibleLabels){
+                    l.active=false;
+                }    
+                bestLabel.active=true;
                 changed = true;
             }
         }

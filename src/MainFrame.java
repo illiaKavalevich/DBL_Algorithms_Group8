@@ -42,46 +42,45 @@ public class MainFrame {
     Quadtree q;
     ConflictDetector cD;
     Timer timer;
-    
-    int n = 5;
-    int maxGrid = 10;
-    String model = "2pos";
-    
+
+    int n = 1000;
+    int maxGrid = 1000;
+    String model = "4pos";
+
     public void readInput() {
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-        System.out.println("Number of threads that are still running: "+threadSet.size());
+        //System.out.println("Number of threads that are still running: " + threadSet.size());
         //model = "4pos";
-        w = 10;
-        h = 10;
+        w = 30;
+        h = 40;
         
-        for (int i = 0; i < n; i++) {
+        int pointsPlaced = 0;
+        while(pointsPlaced < n) {
             Random rand = new Random();
             int x = rand.nextInt(maxGrid + 1);
             Random rand2 = new Random();
             int y = rand2.nextInt(maxGrid + 1);
-            if (model.equals("1slider")) {
-                Point point = new SliderPoint(x, y, model, w, h);
-                points.add(point);
-            } else {
-                Point point = new PosPoint(x, y, model, w, h);
-                points.add(point);
+            boolean alreadyExists = false;
+            for(Point p : points) {
+                if(p.xCoord == x && p.yCoord == y) {
+                    alreadyExists = true;
+                    break;
+                }
             }
-
-        }
-//        for (int i = 0; i < 23; i++) {
-//            for (int j = 0; j < 23; j++) {
-//                Random rand = new Random();
-//                 int x =rand.nextInt(12);
-//                 Random rand2 = new Random();
-//                 int y =rand2.nextInt(12);
-//                 
-//                Point point = new PosPoint(i, j, model, w, h);
-//                points.add(point);
-//            }
-//        }
-        //Point point1 = new PosPoint(4, 4, model, w, h);
-//            Point point2 = new PosPoint(3, 4, model, w, h);
-//            Point point3 = new PosPoint(4, 6, model, w, h);
+            if (!alreadyExists) {
+                pointsPlaced ++;
+                if (model.equals("1slider")) {
+                    Point point = new SliderPoint(x, y, model, w, h);
+                    points.add(point);
+                } else {
+                    Point point = new PosPoint(x, y, model, w, h);
+                    points.add(point);
+                }
+            }
+       }
+//        Point point1 = new PosPoint(4, 4, model, w, h);
+//        Point point2 = new PosPoint(3, 4, model, w, h);
+//        Point point3 = new PosPoint(4, 6, model, w, h);
 //            Point point4 = new PosPoint(4, 5, model, w, h);
         //Point point5 = new PosPoint(5, 5, model, w, h);
 //        Point point1 = new PosPoint(5, 4, model, w, h);
@@ -106,7 +105,7 @@ public class MainFrame {
 //            Point point8 = new SliderPoint(11, 12, model, w, h);
 //            Point point9 = new SliderPoint(2, 4, model, w, h);
 ////            Point point10 = new SliderPoint(1, 5, model, w, h);
-        //points.add(point1);
+//        points.add(point1);
 //        points.add(point2);
 //        points.add(point3);
 //        points.add(point4);
@@ -117,9 +116,9 @@ public class MainFrame {
 //            points.add(point9);
 //            points.add(point10);
         if (model.equals("2pos")) {
-            alg = new Falp();
+            alg = new ClaimFreeDecorator(new Falp());
         } else if (model.equals("4pos")) {
-            alg = new Falp();
+            alg = new ClaimFreeDecorator(new Falp());
         } else if (model.equals("1slider")) {
             alg = new AnnealingSimulatorSlider();
         } else {
@@ -127,7 +126,7 @@ public class MainFrame {
         }
         timer = new Timer(3, alg);
         timer.start();
-        
+
         //cL = new ConflictList(points, model);
         q = new Quadtree();
         cD = new ConflictDetector(points, model, q);
@@ -192,10 +191,22 @@ public class MainFrame {
 
         //loop over all points to print their values
         if (model.equals("2pos") || model.equals("4pos")) {
+            boolean hasActive = false;
             while (iter.hasNext()) {
                 curPoint = iter.next();
-                System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
-                        + " " + curPoint.getActiveLabelPos().getPlacement());
+                for (Label label : curPoint.possibleLabels) {
+                    PosLabel label2 = (PosLabel) label;
+                    if (label2.active == true) {
+                        hasActive = true;
+                        System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
+                                + " " + label2.getPlacement());
+                        break;
+                    }
+                }
+                if (hasActive == false) {
+                    System.out.println(curPoint.getxCoord() + " " + curPoint.getyCoord()
+                            + " NIL");
+                }
             }
         } else if (model.equals("1slider")) {
             while (iter.hasNext()) {
@@ -221,8 +232,9 @@ public class MainFrame {
      */
     public void plotLabels() {
         int count = 1;
-        XYDataset label;
-        Label l;
+        XYDataset label = null;
+        Label l = null;
+        boolean hasActive = false;
 
         //sets basics for graph display and plot all points
         XYDataset plotPoints = createPointDataSet();
@@ -233,25 +245,34 @@ public class MainFrame {
 
         for (Point point : points) {
             if (model.equals("1slider")) {
+                hasActive = true;
                 label = createSliderLabelDataSet(point.getActiveLabelSlider());
                 l = point.getActiveLabelSlider();
             } else {
-                label = createPosLabelDataSet(point.getActiveLabelPos());
-                l = point.getActiveLabelPos();
+                for (Label curLabel : point.possibleLabels) {
+                    PosLabel curLabel2 = (PosLabel) curLabel;
+                    if (curLabel2.active == true) {
+                        hasActive = true;
+                        label = createPosLabelDataSet(curLabel2);
+                        l = curLabel2;
+                    }
+                }
+                
             }
-
-            XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
-            if (cD.getActDegree(l) == 0) {
-                System.out.println("no conflict");
-                rendererL.setSeriesPaint(0, Color.BLACK);
-            } else {
-                System.out.println("conflict");
-                rendererL.setSeriesPaint(0, Color.RED);
+            if (hasActive == true) {
+                XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
+                if (cD.getActDegree(l) == 0) {
+                    //System.out.println("no conflict");
+                    rendererL.setSeriesPaint(0, Color.BLACK);
+                } else {
+                    System.out.println("conflict");
+                    rendererL.setSeriesPaint(0, Color.RED);
+                }
+                rendererL.setSeriesVisibleInLegend(Boolean.FALSE);
+                plot.setDataset(count, label);
+                plot.setRenderer(count, rendererL);
+                count++;
             }
-            rendererL.setSeriesVisibleInLegend(Boolean.FALSE);
-            plot.setDataset(count, label);
-            plot.setRenderer(count, rendererL);
-            count++;
         }
 
         /* for each point plot the active label
@@ -284,7 +305,6 @@ public class MainFrame {
 //            }
 //            count++;
 //        }
-
         //draw the graph
         JFreeChart chart = new JFreeChart("Label Placement", JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         ChartFrame frame = new ChartFrame("DBL Algorithms", chart);

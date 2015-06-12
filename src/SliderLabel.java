@@ -12,13 +12,13 @@ public class SliderLabel extends Label {
 
     Float placement = (float)0; //returns float number in range [0, 1]
     Float miniX, maxiX;
-    boolean active = true;
 
     //sets the xcoordinates of the label to float for sliding purposes
     public SliderLabel(int w, int h, Point p, int quadrant) {
         super(w, h, p, quadrant);
         miniX = (float) minX;
         maxiX = (float) maxX;
+        active = true;
     }
 
     public Float getPlacement() {
