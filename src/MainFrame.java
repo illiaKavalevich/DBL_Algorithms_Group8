@@ -43,30 +43,40 @@ public class MainFrame {
     ConflictDetector cD;
     Timer timer;
 
-    int n = 100;
-    int maxGrid = 100;
+    int n = 1000;
+    int maxGrid = 1000;
     String model = "4pos";
 
     public void readInput() {
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
         //System.out.println("Number of threads that are still running: " + threadSet.size());
         //model = "4pos";
-        w = 10;
-        h = 5;
-
-        for (int i = 0; i < n; i++) {
+        w = 30;
+        h = 40;
+        
+        int pointsPlaced = 0;
+        while(pointsPlaced < n) {
             Random rand = new Random();
             int x = rand.nextInt(maxGrid + 1);
             Random rand2 = new Random();
             int y = rand2.nextInt(maxGrid + 1);
-            if (model.equals("1slider")) {
-                Point point = new SliderPoint(x, y, model, w, h);
-                points.add(point);
-            } else {
-                Point point = new PosPoint(x, y, model, w, h);
-                points.add(point);
+            boolean alreadyExists = false;
+            for(Point p : points) {
+                if(p.xCoord == x && p.yCoord == y) {
+                    alreadyExists = true;
+                    break;
+                }
             }
-
+            if (!alreadyExists) {
+                pointsPlaced ++;
+                if (model.equals("1slider")) {
+                    Point point = new SliderPoint(x, y, model, w, h);
+                    points.add(point);
+                } else {
+                    Point point = new PosPoint(x, y, model, w, h);
+                    points.add(point);
+                }
+            }
        }
 //        Point point1 = new PosPoint(4, 4, model, w, h);
 //        Point point2 = new PosPoint(3, 4, model, w, h);
@@ -106,9 +116,9 @@ public class MainFrame {
 //            points.add(point9);
 //            points.add(point10);
         if (model.equals("2pos")) {
-            alg = new Falp();
+            alg = new ClaimFreeDecorator(new Falp());
         } else if (model.equals("4pos")) {
-            alg = new Falp();
+            alg = new ClaimFreeDecorator(new Falp());
         } else if (model.equals("1slider")) {
             alg = new AnnealingSimulatorSlider();
         } else {

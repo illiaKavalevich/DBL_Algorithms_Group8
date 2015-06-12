@@ -1,7 +1,7 @@
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
+import java.util.ArrayList;import java.util.HashSet;
+import java.util.Set;
+;
 
 /**
  * This class uses the decorator pattern to claim 'free' labels, labels that are
@@ -11,7 +11,7 @@ import java.util.HashSet;
 
 public class ClaimFreeDecorator extends AlgorithmDecorator {
     int numLabelsClaimed;
-    ArrayList<Point> pointsSubSet;
+    ArrayList<Point> pointsSubSet = new ArrayList<>();
     
     public ClaimFreeDecorator(Algorithm decoratedAlgorithm) {
         super(decoratedAlgorithm);
@@ -19,7 +19,7 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
     
     @Override
     public void determineLabels() {
-        pointsSubSet = new ArrayList<>(points);
+        pointsSubSet.addAll(points);
         numLabelsClaimed = 1; //1 so loop does not terminate immediately
         while(numLabelsClaimed > 0) {
             numLabelsClaimed = 0;
@@ -40,16 +40,22 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
      other possible label positions.
      */
     private void applyRule1() {
+        Set<Point> pointsToBeRemoved = new HashSet<>(); 
         for(Point point : pointsSubSet) { //loop all points
             for(Label label : point.getPossibleLabels()) { //loop all labels
                 if(cD.getPosDegree(label) == 0) {
-                    point.setActiveLabelPos((PosLabel) label);
+                    label.active = true;
                     cD.removePoint(point);
-                    pointsSubSet.remove(point);
+                    pointsToBeRemoved.add(point);
+                    //System.out.println("rule 1 applied");
                     numLabelsClaimed ++;
                     break;
                 }
             }
+        }
+        
+        for(Point p : pointsToBeRemoved) {
+            pointsSubSet.remove(p);
         }
     }
     
@@ -57,6 +63,8 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
     with the other point.
     */
     private void applyRule2() {
+        Set<Point> pointsToBeRemoved = new HashSet<>(); 
+        
         for(Point point : pointsSubSet) { //check rule for every point
             
             //My apologies for the extremely nested statements but this is actually efficient
@@ -69,13 +77,17 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
                             if(cD.getPosDegree(labelNearPoint) == 1) { //if degree of label of nearby point is 1
                                 for(Label label3 : cD.getPosConflictLabels(labelNearPoint)) { //loop over labels conflicting the label of nearby point
                                     //if this label conflicts with a label of the starting point but is not 'label' we've got a winner
-                                    if(label3.getPoint().equals(point) && !label3.equals(label)) { 
+                                    if(label3.getPoint().equals(point) && !label3.equals(label)) {
+                                        System.out.println("rule 2 applied");
+                                        System.out.println(point.xCoord + " " + point.yCoord);
                                         point.setActiveLabelPos((PosLabel) label);
                                         nearPoint.setActiveLabelPos((PosLabel) labelNearPoint);
                                         cD.removePoint(point);
                                         cD.removePoint(nearPoint);
-                                        pointsSubSet.remove(point);
-                                        pointsSubSet.remove(nearPoint);
+                                        pointsToBeRemoved.add(point);
+                                        pointsToBeRemoved.add(nearPoint);
+                                        labelNearPoint.active = true;
+                                        label.active = true;
                                         numLabelsClaimed += 2;
                                         //needs break
                                     }
@@ -85,6 +97,10 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
                     }
                 }
             }
+        }
+        
+        for(Point p : pointsToBeRemoved) {
+            pointsSubSet.remove(p);
         }
     }
 }
