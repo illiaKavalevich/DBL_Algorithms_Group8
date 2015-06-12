@@ -53,7 +53,7 @@ public class Falp extends Algorithm {
     //the conflictlist that is used will be empty after this method, so a copy is needed
     public void removeConflicts() {
         Set<Label> posLabelSet = new HashSet<>();
-        Quadtree quadCopy = new Quadtree();
+        Quadtree2 quadCopy = new Quadtree2();
         for (Point p : points) {
             for (Label l : p.possibleLabels) {
                 quadCopy.insertLabel(l);

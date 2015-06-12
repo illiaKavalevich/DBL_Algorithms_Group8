@@ -26,7 +26,7 @@ public class AlgorithmDecorator extends Algorithm {
     } 
     
     @Override
-    public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Quadtree q, Timer timer, String model) {
+    public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Quadtree2 q, Timer timer, String model) {
         decoratedAlgorithm.setParameters(w, h, points, cL, q, timer, model);
     }
 }

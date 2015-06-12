@@ -30,7 +30,7 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
     }
     
     @Override
-    public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Quadtree q, Timer timer, String model) {
+    public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Quadtree2 q, Timer timer, String model) {
         this.cL = cL;
         this.points = points;
         decoratedAlgorithm.setParameters(w, h, pointsSubSet, cL, q, timer, model);

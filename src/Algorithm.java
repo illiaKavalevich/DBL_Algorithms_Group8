@@ -1,5 +1,7 @@
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -18,7 +20,7 @@ public abstract class Algorithm {
     int w;
     int h;
     ConflictList cL;
-    Quadtree q;
+    Quadtree2 q;
     Timer timer;
     String model;
 
@@ -26,7 +28,7 @@ public abstract class Algorithm {
         //needed for extending classes
     }
 
-    public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Quadtree q, Timer timer, String model) {
+    public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Quadtree2 q, Timer timer, String model) {
         this.w = w;
         this.h = h;
         this.points = points;
@@ -56,7 +58,8 @@ public abstract class Algorithm {
             boolean noMoreOverlap = true;
             for (Point p : points) {
                 Label label = p.getActiveLabelPos();
-                int labelDegree = q.getActConflict(label).size();   
+                
+                int labelDegree = q.getActConflict(label).size();
                 System.out.println(labelDegree);
                 if (labelDegree > worstDegree) {
                     worstLabel = label;
@@ -64,14 +67,15 @@ public abstract class Algorithm {
                     noMoreOverlap = false;
                 }
             }
-            
+
             if (!noMoreOverlap) {
                 q.removeLabel(worstLabel);
                 if ("1slider".equals(model)) {
                     SliderLabel worstSliderLabel = (SliderLabel) worstLabel;
                     worstSliderLabel.deactivate();
                 } else {
-                    worstLabel.getPoint().setActiveLabelPos(new PosLabel(w, h, worstLabel.getPoint(), 0));
+                    PosLabel worstPosLabel = (PosLabel) worstLabel;
+                    worstPosLabel.setLabel(0);
                 }
                 numLabels--;
             } else {

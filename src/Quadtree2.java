@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -6,29 +7,31 @@ import java.lang.Math;
 
 /**
  * This class represents an MX quadtree. Labels are only stored in the nodes.
- * 
+ *
  */
-public class Quadtree {
-    
+public class Quadtree2 {
+
     private Node root; //the root with depth 0
-    
+
     //quadtree reaches from -size to size on x and y axis
     private int size = 16384;
     private int maxDepth = 15; //maxdepth is chosen so that the smallest square is 1x1
-    
+
     //constructor that generates an empty tree with a single root node
-    public Quadtree() {
+    public Quadtree2() {
         root = new Node(0, 0, 0);
     }
-    
+
     //a class that helps to define rectangle in which to search
     private class Rectangle {
+
         //coordinates defining the rectangle
+
         double minX;
         double maxX;
         double minY;
         double maxY;
-        
+
         //constructor for the rectangle
         Rectangle(double minX, double maxX, double minY, double maxY) {
             this.minX = minX;
@@ -36,15 +39,16 @@ public class Quadtree {
             this.minY = minY;
             this.maxY = maxY;
         }
-        
+
         //returns true if a given coordinate is contained in the rectangle (or on the border)
         public boolean contains(double x, double y) {
             return minX <= x && x <= maxX && minY <= y && y <= maxY;
         }
     }
-    
+
     //subclass defining a node in the tree
     public class Node {
+
         double x, y; //middle point of node
         Node NW, NE, SE, SW; //subtrees
         List<Label> labels; //labels in the node
@@ -60,24 +64,24 @@ public class Quadtree {
             this.hasChildren = false;
             this.labels = new ArrayList<>(); //initialize to avoid null pointer exceptions
         }
-        
+
         //adds a label to the node
         public void addLabel(Label l) {
             labels.add(l);
         }
     }
-    
+
     /**
      * This method adds a Label to the data structure
-     * 
+     *
      * @param l the Label to be inserted
      */
     public void insertLabel(Label l) {
-        Rectangle rectLabel = new Rectangle(l.getMinX(), l.getMaxX(), 
+        Rectangle rectLabel = new Rectangle(l.getMinX(), l.getMaxX(),
                 l.getMinY(), l.getMaxY());
         insert(root, l, rectLabel);
     }
-    
+
     //Insert the label in a node as small as possible
     private void insert(Node n, Label l, Rectangle rectLabel) {
         //if we are in a leaf add the label to the leaf
@@ -85,79 +89,68 @@ public class Quadtree {
             n.labels.add(l);
             return; //stop the propagation
         }
-        
+
         //create children if non existent
-        if(!n.hasChildren) {
+        if (!n.hasChildren) {
             n.NW = new Node(n.x + (n.nodeSize / 2), n.y + (n.nodeSize / 2), n.depth + 1);
             n.NE = new Node(n.x - (n.nodeSize / 2), n.y + (n.nodeSize / 2), n.depth + 1);
             n.SE = new Node(n.x - (n.nodeSize / 2), n.y - (n.nodeSize / 2), n.depth + 1);
             n.SW = new Node(n.x + (n.nodeSize / 2), n.y - (n.nodeSize / 2), n.depth + 1);
             n.hasChildren = true;
         }
-        
+
         //propagate the insertion to the right subtree(s)
         if (n.x > l.getMaxX() && n.y < l.getMinY()) {
             insert(n.NW, l, rectLabel);
-        }
-        else if (n.x > l.getMaxX() && n.y > l.getMaxY()) {
+        } else if (n.x > l.getMaxX() && n.y > l.getMaxY()) {
             insert(n.SW, l, rectLabel);
-        }
-        else if (n.x < l.getMinX() && n.y > l.getMaxY()) {
+        } else if (n.x < l.getMinX() && n.y > l.getMaxY()) {
             insert(n.SE, l, rectLabel);
-        }
-        else if (n.x < l.getMinX() && n.y < l.getMinY()) {
+        } else if (n.x < l.getMinX() && n.y < l.getMinY()) {
             insert(n.NE, l, rectLabel);
-        }
-        else{
+        } else {
             n.labels.add(l);
             return;
         }
 
     }
-    
+
     /**
      * This method simply removes a Label
-     * 
+     *
      * @param l label to be removed
      */
     public void removeLabel(Label l) {
-        Rectangle rectLabel = new Rectangle(l.getMinX(), l.getMaxX(), 
+        Rectangle rectLabel = new Rectangle(l.getMinX(), l.getMaxX(),
                 l.getMinY(), l.getMaxY());
         //Note: rectLabel not used a the moment. May be used to stop propagation if entire node is covered by label
         remove(root, l, rectLabel);
     }
-    
+
     /* removes a label from the datastructure by propagating deletion through the
-    tree. At the node that contains the label, the label is deleted. Empty nodes are not deleted. 
-    Very similar to insertion.*/
+     tree. At the node that contains the label, the label is deleted. Empty nodes are not deleted. 
+     Very similar to insertion.*/
     private void remove(Node n, Label l, Rectangle rectLabel) { //Note: rectLabel not used a the moment
-        if(n.labels.contains(l)){
-            n.labels.remove(l);    
+        if (n.labels.contains(l)) {
+            n.labels.remove(l);
             return;
         }
-        
+
         //propagate call to subtree(s)
         if (n.x > l.getMaxX() && n.y < l.getMinY()) {
             remove(n.NW, l, rectLabel);
-        }
-        else if (n.x > l.getMaxX() && n.y > l.getMaxY()) {
+        } else if (n.x > l.getMaxX() && n.y > l.getMaxY()) {
             remove(n.SW, l, rectLabel);
-        }
-        else if (n.x < l.getMinX() && n.y > l.getMaxY()) {
+        } else if (n.x < l.getMinX() && n.y > l.getMaxY()) {
             remove(n.SE, l, rectLabel);
-        }
-        else if (n.x < l.getMinX() && n.y < l.getMinY()) {
+        } else if (n.x < l.getMinX() && n.y < l.getMinY()) {
             remove(n.NE, l, rectLabel);
         }
     }
-    
-    
-    
-    
-    
+
     /**
      * Used to query for labels that (partially) overlap a given rectangle
-     * 
+     *
      * @params coordinates defining a rectangle
      * @return a Set of labels that overlap a given area
      */
@@ -167,13 +160,14 @@ public class Quadtree {
         query(root, rectangle, result);
         return result;
     }
-    
+
     //take the labels from each node until the node that (fully!) contains the rectangle is found
     private void query(Node n, Rectangle rectangle, HashSet<Label> result) {
-        if (n == null) return; //non existent node, always doesnt contain any label
-        
-        for(Label l : n.labels){
-            if(rectangle.minX < l.getMaxX() && rectangle.maxX > l.getMinX() && rectangle.minY < l.getMaxY() && rectangle.maxY > l.getMinY()){
+        if (n == null) {
+            return; //non existent node, always doesnt contain any label
+        }
+        for (Label l : n.labels) {
+            if (rectangle.minX < l.getMaxX() && rectangle.maxX > l.getMinX() && rectangle.minY < l.getMaxY() && rectangle.maxY > l.getMinY()) {
                 result.add(l);
             }
         }
@@ -191,23 +185,31 @@ public class Quadtree {
             query(n.NE, rectangle, result);
         }
     }
-    
+
     //same as query(coordinates)
     public Set<Label> query(Label label) {
         Set<Label> returnSet = query(label.minX, label.maxX, label.minY, label.maxY);
-        returnSet.remove(label);
+        for (Label l : returnSet) {
+            if (label.quadrant == l.quadrant && label.getPoint() == l.getPoint()) {
+                returnSet.remove(l);
+                break;
+            }
+        }
         return returnSet;
     }
-    
-    public Set<Label> getActConflict(Label label){
-        Set<Label> labelSet = query(label.minX, label.maxX, label.minY, label.maxY);
+
+    public Set<Label> getActConflict(Label label) {
+        Set<Label> labelSet = query(label);
         Set<Label> returnSet = new HashSet<>();
-        for(Label l:labelSet){
-            if(l.quadrant == l.getPoint().getActiveLabelPos().quadrant){
+        for (Label l : labelSet) {
+            //System.out.println("label quadrant "+l.quadrant);
+            if (l.minX == l.getPoint().getActiveLabelPos().minX && l.minY == l.getPoint().getActiveLabelPos().minY) {
                 returnSet.add(l);
+                System.out.println("minX: " + l.minX + " minY: " + l.minY + " quadrant: " + l.quadrant);
+                System.out.println("label being checked, minX: " + label.minX + " minY: " + label.minY);
+
                 //System.out.println("active label found" + labelSet.size());
-            }
-            else{
+            } else {
                 //System.out.println("not an active label");
             }
         }

@@ -40,7 +40,7 @@ public class MainFrame {
     Iterator<Point> iter;
     Algorithm alg;
     ConflictList cL;
-    Quadtree q;
+    Quadtree2 q;
     Timer timer;
     
     public void readInput() {
@@ -91,7 +91,7 @@ public class MainFrame {
         points.add(point2);
         points.add(point3);
         points.add(point4);
-//        points.add(point5);
+        points.add(point5);
 //            points.add(point6);
 //            points.add(point7);
 //            points.add(point8);
@@ -110,7 +110,7 @@ public class MainFrame {
         timer.start();
         
         cL = new ConflictList(points, model);
-        q = new Quadtree();
+        q = new Quadtree2();
         for (Point p : points) {
             for (Label l : p.possibleLabels) {
                 q.insertLabel(l);
