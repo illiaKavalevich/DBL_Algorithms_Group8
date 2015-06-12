@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class AlgorithmDecorator extends Algorithm {
     Algorithm decoratedAlgorithm;
-    ConflictList cL;
+    ConflictDetector cD;
     
     public AlgorithmDecorator(Algorithm decoratedAlgorithm) {
         this.decoratedAlgorithm = decoratedAlgorithm;
@@ -26,7 +26,7 @@ public class AlgorithmDecorator extends Algorithm {
     } 
     
     @Override
-    public void setParameters(int w, int h, ArrayList<Point> points, ConflictList cL, Quadtree2 q, Timer timer, String model) {
-        decoratedAlgorithm.setParameters(w, h, points, cL, q, timer, model);
+    public void setParameters(int w, int h, ArrayList<Point> points, ConflictDetector cD, Timer timer, String model) {
+        decoratedAlgorithm.setParameters(w, h, points, cD, timer, model);
     }
 }

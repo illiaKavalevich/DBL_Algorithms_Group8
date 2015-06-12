@@ -122,7 +122,7 @@ public class Falp extends Algorithm {
             Label bestLabel = null;
             int bestDegree = Integer.MAX_VALUE;
             for (Label label : point.possibleLabels) {
-                int labelDegree = q.getActConflict(label).size();
+                int labelDegree = cD.getActConflictLabels(label).size();
                 //System.out.println(labelDegree);
                 if (labelDegree < bestDegree) {
                     bestDegree = labelDegree;
@@ -148,7 +148,7 @@ public class Falp extends Algorithm {
             int bestDegree = Integer.MAX_VALUE;
             for (Label label : point.getPossibleLabels()) {
 
-                int labelDegree = q.getActConflict(label).size();
+                int labelDegree = cD.getActConflictLabels(label).size();
                 System.out.println("degree of possible label: "+labelDegree);
                 if (labelDegree < bestDegree) {
                     bestLabel = label;                                      //update bestlabel if there is a label with lower degree

@@ -50,6 +50,13 @@ public interface ConflictDetectorInterface {
      */
     public void removePoint(Point p);
     
+        /**
+     * Removes a given label from the data structure
+     * 
+     * @param l the label to be removed
+     */
+    public void removeLabel(Label l);
+    
     /**
      * This method is to be called before a change is made to which label is active,
      * and updateNotifyPost is to be called after the update. This allows the data

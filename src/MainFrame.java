@@ -39,8 +39,9 @@ public class MainFrame {
     ArrayList<Point> points = new ArrayList<>();
     Iterator<Point> iter;
     Algorithm alg;
-    ConflictList cL;
-    Quadtree2 q;
+    //ConflictList cL;
+    Quadtree q;
+    ConflictDetector cD;
     Timer timer;
     
     public void readInput() {
@@ -61,9 +62,9 @@ public class MainFrame {
 //            }
 //        }
         Point point1 = new PosPoint(4, 4, model, w, h);
-            Point point2 = new PosPoint(3, 4, model, w, h);
-            Point point3 = new PosPoint(4, 6, model, w, h);
-            Point point4 = new PosPoint(4, 5, model, w, h);
+//            Point point2 = new PosPoint(3, 4, model, w, h);
+//            Point point3 = new PosPoint(4, 6, model, w, h);
+//            Point point4 = new PosPoint(4, 5, model, w, h);
         Point point5 = new PosPoint(5, 5, model, w, h);
 //        Point point1 = new PosPoint(5, 4, model, w, h);
 //            Point point2 = new PosPoint(2, 3, model, w, h);
@@ -88,9 +89,9 @@ public class MainFrame {
 //            Point point9 = new SliderPoint(2, 4, model, w, h);
 ////            Point point10 = new SliderPoint(1, 5, model, w, h);
         points.add(point1);
-        points.add(point2);
-        points.add(point3);
-        points.add(point4);
+//        points.add(point2);
+//        points.add(point3);
+//        points.add(point4);
         points.add(point5);
 //            points.add(point6);
 //            points.add(point7);
@@ -109,14 +110,15 @@ public class MainFrame {
         timer = new Timer(3, alg);
         timer.start();
         
-        cL = new ConflictList(points, model);
-        q = new Quadtree2();
-        for (Point p : points) {
-            for (Label l : p.possibleLabels) {
-                q.insertLabel(l);
-            }
-        }
-        alg.setParameters(w, h, points, cL, q, timer, model);
+        //cL = new ConflictList(points, model);
+        q = new Quadtree();
+        cD = new ConflictDetector(points, model, q);
+//        for (Point p : points) {
+//            for (Label l : p.possibleLabels) {
+//                q.insertLabel(l);
+//            }
+//        }
+        alg.setParameters(w, h, points, cD, timer, model);
         int firstPoint;
         int secondPoint;
         /*Scanner input = new Scanner(System.in);
@@ -202,6 +204,7 @@ public class MainFrame {
     public void plotLabels() {
         int count = 1;
         XYDataset label;
+        Label l;
 
         //sets basics for graph display and plot all points
         XYDataset plotPoints = createPointDataSet();
@@ -213,14 +216,15 @@ public class MainFrame {
         for (Point point : points) {
             if (model.equals("1slider")) {
                 label = createSliderLabelDataSet(point.getActiveLabelSlider());
+                l = point.getActiveLabelSlider();
             } else {
                 label = createPosLabelDataSet(point.getActiveLabelPos());
+                l = point.getActiveLabelPos();
             }
 
             XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
-            if (cL.actConflict.get(label) == null) {
+            if (cD.getActDegree(l) == 0) {
                 System.out.println("no conflict");
-                System.out.println(cL.actConflict.get(label));
                 rendererL.setSeriesPaint(0, Color.BLACK);
             } else {
                 System.out.println("conflict");
@@ -236,32 +240,32 @@ public class MainFrame {
          if it has a conflict with >=1 other active label(s) make the label red
          otherwise black
          */
-        for (Point point : points) {
-            if (model.equals("1slider")) {
-                label = createSliderLabelDataSet(point.getActiveLabelSlider());
-                XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
-                if (cL.actConflict.containsKey(point.getActiveLabelSlider())) {
-                    rendererL.setSeriesPaint(0, Color.RED);
-                } else {
-                    rendererL.setSeriesPaint(0, Color.BLACK);
-                }
-                rendererL.setSeriesVisibleInLegend(Boolean.FALSE);
-                plot.setDataset(count, label);
-                plot.setRenderer(count, rendererL);
-            } else {
-                label = createPosLabelDataSet(point.getActiveLabelPos());
-                XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
-                if (cL.actConflict.containsKey(point.getActiveLabelPos())) {
-                    rendererL.setSeriesPaint(0, Color.RED);
-                } else {
-                    rendererL.setSeriesPaint(0, Color.BLACK);
-                }
-                rendererL.setSeriesVisibleInLegend(Boolean.FALSE);
-                plot.setDataset(count, label);
-                plot.setRenderer(count, rendererL);
-            }
-            count++;
-        }
+//        for (Point point : points) {
+//            if (model.equals("1slider")) {
+//                label = createSliderLabelDataSet(point.getActiveLabelSlider());
+//                XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
+//                if (cD.getActConflictLabels.containsKey(point.getActiveLabelSlider())) {
+//                    rendererL.setSeriesPaint(0, Color.RED);
+//                } else {
+//                    rendererL.setSeriesPaint(0, Color.BLACK);
+//                }
+//                rendererL.setSeriesVisibleInLegend(Boolean.FALSE);
+//                plot.setDataset(count, label);
+//                plot.setRenderer(count, rendererL);
+//            } else {
+//                label = createPosLabelDataSet(point.getActiveLabelPos());
+//                XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
+//                if (cD.getActConflictLabels.containsKey(point.getActiveLabelPos())) {
+//                    rendererL.setSeriesPaint(0, Color.RED);
+//                } else {
+//                    rendererL.setSeriesPaint(0, Color.BLACK);
+//                }
+//                rendererL.setSeriesVisibleInLegend(Boolean.FALSE);
+//                plot.setDataset(count, label);
+//                plot.setRenderer(count, rendererL);
+//            }
+//            count++;
+//        }
 
         //draw the graph
         JFreeChart chart = new JFreeChart("Label Placement", JFreeChart.DEFAULT_TITLE_FONT, plot, true);

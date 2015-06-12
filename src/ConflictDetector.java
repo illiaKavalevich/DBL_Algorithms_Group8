@@ -78,6 +78,11 @@ public class ConflictDetector implements ConflictDetectorInterface {
             quadtree.removeLabel(l); //... and delete them
         }
     }
+    
+    @Override
+    public void removeLabel(Label l) {
+        quadtree.removeLabel(l); 
+    }
 
     @Override
     public int getPosDegree(Label l) {
