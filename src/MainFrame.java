@@ -31,7 +31,6 @@ import org.jfree.data.xy.XYSeriesCollection;
  */
 public class MainFrame {
 
-    String model;
     int w;
     int h;
     int numPoints;
@@ -44,12 +43,31 @@ public class MainFrame {
     ConflictDetector cD;
     Timer timer;
     
+    int n = 5;
+    int maxGrid = 10;
+    String model = "2pos";
+    
     public void readInput() {
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
         System.out.println("Number of threads that are still running: "+threadSet.size());
-        model = "4pos";
+        //model = "4pos";
         w = 10;
         h = 10;
+        
+        for (int i = 0; i < n; i++) {
+            Random rand = new Random();
+            int x = rand.nextInt(maxGrid + 1);
+            Random rand2 = new Random();
+            int y = rand2.nextInt(maxGrid + 1);
+            if (model.equals("1slider")) {
+                Point point = new SliderPoint(x, y, model, w, h);
+                points.add(point);
+            } else {
+                Point point = new PosPoint(x, y, model, w, h);
+                points.add(point);
+            }
+
+        }
 //        for (int i = 0; i < 23; i++) {
 //            for (int j = 0; j < 23; j++) {
 //                Random rand = new Random();
@@ -61,11 +79,11 @@ public class MainFrame {
 //                points.add(point);
 //            }
 //        }
-        Point point1 = new PosPoint(4, 4, model, w, h);
+        //Point point1 = new PosPoint(4, 4, model, w, h);
 //            Point point2 = new PosPoint(3, 4, model, w, h);
 //            Point point3 = new PosPoint(4, 6, model, w, h);
 //            Point point4 = new PosPoint(4, 5, model, w, h);
-        Point point5 = new PosPoint(5, 5, model, w, h);
+        //Point point5 = new PosPoint(5, 5, model, w, h);
 //        Point point1 = new PosPoint(5, 4, model, w, h);
 //            Point point2 = new PosPoint(2, 3, model, w, h);
 //            Point point3 = new PosPoint(1, 6, model, w, h);
@@ -88,11 +106,11 @@ public class MainFrame {
 //            Point point8 = new SliderPoint(11, 12, model, w, h);
 //            Point point9 = new SliderPoint(2, 4, model, w, h);
 ////            Point point10 = new SliderPoint(1, 5, model, w, h);
-        points.add(point1);
+        //points.add(point1);
 //        points.add(point2);
 //        points.add(point3);
 //        points.add(point4);
-        points.add(point5);
+        //points.add(point5);
 //            points.add(point6);
 //            points.add(point7);
 //            points.add(point8);
