@@ -18,6 +18,7 @@ public class Simplex {
     private int v; //number of variables
     private int[] b;
     private int[] c;
+    private double[] result;
     
     //setting up simplex tableaux (matrix)
     // b contains the values of the constraints
@@ -31,12 +32,13 @@ public class Simplex {
     2 5 7 
     5 4 3 is what gets passed on in A[][]
     
-    c is the function p = 2 3 5 that is converted to p -2 -3 -5 = 0
+    c is the function p = 2 3 5 that is to p -2 -3 -5 
     s1, s2 are the slackvariables, each constraint has a slackvariable
     */
-    public double Simplex(int[] c, int[][] A, int[] b) {
+    public double[] Simplex(int[] c, int[][] A, int[] b) {
+        result = new double[v+1];
         this.b = b;
-        this.c = c;
+        this.c = c; 
         con = b.length;
         v = c.length;
         t = new double[1+con+1][1+con+v+1]; //con+v is the original variables + slack variables
@@ -52,10 +54,11 @@ public class Simplex {
        enumerateRowsColumns(t, this.b, this.c); 
      
        compute(); 
-       return t[1+con][1+v+con];// return [p][value]
+       
+       return makeResult();
     }
     
-    private double[][] addSlackVariables(double t[][]) {
+    private double[][] addSlackVariables(double[][] t) {
        this.t = t;
          for(int i = 0; i < con; i++){
            this.t[i+1][1+v+i] = 1;
@@ -63,7 +66,8 @@ public class Simplex {
          return this.t;
         
     }
-    private double[][] enumerateRowsColumns(double t[][], int b[], int c[]){
+    private double[][] enumerateRowsColumns(double[][] t, int[] b, int[] c){
+       
            //add on the right side of the matrix the values of the constraints
         this.t = t;
         for(int i = 0; i < con; i++){
@@ -72,11 +76,13 @@ public class Simplex {
         }
         //add the function to maximize in the lowest row
         for(int i = 0; i < v; i++){
-            this.t[con+1][i+1] = c[i];
+            this.t[con+1][i+1] = -c[i];
         }
+         //set initial value of the function to be 0
+        this.t[1+con][1+con+v] = 0;
         
         //add in the first row the reference of each possible label
-        int labelNr = 0;
+        double labelNr = 0;
         for(int i = 0; i < v; i++){
             this.t[0][i+1] = labelNr;
             labelNr++;
@@ -126,10 +132,10 @@ public class Simplex {
             if(currentLowestRatio == -1){
                 currentLowestRatio =  t[i+1][con+v+1]/t[i+1][c]; //first input will be currentLowestRatio, assmued matrix t is not empty
                 index = i+1;
-                continue;
+                continue;//next iteration
             }
             else if(t[i+1][c] <= 0){
-            continue;
+            continue;//next iteration
         }
             else if(t[i+1][con+v+1]/t[i+1][c] < currentLowestRatio){
                currentLowestRatio =  t[i+1][con+v+1]/t[i+1][c];
@@ -153,13 +159,25 @@ public class Simplex {
                 
             }
         }
-        if(t[p][q] != 0){ //scale the row
+        if(t[p][q] != 0){ //scale the pivot row
             for(int n = 0; n < v; n++){
                 t[p][n+1] = t[p][n+1]/t[p][q];
                
             }
         }
         t[p][0] = t[0][q]; //replace (slack)variable with the variable in t[0][q] in which column the elemination was done
+    }
+    
+    private double[] makeResult(){
+
+        for(int i = 0; i < con; i++){
+            result[(int)t[i+1][0]] = t[i+1][1+con+v];
+            
+        }
+        result[v] = this.t[1+con][1+con+v]; //add function value
+        
+        return result;
+        
     }
     
    

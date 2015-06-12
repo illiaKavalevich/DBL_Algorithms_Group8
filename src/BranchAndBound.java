@@ -19,15 +19,23 @@ public abstract class BranchAndBound extends Algorithm implements ConflictDetect
     ArrayList<Double> b = new ArrayList<Double>();
     ArrayList<Double> c = new ArrayList<Double>();
     int numberOfLabels;
-    double[][] currentVarValues;
+    int numberOfLabelsPerPoint;
+    double[] currentVarValues;
     HashMap<Integer, Integer> labelPositions = new HashMap<>();
     ArrayList<Label> labelList = new ArrayList();
     HashMap<Integer, Boolean> alreadyConstrained = new HashMap<>();
     
-    //Parameters are set via SetParameters
     public BranchAndBound() {
         setNumberOfLabels();
         buildTableau();
+    }
+    
+    /*
+     * This method solves the integer program recursively
+     */
+    public void solve() {
+        
+  
     }
     
     /*
@@ -91,7 +99,6 @@ public abstract class BranchAndBound extends Algorithm implements ConflictDetect
             
             for (Label l : p.getPossibleLabels()) { //iterate over labels within that point
                 variableIndex++; //update the variable position
-                Point curPoint = l.getPoint();
                 int tempLabelPos = getLabelPosition(l);
                 Set<Label> conflicts = getPosConflictLabels(l);
                 int[] tempPositions = new int[conflicts.size()];
@@ -125,13 +132,54 @@ public abstract class BranchAndBound extends Algorithm implements ConflictDetect
         }
     }
     
-    public void rebuildTableau(double[] currentVars) {
+    public void rebuildTableau() {
+        int variableIndex = 0; //this index will be used to build the tableau of restrictions
         
+        for(Point p : points) {
+            
+            ArrayList<Integer> pointLabels = new ArrayList<>(); //will be used to store labels per point (list in more convenient)
+            
+            for (Label l : p.getPossibleLabels()) { //iterate over labels within that point
+                
+                
+                
+                variableIndex++; //update the variable position
+                int tempLabelPos = getLabelPosition(l);
+                Set<Label> conflicts = getPosConflictLabels(l);
+                int[] tempPositions = new int[conflicts.size()];
+                if(conflicts.size() > 0) { //we have conflicts for labels in this point
+                    int conflictIndex = 0;
+                    for(Label conflictLabel : conflicts) { //iterate over those conflicting labels
+                       int tempConfLabelPos = getLabelPosition(conflictLabel);
+                       tempPositions[conflictIndex] = getLabelPosition(conflictLabel); //add to list of temporary positions, used to create a constraint ruel
+                       int hashCode = cantorPair(tempLabelPos, tempConfLabelPos); //create the hashcode for the label and the conflicting label
+                       alreadyConstrained.put(hashCode, true); //put the already linked labels in a hashmap so we don't create duplicates
+                       conflictIndex++;
+                    }
+                }
+
+                // Here we will build the actual constraints for conflicting labels
+                 for(int pos : tempPositions) {
+                    if(!alreadyConstrained.containsKey(cantorPair(tempLabelPos, pos))) { //first check if we don't already have the same constraint
+                        ArrayList<Integer> labelPosPair = new ArrayList<>();
+                        labelPosPair.add(tempLabelPos);
+                        labelPosPair.add(pos);
+                        addNewConstraint(labelPosPair); //add the actual constraint
+                    }
+                 }
+                // We also have to keep track of the labels per point
+                // Every point needs a constraint such that only label can be placed
+                pointLabels.add(tempLabelPos);
+            }
+            
+            // Create a constraint per point to force maximum one placed label
+            addNewConstraint(pointLabels);
+        }
     }
     
     protected final void setNumberOfLabels() {
         int numberOfPoints = points.size();
-        int numberOfLabelsPerPoint = points.get(0).possibleLabels.size();
+        numberOfLabelsPerPoint = points.get(0).possibleLabels.size();
         numberOfLabels = numberOfPoints * numberOfLabelsPerPoint;
     }
     
@@ -145,11 +193,7 @@ public abstract class BranchAndBound extends Algorithm implements ConflictDetect
     public void addNewConstraint(ArrayList<Integer> labelPosPair) {
         double[] tempLine = new double[getNumberOfLabels()]; //store new temp constraint rule
         for(int varIndex = 0; varIndex < getNumberOfLabels(); varIndex++) {
-            if(labelPosPair.contains(varIndex)) {
-                tempLine[varIndex] = 1;
-            } else {
-                tempLine[varIndex] = 0;
-            }
+            tempLine[varIndex] = labelPosPair.contains(varIndex) ? 1 : 0;
         }
         t.add(tempLine); //add the constraint rule to the tableau
         c.add((double) 1); //add the constraint value too
