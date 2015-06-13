@@ -12,13 +12,14 @@
  * It's used as a helper algorithm in the exhaustive branch-and-bound algorithm
  */
 public class Simplex {
-    
+    private static final double EPSILON = 1.0E-10;
     private double[][] t; //tableaux
     private int con; //number of constraints
     private int v; //number of variables
     private int[] b;
     private int[] c;
     private double[] result;
+    private int[] basis;
     
     //setting up simplex tableaux (matrix)
     // b contains the values of the constraints
@@ -52,11 +53,17 @@ public class Simplex {
         
        t = addSlackVariables(t);
        enumerateRowsColumns(t, this.b, this.c); 
+       
+       basis = new int[con];
+       for (int i = 0; i < con; i++){
+           //basis[i] = v + i; //no idea why
+           basis[i] = i;
+       }
      
        compute(); 
        
-       makeResult();
-
+       //makeResult();
+       assert check(A,b,c);
     }
     
     private double[][] addSlackVariables(double[][] t) {
@@ -110,6 +117,8 @@ public class Simplex {
             //Gaussen-Jordan elimination
             gje(hP,vP);
             
+            //
+            basis[vP-1] = hP-1; //undo +1 from getLowest and lowestRatio
         
         }
     }
@@ -168,7 +177,159 @@ public class Simplex {
         }
         t[p][0] = t[0][q]; //replace (slack)variable with the variable in t[0][q] in which column the elemination was done
     }
+    public double valueFunction(){
+        
+        return t[1+con][1+con+v];
+    }
     
+    public double[] primalSol(){
+        double[] a = new double[v];
+        for (int i = 0; i < con; i++){
+            if(basis[i] < v){
+                a[basis[i]] = t[i][1+con+v];
+            }
+        }
+        return a;
+    }
+    public double[] dual(){
+        double[] b = new double[con];
+        for(int i = 0; i < con; i++){
+            b[i] = t[1+con][1+i];
+        }
+        return b;
+    }
+    
+     // is the solution primal feasible?
+    private boolean isPrimalFeasible(int[][] A, int[] b) {
+        double[] x = primalSol();
+
+        // check that x >= 0
+        for (int j = 0; j < x.length; j++) {
+            if (x[j] < 0.0) {
+                System.out.println("x[" + j + "] = " + x[j] + " is negative");
+                return false;
+            }
+        }
+
+        // check that Ax <= b
+        for (int i = 0; i < con; i++) {
+            double sum = 0.0;
+            for (int j = 0; j < v; j++) {
+                sum += A[i][j] * x[j];
+            }
+            if (sum > b[i] + EPSILON) {
+                System.out.println("not primal feasible");
+                System.out.println("b[" + i + "] = " + b[i] + ", sum = " + sum);
+                return false;
+            }
+        }
+        return true;
+    }
+     // is the solution dual feasible?
+    private boolean isDualFeasible(int[][] A, int[] c) {
+        double[] y = dual();
+
+        // check that y >= 0
+        for (int i = 0; i < y.length; i++) {
+            if (y[i] < 0.0) {
+                System.out.println("y[" + i + "] = " + y[i] + " is negative");
+                return false;
+            }
+        }
+
+        // check that yA >= c
+        for (int j = 0; j < v; j++) {
+            double sum = 0.0;
+            for (int i = 0; i < con; i++) {
+                sum += A[i][j] * y[i];
+            }
+            if (sum < c[j] - EPSILON) {
+                System.out.println("not dual feasible");
+                System.out.println("c[" + j + "] = " + c[j] + ", sum = " + sum);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // check that optimal value = cx = yb
+    private boolean isOptimal(int[] b, int[] c) {
+        double[] x = primalSol();
+        double[] y = dual();
+        double value = valueFunction();
+
+        // check that value = cx = yb
+        double value1 = 0.0;
+        for (int j = 0; j < x.length; j++)
+            value1 += c[j] * x[j];
+        double value2 = 0.0;
+        for (int i = 0; i < y.length; i++)
+            value2 += y[i] * b[i];
+        if (Math.abs(value - value1) > EPSILON || Math.abs(value - value2) > EPSILON) {
+            System.out.println("value = " + value + ", cx = " + value1 + ", yb = " + value2);
+            return false;
+        }
+
+        return true;
+    }
+    
+    
+     private boolean check(int[][] A, int[] b, int[] c) {
+        return isPrimalFeasible(A, b) && isDualFeasible(A, c) && isOptimal(b, c);
+    }
+
+     // print tableaux
+    public void show() {
+        System.out.println("con = " + con);
+        System.out.println("v = " + v);
+        for (int i = 0; i <= con; i++) {
+            for (int j = 0; j <= con + v; j++) {
+                System.out.printf("%7.2f ", t[i+1][j+1]);
+            }
+            System.out.println();
+        }
+        System.out.println("value = " + valueFunction());
+        for (int i = 0; i < con; i++)
+            if (basis[i] < v) System.out.println("x_" + basis[i] + " = " + t[i+1][1+con+v]);
+        System.out.println();
+    }
+    
+    public static void test(double[][] A, double[] b, double[] c) {
+        SimplexOri lp = new SimplexOri(A, b, c);
+        System.out.println("value = " + lp.value());
+        double[] x = lp.primal();
+        for (int i = 0; i < x.length; i++)
+            System.out.println("x[" + i + "] = " + x[i]);
+        double[] y = lp.dual();
+        for (int j = 0; j < y.length; j++)
+            System.out.println("y[" + j + "] = " + y[j]);
+    }
+
+    public static void test1() {
+        double[][] A = {
+            { -1,  1,  0 },
+            {  1,  4,  0 },
+            {  2,  1,  0 },
+            {  3, -4,  0 },
+            {  0,  0,  1 },
+        };
+        double[] c = { 1, 1, 1 };
+        double[] b = { 5, 45, 27, 24, 4 };
+        test(A, b, c);
+    }
+    
+      // x0 = 12, x1 = 28, opt = 800
+    public static void test2() {
+        double[] c = {  13.0,  23.0 };
+        double[] b = { 480.0, 160.0, 1190.0 };
+        double[][] A = {
+            {  5.0, 15.0 },
+            {  4.0,  4.0 },
+            { 35.0, 20.0 },
+        };
+        test(A, b, c);
+    }
+     
     public void makeResult(){
 
         for(int i = 0; i < con; i++){
@@ -179,13 +340,9 @@ public class Simplex {
         System.out.println("size of result: " + result.length + " v: " + v);
     }
     
-    public double[] returnResult(){
-
-        return result;
-        
-    }
+   
     
-    public static void main(String args[]) {
+   /* public static void main(String args[]) {
         int[] c = new int[4];
         c[0] = c[1] = c[2] = 0;
         c[3] = 5;
@@ -202,6 +359,13 @@ public class Simplex {
         for(double res : result) {
             System.out.println(res + "-");
         }
-    } 
+    }
+    */
+     public static void main(String[] args) {
+
+        test1();
+         //test2();
+
+    }
    
 }
