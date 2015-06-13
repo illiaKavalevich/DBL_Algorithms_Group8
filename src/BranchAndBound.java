@@ -15,7 +15,7 @@ import java.util.Set;
  * This algorithm will give optimal solutions for the label placement problem
  * It makes use of the optimization algorithm "Simplex"
  */
-public abstract class BranchAndBound extends Algorithm implements ConflictDetectorInterface {
+public abstract class BranchAndBound extends Algorithm {
 
     int numberOfLabels;
     int numberOfLabelsPerPoint;
@@ -25,27 +25,31 @@ public abstract class BranchAndBound extends Algorithm implements ConflictDetect
     double[] b; //will contain the constraints values in array form
     double[] c; //will contain the target function constants in array form
     int nextLabel = 0; //the label that will be looked at next
-    int currentRelaxationValue; //contains the highest solution so far
+    double currentRelaxationValue; //contains the highest solution so far
     ArrayList<double[]> tableau = new ArrayList<>(); //tableau builder ArrayList 
     ArrayList<Integer> cValues = new ArrayList<>(); //constraints values builder  ArrayList
     ArrayList<Integer> targetValues = new ArrayList<>(); //target function values builder ArrayList
-    HashMap<Integer, Integer> labelPositions = new HashMap<>();
-    HashMap<Integer, Integer> pointPositions = new HashMap<>();
-    ArrayList<Label> labelList = new ArrayList();
-    HashMap<Integer, Boolean> alreadyConstrained = new HashMap<>();
-    SimplexOri simplex; // Placeholder for the simplex algorithm object
-    Boolean finished = false;
+    HashMap<Integer, Integer> labelPositions = new HashMap<>(); //used to obtain unique identifiers for labels
+    HashMap<Integer, Integer> pointPositions = new HashMap<>(); //used to obtain unique identifiers for points
+    ArrayList<Label> labelList = new ArrayList(); //list of all labels
+    HashMap<Integer, Boolean> alreadyConstrained = new HashMap<>(); //this hashmap contains pairs of already constrained variables
+    SimplexOri simplex; // placeholder for the simplex algorithm object
+    Boolean finished = false; // state of the algorithm
+    Quadtree2 quadTree;
     
     public BranchAndBound() {
+        super();
         setNumberOfLabels();
         initCurVarValues();
         buildInitialTableau();
+        solve();
+        setActiveLabels();
     }
     
     /*
      * This method solves the integer program recursively
      */
-    public void solve() {
+    public final void solve() {
         
         while(!finished()) {
             addNewEqualityConstraint(nextLabel, 0);
@@ -54,21 +58,34 @@ public abstract class BranchAndBound extends Algorithm implements ConflictDetect
             double[] relaxationLeft = simplex.getPrimalResult();
             boolean feasibleOne = fathomTest(relaxationLeft);
 
-            addNewEqualityConstraint(nextLabel, 0);
+            addNewEqualityConstraint(nextLabel, 1);
             rebuildTableau();
             simplex = new SimplexOri(t, b, c);
             double[] relaxationRight = simplex.getPrimalResult();
             boolean feasibleTwo = fathomTest(relaxationRight);
             
-            if(relaxationLeft[relaxationLeft.length - 1] >= relaxationRight[relaxationLeft.length - 1]) {
+            if(relaxationLeft[relaxationLeft.length - 1] >= relaxationRight[relaxationRight.length - 1]) {
                 setVariable(labelList.get(nextLabel), 0);
+                setCurrentRelaxationValue(relaxationLeft[relaxationLeft.length - 1]);
             } else {
                 setVariable(labelList.get(nextLabel), 1);
+                setCurrentRelaxationValue(relaxationRight[relaxationRight.length - 1]);
             }
         }
+    }
+    
+  /*
+     * This method solves the integer program recursively
+     */
+    public final void setActiveLabels() {
         
-        
-
+        for(int pointIndex = 0; pointIndex < currentVarValues.length; pointIndex++) {
+            for(int labelIndex = 0; labelIndex < currentVarValues[pointIndex].length - 1; labelIndex++) {
+                int labelPosition = pointIndex * numberOfLabelsPerPoint + labelIndex;
+                Label label = labelList.get(labelPosition);
+                label.active = true;
+            }
+        }
     }
     
     /*
@@ -76,7 +93,7 @@ public abstract class BranchAndBound extends Algorithm implements ConflictDetect
      * All var values are set to 5. 5 is the default value and means a variable is unset (since we have an integer array)
      * The default value of an int array element is 0, but this doesn't work out for us because 0 is a feasible value too
      */
-    public void initCurVarValues() {
+    public final void initCurVarValues() {
         currentVarValues = new int[numberOfPoints][numberOfLabelsPerPoint];
         Arrays.fill(currentVarValues, 5);
     }
@@ -172,7 +189,7 @@ public abstract class BranchAndBound extends Algorithm implements ConflictDetect
             nextLabel = getLabelPosition(label, false) + 1;
         }
         if(nextLabel + 1 >= numberOfLabels) {
-            //finish();
+            finish();
         }
     }
     
@@ -192,6 +209,17 @@ public abstract class BranchAndBound extends Algorithm implements ConflictDetect
         
         int variableIndex = 0; //this index will be used to build the tableau of constraints
         
+        quadTree = new Quadtree2();
+        
+        // Build quadtree
+        for (Point p : points) {
+            for (Label l : p.possibleLabels) {
+                quadTree.insertLabel(l);
+            }
+        }
+        
+        // Iterate over points/labels again, this time to create constraints primarily based on conflicts
+        
         for(Point p : points) {
             
             ArrayList<Integer> pointLabels = new ArrayList<>(); //will be used to store labels per point (list in more convenient)
@@ -199,7 +227,7 @@ public abstract class BranchAndBound extends Algorithm implements ConflictDetect
             for (Label l : p.getPossibleLabels()) { //iterate over labels within that point
                 variableIndex++; //update the variable position
                 int tempLabelPos = getLabelPosition(l, false);
-                Set<Label> conflicts = getPosConflictLabels(l);
+                Set<Label> conflicts = quadTree.getActConflict(l);
                 int[] tempPositions = new int[conflicts.size()];
                 if(conflicts.size() > 0) { //we have conflicts for labels in this point
                     int conflictIndex = 0;
@@ -262,7 +290,7 @@ public abstract class BranchAndBound extends Algorithm implements ConflictDetect
             for (Label l : p.getPossibleLabels()) { //iterate over labels within that point
                 variableIndex++; //update the variable position
                 int tempLabelPos = getLabelPosition(l, false);
-                Set<Label> conflicts = getPosConflictLabels(l);
+                Set<Label> conflicts = quadTree.getActConflict(l);
                 int[] tempPositions = new int[conflicts.size()];
                 if(conflicts.size() > 0) { //we have conflicts for labels in this point
                     int conflictIndex = 0;
@@ -388,6 +416,13 @@ public abstract class BranchAndBound extends Algorithm implements ConflictDetect
     }
     
     /*
+     * Set the value of the current IP relaxation
+     */
+    public void setCurrentRelaxationValue(double relax) {
+        currentRelaxationValue = relax;
+    }
+    
+    /*
      * Test to determine whether or not solution should be fathomed 
      */
     public boolean fathomTest(double[] solution) {
@@ -415,8 +450,6 @@ public abstract class BranchAndBound extends Algorithm implements ConflictDetect
         }
         return true;
     }
-    
-    
 
     public double[][] convertTableauToArray(ArrayList<double[]> al) {
          return (double[][]) al.toArray(new double[al.size()][al.get(0).length]); //convert our tableau to a real array
