@@ -35,12 +35,12 @@ public class Simplex {
     c is the function p = 2 3 5 that is to p -2 -3 -5 
     s1, s2 are the slackvariables, each constraint has a slackvariable
     */
-    public double[] Simplex(int[] c, int[][] A, int[] b) {
-        result = new double[v+1];
+    public Simplex(int[] c, int[][] A, int[] b) {
         this.b = b;
         this.c = c; 
         con = b.length;
         v = c.length;
+        result = new double[v+1];
         t = new double[1+con+1][1+con+v+1]; //con+v is the original variables + slack variables
                                         // + 1 is for the not basisvariables 
         for(int i = 0; i < con; i++){
@@ -55,7 +55,8 @@ public class Simplex {
      
        compute(); 
        
-       return makeResult();
+       makeResult();
+
     }
     
     private double[][] addSlackVariables(double[][] t) {
@@ -100,6 +101,7 @@ public class Simplex {
     private void compute(){
         while(true){
          
+            System.out.println("-");
             //find lowest value of last row (most negative value, derived from function to maximize
             int hP = getLowest();//horizontal pivot
             if (hP == -1) break; //optimal solution: there are no more negative values in the last row. Done with computing
@@ -151,12 +153,11 @@ public class Simplex {
         double x = 0;
         double y = 0;
         for(int i = 0; i < con; i++){
-            if(i+1!= p){ // if its not the pivot row
-            x = t[i+1][q]/t[p][q]; // t[i+1][q]-t[p][q]x = 0
-            for(int j = 0; j < v; j++){
-                t[i+1][j+1] = t[i+1][j+1] - t[p][j+1]*x; //subtract row [p]x times from row i+1
+            if(i+1!= p) { // if its not the pivot row
+                x = t[i+1][q]/t[p][q]; // t[i+1][q]-t[p][q]x = 0
+                for(int j = 0; j < v; j++) {
+                    t[i+1][j+1] = t[i+1][j+1] - t[p][j+1]*x; //subtract row [p]x times from row i+1
                 }
-                
             }
         }
         if(t[p][q] != 0){ //scale the pivot row
@@ -168,17 +169,39 @@ public class Simplex {
         t[p][0] = t[0][q]; //replace (slack)variable with the variable in t[0][q] in which column the elemination was done
     }
     
-    private double[] makeResult(){
+    public void makeResult(){
 
         for(int i = 0; i < con; i++){
             result[(int)t[i+1][0]] = t[i+1][1+con+v];
             
         }
         result[v] = this.t[1+con][1+con+v]; //add function value
-        
+        System.out.println("size of result: " + result.length + " v: " + v);
+    }
+    
+    public double[] returnResult(){
+
         return result;
         
     }
     
+    public static void main(String args[]) {
+        int[] c = new int[4];
+        c[0] = c[1] = c[2] = 0;
+        c[3] = 5;
+        int[] b = new int[1];
+        b[0] = 4;
+        int[][] t = new int[1][4];
+        t[0][0] = 1;
+        t[0][1] = 2;
+        t[0][2] = 1;
+        t[0][3] = 4;
+        
+        Simplex simplex = new Simplex(c, t, b);
+        double[] result = simplex.returnResult();
+        for(double res : result) {
+            System.out.println(res + "-");
+        }
+    } 
    
 }
