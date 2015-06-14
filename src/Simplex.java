@@ -20,7 +20,7 @@ public class Simplex {
     private int[] b;
     private int[] c;
     private double[] result;
-    private int[] basis;
+  
     
     //setting up simplex tableaux (matrix)
     // b contains the values of the constraints
@@ -54,20 +54,18 @@ public class Simplex {
         
        t = addSlackVariables(t);
        enumerateRowsColumns(t, this.b, this.c); 
-       /* //used for testing matrix
+      /*  //used for testing matrix
        for(int i = 0; i < 1+con+1; i++){
            for(int j = 0; j < 1 + con + v + 1; j++){
                System.out.print(t[i][j] + " ");
              
            }
              System.out.println("\n");
-       } */
-       
-       basis = new int[con];
-       for (int i = 0; i < con; i++){
-           //basis[i] = v + i; //no idea why
-           basis[i] = v+i;
-       }
+       } 
+       System.out.println(getLowest());
+       System.out.println(lowestRatio(getLowest()));
+       */
+      
      
      compute(); 
        
@@ -129,7 +127,7 @@ public class Simplex {
             gje(vP,hP);
             
             //
-            basis[vP-1] = hP-1; //undo +1 from getLowest and lowestRatio
+            //basis[vP-1] = hP-1; //undo +1 from getLowest and lowestRatio
         
         }
     } 
@@ -322,7 +320,10 @@ public class Simplex {
         }
         System.out.println("value = " + valueFunction());
         for (int i = 0; i < con; i++)
-            if (basis[i] < v) System.out.println("x_" + basis[i] + " = " + t[i+1][1+con+v]);
+        
+           if(t[1+i][1+con+v] < v){
+               System.out.println("x_" + t[1+i][0] + " = " + t[i+1][1+con+v]);
+           } 
         System.out.println();
     }
     
