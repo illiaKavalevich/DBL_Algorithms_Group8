@@ -48,7 +48,7 @@ public abstract class Algorithm {
     public abstract void determineLabels();
 
     public void removeOverlap() {
-        System.out.println("Started to remove overlap");
+        //System.out.println("Started to remove overlap");
         while (true) {
             //System.out.println("removeOverlap loop");
             Label worstLabel = null;
