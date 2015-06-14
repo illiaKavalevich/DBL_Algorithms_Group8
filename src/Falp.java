@@ -54,13 +54,7 @@ public class Falp extends Algorithm {
     //the conflictlist that is used will be empty after this method, so a copy is needed
     public void removeConflicts() {
         Set<Label> posLabelSet = new HashSet<>();
-        Quadtree2 quadCopy = new Quadtree2();
-        for (Point p : points) {
-            for (Label l : p.possibleLabels) {
-                quadCopy.insertLabel(l);
-                posLabelSet.add(l);
-            }
-        }
+        ConflictDetector cdCopy = new ConflictDetector(points,model, new Quadtree());
         firstNumlabels = 0;
         numLabels = points.size();
         System.out.println("Started to remove conflicts");
@@ -75,9 +69,9 @@ public class Falp extends Algorithm {
             for (Label l : posLabelSet) {
 //                System.out.println("degree of l: "+quadCopy.query(l).size());
 //                System.out.println("Quadrant of l: "+l.quadrant);
-                if (quadCopy.query(l).size() < lowestDegree) {
+                if (cdCopy.getPosDegree(l) < lowestDegree) {
                     bestLabel = l;
-                    lowestDegree = quadCopy.query(l).size();
+                    lowestDegree = cdCopy.getPosDegree(l);
 
                 }
                 //System.out.println(quadCopy.getPosDegree(l));
@@ -87,15 +81,15 @@ public class Falp extends Algorithm {
 //            System.out.println(bestLabel.minX);
 //            System.out.println(bestLabel.minY);
 
-            for (Label l : quadCopy.query(bestLabel)) {
+            for (Label l : cdCopy.getPosConflictLabels(bestLabel)) {
                 if (l != bestLabel) {
-                    quadCopy.removeLabel(l);                    
+                    cdCopy.removeLabel(l);                    
                 }
                 posLabelSet.remove(l);
             }
             for (Label l : bestLabel.getPoint().getPossibleLabels()) {
                 if (l != bestLabel) {
-                    quadCopy.removeLabel(l);     
+                    cdCopy.removeLabel(l);     
                     //System.out.println("l!=bestLabel");
                 }
                 posLabelSet.remove(l);

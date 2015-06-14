@@ -43,8 +43,8 @@ public class MainFrame {
     ConflictDetector cD;
     Timer timer;
 
-    int n = 1000;
-    int maxGrid = 1000;
+    int n = 10;
+    int maxGrid = 10;
     String model = "4pos";
 
     public void readInput() {
