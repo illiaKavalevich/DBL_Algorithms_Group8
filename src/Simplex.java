@@ -11,6 +11,7 @@
  * given a number of restrictions on the variables in that cost function
  * It's used as a helper algorithm in the exhaustive branch-and-bound algorithm
  */
+
 public class Simplex {
     private static final double EPSILON = 1.0E-10;
     private double[][] t; //tableaux
@@ -36,7 +37,7 @@ public class Simplex {
     c is the function p = 2 3 5 that is to p -2 -3 -5 
     s1, s2 are the slackvariables, each constraint has a slackvariable
     */
-    public Simplex(int[] c, int[][] A, int[] b) {
+    public Simplex(int[][] A, int[] b, int[] c) {
         this.b = b;
         this.c = c; 
         con = b.length;
@@ -53,18 +54,28 @@ public class Simplex {
         
        t = addSlackVariables(t);
        enumerateRowsColumns(t, this.b, this.c); 
+       /* //used for testing matrix
+       for(int i = 0; i < 1+con+1; i++){
+           for(int j = 0; j < 1 + con + v + 1; j++){
+               System.out.print(t[i][j] + " ");
+             
+           }
+             System.out.println("\n");
+       } */
        
        basis = new int[con];
        for (int i = 0; i < con; i++){
            //basis[i] = v + i; //no idea why
-           basis[i] = i;
+           basis[i] = v+i;
        }
      
-       compute(); 
+     compute(); 
        
        //makeResult();
-       assert check(A,b,c);
+       assert check(A,b,c); 
     }
+
+  
     
     private double[][] addSlackVariables(double[][] t) {
        this.t = t;
@@ -90,14 +101,14 @@ public class Simplex {
         this.t[1+con][1+con+v] = 0;
         
         //add in the first row the reference of each possible label
-        double labelNr = 0;
+        double labelNr = 1;
         for(int i = 0; i < v; i++){
             this.t[0][i+1] = labelNr;
             labelNr++;
             
         }
         //add the slackvariable references
-        int slackNr = 0;
+        int slackNr = -1;
         for(int i = 0; i < con; i++){
             this.t[0][1+v+i] = slackNr; 
             slackNr--; //to avoid confusion with variable references
@@ -108,46 +119,58 @@ public class Simplex {
     private void compute(){
         while(true){
          
-            System.out.println("-");
+           // System.out.println("-");
             //find lowest value of last row (most negative value, derived from function to maximize
             int hP = getLowest();//horizontal pivot
             if (hP == -1) break; //optimal solution: there are no more negative values in the last row. Done with computing
             //find pivot row which has the lowest ratio value of the column of getLowest()
             int vP = lowestRatio(hP);//vertical pivot
             //Gaussen-Jordan elimination
-            gje(hP,vP);
+            gje(vP,hP);
             
             //
             basis[vP-1] = hP-1; //undo +1 from getLowest and lowestRatio
         
         }
-    }
+    } 
     //initially non optimal solutions contain one or more -1s
     private int getLowest(){
-        int currentLowest = 0; 
+         /* int currentLowest = 0; 
         for(int i = 0; i < v; i++){
             if(t[con+1][i+1] < 0){
                 return i+1;
                 
             }
             
+        } */
+        int currentLowest = 0;
+        for(int i = 0; i < v; i++){
+            if((t[con+1][i+1] < currentLowest) && t[con+1][i+1] < 0 ){
+                currentLowest = i+1;
+            }
+            
         }
-        return -1; //done no more negative values
+        if(currentLowest == 0){ //done no more negative values
+                return -1;
+            }
+            else{return currentLowest;} 
     }
     //find the vertical index in the column of hP which gives the lowest ConstraintValue/vertical index
     private int lowestRatio(int c){
         double currentLowestRatio = -1;
         int index = -1;
         
-        for(int i = 0; i < con; i++){
-            if(currentLowestRatio == -1){
+        for(int i = 0; i < con; i++){ //can't divide by 0
+            if(t[i+1][c] <= 0){
+            continue;//next iteration
+            }
+            else if(currentLowestRatio == -1){
                 currentLowestRatio =  t[i+1][con+v+1]/t[i+1][c]; //first input will be currentLowestRatio, assmued matrix t is not empty
                 index = i+1;
                 continue;//next iteration
             }
-            else if(t[i+1][c] <= 0){
-            continue;//next iteration
-        }
+            
+        
             else if(t[i+1][con+v+1]/t[i+1][c] < currentLowestRatio){
                currentLowestRatio =  t[i+1][con+v+1]/t[i+1][c];
                index = i+1;
@@ -161,42 +184,51 @@ public class Simplex {
     private void gje(int p, int q){ //Gauss-Jordan elimination with pivot hP and vP to get zeros in one column only
         double x = 0;
         double y = 0;
-        for(int i = 0; i < con; i++){
+        for(int i = 0; i < con+1; i++){
             if(i+1!= p) { // if its not the pivot row
                 x = t[i+1][q]/t[p][q]; // t[i+1][q]-t[p][q]x = 0
-                for(int j = 0; j < v; j++) {
+                for(int j = 0; j < v+con+1; j++) {
                     t[i+1][j+1] = t[i+1][j+1] - t[p][j+1]*x; //subtract row [p]x times from row i+1
                 }
-            }
+            } 
         }
-        if(t[p][q] != 0){ //scale the pivot row
-            for(int n = 0; n < v; n++){
+        //if(t[p][q] != 0){ //scale the pivot row
+            for(int n = 0; n < v+con+1; n++){
                 t[p][n+1] = t[p][n+1]/t[p][q];
                
             }
-        }
+       // }
         t[p][0] = t[0][q]; //replace (slack)variable with the variable in t[0][q] in which column the elemination was done
     }
+    
     public double valueFunction(){
         
         return t[1+con][1+con+v];
     }
     
-    public double[] primalSol(){
-        double[] a = new double[v];
+    
+    public double[] primalSol(){ // return the values of each variable in the last column
+       /* double[] a = new double[v];
         for (int i = 0; i < con; i++){
             if(basis[i] < v){
                 a[basis[i]] = t[i][1+con+v];
             }
         }
-        return a;
-    }
-    public double[] dual(){
-        double[] b = new double[con];
-        for(int i = 0; i < con; i++){
-            b[i] = t[1+con][1+i];
+        return a; */
+        
+        double[] a = new double[v];
+        for (int i = 0; i < v; i++){
+            a[(int) t[1+i][0]] = t[i+1][1+con+v]; //
         }
-        return b;
+        return a; 
+    }
+    
+    public double[] dual(){ //return the values of the function in the last row
+        double[] l = new double[con];
+        for(int i = 0; i < con; i++){
+            l[i] = t[1+con][1+i];
+        }
+        return l;
     }
     
      // is the solution primal feasible?
@@ -294,10 +326,10 @@ public class Simplex {
         System.out.println();
     }
     
-    public static void test(double[][] A, double[] b, double[] c) {
-        SimplexOri lp = new SimplexOri(A, b, c);
-        System.out.println("value = " + lp.value());
-        double[] x = lp.primal();
+    public static void test(int[][] A, int[] b, int[] c) {
+        Simplex lp = new Simplex(A, b, c);
+        System.out.println("value = " + lp.valueFunction());
+        double[] x = lp.primalSol();
         for (int i = 0; i < x.length; i++)
             System.out.println("x[" + i + "] = " + x[i]);
         double[] y = lp.dual();
@@ -306,20 +338,22 @@ public class Simplex {
     }
 
     public static void test1() {
-        double[][] A = {
+        int[][] A = {
             { -1,  1,  0 },
             {  1,  4,  0 },
             {  2,  1,  0 },
             {  3, -4,  0 },
             {  0,  0,  1 },
         };
-        double[] c = { 1, 1, 1 };
-        double[] b = { 5, 45, 27, 24, 4 };
-        test(A, b, c);
+        int[] c = { 1, 1, 1 };
+        int[] b = { 5, 45, 27, 24, 4};
+        
+        test(A,b,c);
+       // Simplex x = new Simplex(A, b, c); //used for testing matrix
     }
     
       // x0 = 12, x1 = 28, opt = 800
-    public static void test2() {
+   /* public static void test2() {
         double[] c = {  13.0,  23.0 };
         double[] b = { 480.0, 160.0, 1190.0 };
         double[][] A = {
@@ -329,6 +363,28 @@ public class Simplex {
         };
         test(A, b, c);
     }
+     // unbounded
+    public static void test3() {
+        double[] c = { 2.0, 3.0, -1.0, -12.0 };
+        double[] b = {  3.0,   2.0 };
+        double[][] A = {
+            { -2.0, -9.0,  1.0,  9.0 },
+            {  1.0,  1.0, -1.0, -2.0 },
+        };
+        test(A, b, c);
+    }
+
+    // degenerate - cycles if you choose most positive objective function coefficient
+    public static void test4() {
+        double[] c = { 10.0, -57.0, -9.0, -24.0 };
+        double[] b = {  0.0,   0.0,  1.0 };
+        double[][] A = {
+            { 0.5, -5.5, -2.5, 9.0 },
+            { 0.5, -1.5, -0.5, 1.0 },
+            { 1.0,  0.0,  0.0, 0.0 },
+        };
+        test(A, b, c);
+    } */
      
     public void makeResult(){
 
@@ -365,7 +421,8 @@ public class Simplex {
 
         test1();
          //test2();
-
+           //test3();
+         //test4();
     }
    
 }
