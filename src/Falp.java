@@ -44,6 +44,7 @@ public class Falp extends Algorithm {
             for (Point p : firstPoints) {
                 points.add(p);
             }
+            numLabels=firstNumlabels;
         }
     }
 
