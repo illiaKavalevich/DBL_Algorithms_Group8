@@ -88,7 +88,7 @@ public abstract class Algorithm {
                         SliderLabel worstSliderLabel = (SliderLabel) worstLabel;
                         worstSliderLabel.deactivate();
                     } else {
-                        worstLabel.active = false;;;
+                        worstLabel.active = false;
                     }
                     numLabels--;
                 } else {
