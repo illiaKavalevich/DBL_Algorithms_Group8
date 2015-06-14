@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
+
+//COMMENT ALL JFREE STUFF BEFORE SUBMITTING TO PEACH
 import org.jfree.chart.*;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -31,44 +33,44 @@ import org.jfree.data.xy.XYSeriesCollection;
  */
 public class MainFrame {
 
-    int w;
-    int h;
-    int numPoints;
     int numLabels;
     ArrayList<Point> points = new ArrayList<>();
     Iterator<Point> iter;
     Algorithm alg;
-    //ConflictList cL;
     Quadtree q;
     ConflictDetector cD;
     Timer timer;
 
+    //COMMENT BEFORE SUBMITTING TO PEACH
     int n = 25;
     int maxGrid = 10;
+
+    //SET EMPTY BEFORE SUBMITTING TO PEACH, aka remove '= "..."'
     String model = "4pos";
+    int numPoints = n;
+    int w = 30;
+    int h = 40;
 
     public void readInput() {
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-        //System.out.println("Number of threads that are still running: " + threadSet.size());
-        //model = "4pos";
-        w = 30;
-        h = 40;
-        
+
+        //only used for testing purposes to create random points
+        //COMMENT BEFORE SUBMITTING TO PEACH
         int pointsPlaced = 0;
-        while(pointsPlaced < n) {
+        while (pointsPlaced < n) {
             Random rand = new Random();
             int x = rand.nextInt(maxGrid + 1);
             Random rand2 = new Random();
             int y = rand2.nextInt(maxGrid + 1);
             boolean alreadyExists = false;
-            for(Point p : points) {
-                if(p.xCoord == x && p.yCoord == y) {
+            for (Point p : points) {
+                if (p.xCoord == x && p.yCoord == y) {
                     alreadyExists = true;
                     break;
                 }
             }
             if (!alreadyExists) {
-                pointsPlaced ++;
+                pointsPlaced++;
                 if (model.equals("1slider")) {
                     Point point = new SliderPoint(x, y, model, w, h);
                     points.add(point);
@@ -77,68 +79,12 @@ public class MainFrame {
                     points.add(point);
                 }
             }
-       }
-//        Point point1 = new PosPoint(4, 4, model, w, h);
-//        Point point2 = new PosPoint(3, 4, model, w, h);
-//        Point point3 = new PosPoint(4, 6, model, w, h);
-//            Point point4 = new PosPoint(4, 5, model, w, h);
-        //Point point5 = new PosPoint(5, 5, model, w, h);
-//        Point point1 = new PosPoint(5, 4, model, w, h);
-//            Point point2 = new PosPoint(2, 3, model, w, h);
-//            Point point3 = new PosPoint(1, 6, model, w, h);
-//            Point point4 = new PosPoint(10, 12, model, w, h);
-//        Point point5 = new PosPoint(4, 4, model, w, h);
-//            Point point6 = new PosPoint(3, 3, model, w, h);
-//            Point point7 = new PosPoint(2, 6, model, w, h);
-//            Point point8 = new PosPoint(11, 12, model, w, h);
-//            Point point9 = new PosPoint(2, 4, model, w, h);
-//            Point point10 = new PosPoint(1, 5, model, w, h);
-
-        //slider points
-//            Point point1 = new SliderPoint(5, 4, model, w, h);
-//            Point point2 = new SliderPoint(2, 3, model, w, h);
-//            Point point3 = new SliderPoint(1, 6, model, w, h);
-//            Point point4 = new SliderPoint(10, 12, model, w, h);
-//            Point point5 = new SliderPoint(4, 4, model, w, h);
-//            Point point6 = new SliderPoint(3, 3, model, w, h);
-//            Point point7 = new SliderPoint(2, 6, model, w, h);
-//            Point point8 = new SliderPoint(11, 12, model, w, h);
-//            Point point9 = new SliderPoint(2, 4, model, w, h);
-////            Point point10 = new SliderPoint(1, 5, model, w, h);
-//        points.add(point1);
-//        points.add(point2);
-//        points.add(point3);
-//        points.add(point4);
-        //points.add(point5);
-//            points.add(point6);
-//            points.add(point7);
-//            points.add(point8);
-//            points.add(point9);
-//            points.add(point10);
-        if (model.equals("2pos")) {
-            alg = new ClaimFreeDecorator(new Falp());
-        } else if (model.equals("4pos")) {
-            alg = new ClaimFreeDecorator(new Falp());
-        } else if (model.equals("1slider")) {
-            alg = new AnnealingSimulatorSlider();
-        } else {
-            System.out.println(model + " is not a valid model");
         }
-        timer = new Timer(3, alg);
-        timer.start();
 
-        //cL = new ConflictList(points, model);
-        q = new Quadtree();
-        cD = new ConflictDetector(points, model, q);
-//        for (Point p : points) {
-//            for (Label l : p.possibleLabels) {
-//                q.insertLabel(l);
-//            }
-//        }
-        alg.setParameters(w, h, points, cD, timer, model);
-        int firstPoint;
-        int secondPoint;
-        /*Scanner input = new Scanner(System.in);
+        /* used for PEACH, UN-COMMENT BEFORE SUBMITTING TO PEACH
+         int firstPoint;
+         int secondPoint;
+         Scanner input = new Scanner(System.in);
          //pattern used to skip input "...: "
          String template = "\\n*[a-zA-Z\\s]*[^\\w\\s]\\s*";
 
@@ -164,8 +110,33 @@ public class MainFrame {
          }
          } else {
          System.out.println("MainFrame.readInput: no valid model provided");
-         }*/
+         }
+         */
+        if (model.equals("2pos")) {
+            alg = new ClaimFreeDecorator(new Falp());
+        } else if (model.equals("4pos")) {
+            alg = new ClaimFreeDecorator(new Falp());
+        } else if (model.equals("1slider")) {
+            alg = new AnnealingSimulatorSlider();
+        } else {
+            System.out.println(model + " is not a valid model");
+        }
+        timer = new Timer(3, alg);
+        timer.start();
+
+        q = new Quadtree();
+        cD = new ConflictDetector(points, model, q);
+//        for (Point p : points) {
+//            for (Label l : p.possibleLabels) {
+//                q.insertLabel(l);
+//            }
+//        }
+        alg.setParameters(w, h, points, cD, timer, model);
+
         processOutput();
+
+        //COMMENT BEFORE SUBMITTING TO PEACH
+        plotLabels();
     }
 
     public void processOutput() {
@@ -223,7 +194,6 @@ public class MainFrame {
         } else {
             System.out.println("MainFrame.giveOutput: no valid model provided");
         }
-        plotLabels();
     }
 
     /*
@@ -243,6 +213,10 @@ public class MainFrame {
         ValueAxis range = new NumberAxis("");
         XYPlot plot = new XYPlot(plotPoints, domain, range, rendererP);
 
+        /* for each point plot the active label
+         if it has a conflict with >=1 other active label(s) make the label red
+         otherwise black
+         */
         for (Point point : points) {
             if (model.equals("1slider")) {
                 hasActive = true;
@@ -257,7 +231,7 @@ public class MainFrame {
                         l = curLabel2;
                     }
                 }
-                
+
             }
             if (hasActive == true) {
                 XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
@@ -275,36 +249,6 @@ public class MainFrame {
             }
         }
 
-        /* for each point plot the active label
-         if it has a conflict with >=1 other active label(s) make the label red
-         otherwise black
-         */
-//        for (Point point : points) {
-//            if (model.equals("1slider")) {
-//                label = createSliderLabelDataSet(point.getActiveLabelSlider());
-//                XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
-//                if (cD.getActConflictLabels.containsKey(point.getActiveLabelSlider())) {
-//                    rendererL.setSeriesPaint(0, Color.RED);
-//                } else {
-//                    rendererL.setSeriesPaint(0, Color.BLACK);
-//                }
-//                rendererL.setSeriesVisibleInLegend(Boolean.FALSE);
-//                plot.setDataset(count, label);
-//                plot.setRenderer(count, rendererL);
-//            } else {
-//                label = createPosLabelDataSet(point.getActiveLabelPos());
-//                XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
-//                if (cD.getActConflictLabels.containsKey(point.getActiveLabelPos())) {
-//                    rendererL.setSeriesPaint(0, Color.RED);
-//                } else {
-//                    rendererL.setSeriesPaint(0, Color.BLACK);
-//                }
-//                rendererL.setSeriesVisibleInLegend(Boolean.FALSE);
-//                plot.setDataset(count, label);
-//                plot.setRenderer(count, rendererL);
-//            }
-//            count++;
-//        }
         //draw the graph
         JFreeChart chart = new JFreeChart("Label Placement", JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         ChartFrame frame = new ChartFrame("DBL Algorithms", chart);
@@ -312,6 +256,10 @@ public class MainFrame {
         frame.setVisible(true);
     }
 
+    /*
+     Used for data visualization
+     COMMENT BEFORE SUBMITTING TO PEACH
+     */
     //create a data set containing all the points
     private XYDataset createPointDataSet() {
         XYSeriesCollection plotPoints = new XYSeriesCollection();
@@ -323,6 +271,10 @@ public class MainFrame {
         return plotPoints;
     }
 
+    /*
+     Used for data visualization
+     COMMENT BEFORE SUBMITTING TO PEACH
+     */
     //create a data set containing the four points of the PosLabel
     private XYDataset createPosLabelDataSet(PosLabel label) {
         XYSeriesCollection currentLabel = new XYSeriesCollection();
@@ -336,6 +288,10 @@ public class MainFrame {
         return currentLabel;
     }
 
+    /*
+     Used for data visualization
+     COMMENT BEFORE SUBMITTING TO PEACH
+     */
     //create a data set containing the four points of the SliderLabel
     private XYDataset createSliderLabelDataSet(SliderLabel label) {
         XYSeriesCollection currentLabel = new XYSeriesCollection();
