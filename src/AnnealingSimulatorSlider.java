@@ -24,7 +24,7 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
         }
         int newLocalE = 0;
         if(cD.getActConflictLabels(p.activeLabel) == null) {
-            System.out.println("get null");
+            //System.out.println("get null");
         }
         Set<Label> oldConflicts = new HashSet(cD.getActConflictLabels(p.activeLabel));
         Set<Label> newConflicts;
@@ -52,7 +52,7 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
         } else {
             float random = rand.nextFloat();
             p.activeLabel.setPlacement(random);
-            System.out.println(p.xCoord + " placement: " + random);
+            //System.out.println(p.xCoord + " placement: " + random);
 
             newConflicts = new HashSet(cD.getActConflictLabels(p.activeLabel));
             newConflicts.addAll(oldConflicts); //now holds all labels affected
@@ -66,7 +66,7 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
         labelsAffectedLastChange.addAll(newConflicts);
         labelsAffectedLastChange.addAll(oldConflicts);
         deltaE = oldLocalE - newLocalE;
-        System.out.println(newLocalE);
+        //System.out.println(newLocalE);
     }
     
     @Override
@@ -77,7 +77,7 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
                 tempE ++;
             }
         }
-        System.out.println(tempE);
+        //System.out.println(tempE);
         E = tempE;
     }
     

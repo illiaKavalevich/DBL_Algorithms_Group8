@@ -43,8 +43,8 @@ public class MainFrame {
     ConflictDetector cD;
     Timer timer;
 
-    int n = 1000;
-    int maxGrid = 1000;
+    int n = 25;
+    int maxGrid = 10;
     String model = "4pos";
 
     public void readInput() {
@@ -191,8 +191,8 @@ public class MainFrame {
 
         //loop over all points to print their values
         if (model.equals("2pos") || model.equals("4pos")) {
-            boolean hasActive = false;
             while (iter.hasNext()) {
+                boolean hasActive = false;
                 curPoint = iter.next();
                 for (Label label : curPoint.possibleLabels) {
                     PosLabel label2 = (PosLabel) label;
@@ -265,7 +265,7 @@ public class MainFrame {
                     //System.out.println("no conflict");
                     rendererL.setSeriesPaint(0, Color.BLACK);
                 } else {
-                    System.out.println("conflict");
+                    //System.out.println("conflict");
                     rendererL.setSeriesPaint(0, Color.RED);
                 }
                 rendererL.setSeriesVisibleInLegend(Boolean.FALSE);

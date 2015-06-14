@@ -20,6 +20,7 @@ public class Falp extends Algorithm {
     //During the local search
     @Override
     public void determineLabels() {
+        System.out.println("running FALP");
         removeConflicts();
         giveActiveLabel();
 //         while (!stop) {
@@ -36,9 +37,9 @@ public class Falp extends Algorithm {
 
     //select the best result: either the final result or the result of the first step
     public void selectBestResult() {
-        System.out.println("Selecting the best result");
+        //System.out.println("Selecting the best result");
         if (numLabels < firstNumlabels) {
-            System.out.println("The result of the first step was better");
+            //System.out.println("The result of the first step was better");
             int i = 0;
             points.clear();
             for (Point p : firstPoints) {
@@ -63,7 +64,7 @@ public class Falp extends Algorithm {
         }
         firstNumlabels = 0;
         numLabels = points.size();
-        System.out.println("Started to remove conflicts");
+        //System.out.println("Started to remove conflicts");
         for (Point point : points) {
             noActiveLabelPoints.add(point);
         }
@@ -117,7 +118,7 @@ public class Falp extends Algorithm {
     //Give all points that did not yet have a label an active label
     //this label may have conflicts with other labels
     public void giveActiveLabel() {
-        System.out.println("Started to give active labels");
+        //System.out.println("Started to give active labels");
         for (Point point : noActiveLabelPoints) {
             Label bestLabel = null;
             int bestDegree = Integer.MAX_VALUE;
@@ -138,7 +139,7 @@ public class Falp extends Algorithm {
     //step 3 of FALP: the local search
     //Check for each point if it has a label with less overlap than the current active one.
     public void localSearch() {
-        System.out.println("local search");
+        //System.out.println("local search");
         boolean changed = false;                                            //indicates if for any point its active label was changed
         for (Point point : activeLabelPoints) {
             Label bestLabel = null;                                     //this will be the best label of a point
