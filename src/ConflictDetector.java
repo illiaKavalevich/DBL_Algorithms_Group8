@@ -6,9 +6,9 @@ import java.util.Set;
 public class ConflictDetector implements ConflictDetectorInterface {
     String model; //model for point placement
     List<Point> points; //points that are considered
-    Quadtree quadtree; //reference to the quadtree used
+    Quadtree2 quadtree; //reference to the quadtree used
     
-    public ConflictDetector(List<Point> points, String model, Quadtree quadtree) {
+    public ConflictDetector(List<Point> points, String model, Quadtree2 quadtree) {
         this.model = model;
         this.points = points;
         this.quadtree = quadtree;

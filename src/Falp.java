@@ -63,7 +63,7 @@ public class Falp extends Algorithm {
     public void removeConflicts() {
         System.out.println("Started to remove conflicts");
         Set<Label> posLabelSet = new HashSet<>();
-        ConflictDetector cdCopy = new ConflictDetector(points, model, new Quadtree());
+        ConflictDetector cdCopy = new ConflictDetector(points, model, new Quadtree2());
         firstNumlabels = 0;
         numLabels = points.size();
         //System.out.println("Started to remove conflicts");

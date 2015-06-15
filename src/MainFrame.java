@@ -37,19 +37,19 @@ public class MainFrame {
     ArrayList<Point> points = new ArrayList<>();
     Iterator<Point> iter;
     Algorithm alg;
-    Quadtree q;
+    Quadtree2 q;
     ConflictDetector cD;
     Timer timer;
 
     //COMMENT BEFORE SUBMITTING TO PEACH
     int n = 10;
-    int maxGrid = 1000;
+    int maxGrid = 10;
 
     //SET EMPTY BEFORE SUBMITTING TO PEACH, aka remove '= "..."'
     String model = "1slider";
     int numPoints = n;
-    int w = 10;
-    int h = 20;
+    int w = 30;
+    int h = 30;
 
     public void readInput() {
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
@@ -123,10 +123,10 @@ public class MainFrame {
         } else {
             System.out.println(model + " is not a valid model");
         }
-        timer = new Timer(3, timerAlg);
+        timer = new Timer(270, timerAlg);
         timer.start();
 
-        q = new Quadtree();
+        q = new Quadtree2();
         cD = new ConflictDetector(points, model, q);
 //        for (Point p : points) {
 //            for (Label l : p.possibleLabels) {

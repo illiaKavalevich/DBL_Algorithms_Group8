@@ -25,12 +25,12 @@ public abstract class AnnealingSimulator extends Algorithm {
     protected int deltaE; //the change in score
     protected int iterationsSinceTempChange;
     protected Random rand;
-    public boolean complicatedScoring = false;
+    public boolean complicatedScoring = true;
     protected int numPoints;
 
     public AnnealingSimulator() {
         this.rand = new Random(56467984);
-        this.T = 2.0;
+        this.T = 2.5;
     }    
     
     public void setTemperature(double temperature) {
@@ -60,7 +60,7 @@ public abstract class AnnealingSimulator extends Algorithm {
             iterationsSinceTempChange ++;
             updateTemperature();
         }
-        
+        System.out.println("start remove overlap");
         removeOverlap();
     }
     
@@ -74,8 +74,9 @@ public abstract class AnnealingSimulator extends Algorithm {
     protected abstract void computeInitialScore();
 
     protected void updateTemperature() {
-        //System.out.println("Temp update");
+        
         if(iterationsSinceTempChange == (50 * numPoints)) {
+            System.out.println("Temp update " + T);
             if(T < 0.2) {
                 T -= 0.05;
             } else {
@@ -86,4 +87,9 @@ public abstract class AnnealingSimulator extends Algorithm {
     }
     
     abstract protected void undoLastPlacement();
+    
+    @Override
+    public void stopRunning() {
+        T = 0;
+    }
 }

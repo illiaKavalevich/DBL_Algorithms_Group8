@@ -1,6 +1,7 @@
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /*
@@ -26,7 +27,7 @@ public abstract class Algorithm {
     public Algorithm() {
         //needed for extending classes
     }
-    
+
     public void addNumLabels(int i) {
         numLabels += i;
     }
@@ -53,12 +54,34 @@ public abstract class Algorithm {
 
     public void removeOverlap() {
         //System.out.println("Started to remove overlap");
+        List<Point> copyPoints = new ArrayList<>(points);
+
+        for (Point p : points) {
+            if ("1slider".equals(model)) {
+                p.actOverlap = cD.getActDegree(p.getActiveLabelSlider());
+                //System.out.println(p.actOverlap);
+                if (p.actOverlap == 0) {
+                    copyPoints.remove(p.getActiveLabelSlider());
+                }
+            } else {
+                for (Label l : p.possibleLabels) {
+                    if (l.active == true) {
+                        p.actOverlap = cD.getActDegree(l);
+                        if (p.actOverlap == 0) {
+                            copyPoints.remove(l);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
         while (true) {
-            //System.out.println("removeOverlap loop");
+            
             Label worstLabel = null;
             int worstDegree = 0;
             boolean noMoreOverlap = true;
-            for (Point p : points) {
+            for (Point p : copyPoints) {
                 Label label = null;
                 if ("1slider".equals(model)) {
                     label = p.getActiveLabelSlider();
@@ -73,27 +96,39 @@ public abstract class Algorithm {
                 }
                 if (label != null) {
 
-                    int labelDegree = cD.getActConflictLabels(label).size();
+                    int labelDegree = p.actOverlap;
+                    //System.out.println(p.actOverlap);
 //                    System.out.println(label.p.possibleLabels);
-//                    System.out.println(cD.getActConflictLabels(label));
+                    //System.out.println(cD.getActConflictLabels(label));
 //                    System.out.println(labelDegree);
                     if (labelDegree > worstDegree) {
                         //System.out.println("sup");
                         worstLabel = label;
                         worstDegree = labelDegree;
                         noMoreOverlap = false;
+                        //System.out.println("removeOverlap 1");
                     }
                 }
                 //System.out.println("worstdegree: " + worstDegree);
-                
+
             }
             if (!noMoreOverlap) {
                 //System.out.println("hier komtie");
-                
+                Set<Label> labelsToBeUpdated = new HashSet<>();
+                labelsToBeUpdated.addAll(cD.getActConflictLabels(worstLabel));
+                for (Label l : labelsToBeUpdated) {
+                    
+                    l.p.actOverlap--;
+                    if (l.p.actOverlap == 0) {
+                        copyPoints.remove(l.p);
+                    }
+                }
                 if ("1slider".equals(model)) {
+                    //System.out.println("removeOverlap 2");
                     SliderLabel worstSliderLabel = (SliderLabel) worstLabel;
                     worstSliderLabel.deactivate();
                     cD.removePoint(worstSliderLabel.p);
+                    copyPoints.remove(worstSliderLabel.p);
                 } else {
                     worstLabel.active = false;
                     cD.removeLabel(worstLabel);
@@ -102,7 +137,7 @@ public abstract class Algorithm {
             } else {
                 break;
             }
-            
+
         }
     }
 

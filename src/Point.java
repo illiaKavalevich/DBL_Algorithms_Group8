@@ -17,6 +17,7 @@ public abstract class Point {
 
     int xCoord;
     int yCoord;
+    int actOverlap; //only used by removeOverlap
     /**
      * Holds all possible places a label can be at for the 2pos or 4 pos model.
      * For 2pos model, this is the NW and NE place. For the 4pos model
