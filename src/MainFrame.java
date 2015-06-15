@@ -114,9 +114,9 @@ public class MainFrame {
          */
         Algorithm timerAlg = new Falp();
         if (model.equals("2pos")) {
-            alg = new ClaimFreeDecorator(timerAlg);
+            alg = n <= 20 ? new BranchAndBound() : new ClaimFreeDecorator(timerAlg);
         } else if (model.equals("4pos")) {
-            alg = new ClaimFreeDecorator(timerAlg);
+            alg = n <= 20 ? new BranchAndBound() : new ClaimFreeDecorator(timerAlg);
         } else if (model.equals("1slider")) {
             alg = new AnnealingSimulatorSlider();
             timerAlg = alg;
