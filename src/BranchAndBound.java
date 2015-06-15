@@ -15,7 +15,7 @@ import java.util.Set;
  * This algorithm will give optimal solutions for the label placement problem
  * It makes use of the optimization algorithm "Simplex"
  */
-public abstract class BranchAndBound extends Algorithm {
+public class BranchAndBound extends Algorithm {
 
     int numberOfLabels;
     int numberOfLabelsPerPoint;
@@ -39,6 +39,10 @@ public abstract class BranchAndBound extends Algorithm {
     
     public BranchAndBound() {
         super();
+    }
+    
+    @Override
+    public void determineLabels() {
         setNumberOfLabels();
         initCurVarValues();
         buildInitialTableau();

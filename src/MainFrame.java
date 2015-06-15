@@ -43,10 +43,10 @@ public class MainFrame {
 
     //COMMENT BEFORE SUBMITTING TO PEACH
     int n = 10;
-    int maxGrid = 100;
+    int maxGrid = 1000;
 
     //SET EMPTY BEFORE SUBMITTING TO PEACH, aka remove '= "..."'
-    String model = "4pos";
+    String model = "1slider";
     int numPoints = n;
     int w = 10;
     int h = 20;
@@ -114,9 +114,9 @@ public class MainFrame {
          */
         Algorithm timerAlg = new Falp();
         if (model.equals("2pos")) {
-            alg = new ClaimFreeDecorator(timerAlg);
+            alg = n <= 20 ? new BranchAndBound() : new ClaimFreeDecorator(timerAlg);
         } else if (model.equals("4pos")) {
-            alg = new ClaimFreeDecorator(timerAlg);
+            alg = n <= 20 ? new BranchAndBound() : new ClaimFreeDecorator(timerAlg);
         } else if (model.equals("1slider")) {
             alg = new AnnealingSimulatorSlider();
             timerAlg = alg;
