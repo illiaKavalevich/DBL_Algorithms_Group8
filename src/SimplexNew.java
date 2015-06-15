@@ -138,7 +138,7 @@ public class SimplexNew {
         } 
         d[u][0] = d[0][v]; 
               //scale the pivot row
-      /* for(int  j = 0; j < b.length+c.length+1;j++){
+      for(int  j = 0; j < b.length+c.length+1;j++){
               if(j!=u){
           
                    d[u][j+1] = d[u][j+1]/d[u][v];
@@ -147,7 +147,7 @@ public class SimplexNew {
            
            
        }
-     d[u][v] = 1.0; */
+     d[u][v] = 1.0; 
       
     }
     
@@ -284,10 +284,10 @@ public class SimplexNew {
        
      public static void main(String[] args) {
 
-        //test1();
+        test1();
          //test2();
          //test3();
-         test3();
+         //test3();
      }
     
 }

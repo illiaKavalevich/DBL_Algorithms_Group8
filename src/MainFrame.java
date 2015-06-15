@@ -42,7 +42,7 @@ public class MainFrame {
     Timer timer;
 
     //COMMENT BEFORE SUBMITTING TO PEACH
-    int n = 25;
+    int n = 2;
     int maxGrid = 10;
 
     //SET EMPTY BEFORE SUBMITTING TO PEACH, aka remove '= "..."'
@@ -112,16 +112,18 @@ public class MainFrame {
          System.out.println("MainFrame.readInput: no valid model provided");
          }
          */
+        Algorithm timerAlg = new Falp();
         if (model.equals("2pos")) {
-            alg = new ClaimFreeDecorator(new Falp());
+            alg = new ClaimFreeDecorator(timerAlg);
         } else if (model.equals("4pos")) {
-            alg = new ClaimFreeDecorator(new Falp());
+            alg = new ClaimFreeDecorator(timerAlg);
         } else if (model.equals("1slider")) {
             alg = new AnnealingSimulatorSlider();
+            timerAlg = alg;
         } else {
             System.out.println(model + " is not a valid model");
         }
-        timer = new Timer(3, alg);
+        timer = new Timer(3, timerAlg);
         timer.start();
 
         q = new Quadtree();
