@@ -61,7 +61,7 @@ public abstract class Algorithm {
                 p.actOverlap = cD.getActDegree(p.getActiveLabelSlider());
                 //System.out.println(p.actOverlap);
                 if (p.actOverlap == 0) {
-                    copyPoints.remove(p);
+                    //copyPoints.remove(p);
                 }
             } else {
                 for (Label l : p.possibleLabels) {
@@ -119,9 +119,6 @@ public abstract class Algorithm {
                 for (Label l : labelsToBeUpdated) {
                     
                     l.p.actOverlap--;
-                    if (l.p.actOverlap == 0) {
-                        copyPoints.remove(l.p);
-                    }
                 }
                 if ("1slider".equals(model)) {
                     //System.out.println("removeOverlap 2");
