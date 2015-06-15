@@ -54,7 +54,7 @@ public class BranchAndBound extends Algorithm {
 //    }
     
     /*
-     * This method solves the integer program recursively
+     * This method solves the integer program
      */
     @Override
     public final void determineLabels() {
@@ -80,14 +80,13 @@ public class BranchAndBound extends Algorithm {
             rebuildTableau(); // Rebuild the tableau. Performance improvement: only add equality constraints.
             addNewEqualityConstraint(nextLabel, 0); // This is the actual branching. We temporarily set one variable fixed, to bound: check the LP Relaxation value.
             convertTempTableauLists(); // Convert the working lists to Arrays
-            simplex = new SimplexOri(t, b, c); // Initiate the actual Simplex algorithm
 
             double[] relaxationLeft = simplex.getPrimalResult(); // Get the left branch result
 
             removeLastVarConstraint(); // We have to remove the constraints set for the last branch, otherwise we will assign two values to a variable.
             convertTempTableauLists(); // Convert the working lists to Arrays because of the constraint removal
                             
-            /* DEBUGGING */ 
+            /* DEBUGGING  
             System.out.println("Left relaxation result: " + relaxationLeft[relaxationLeft.length - 1]);
             System.out.println("relaxation is integer: " + arrayIsInteger(relaxationLeft)); 
 
@@ -107,14 +106,14 @@ public class BranchAndBound extends Algorithm {
 
             double[] relaxationRight = simplex.getPrimalResult();
             
-            System.out.println();
-            
-            for(int i = 0; i < relaxationRight.length - 1; i++){
+            /* DEBUGGING */ 
+            /*for(int i = 0; i < relaxationRight.length - 1; i++){
                 System.out.println(" : " +  relaxationRight[i]);  
             }
 
             System.out.println("Right relaxation result: " + relaxationRight[relaxationRight.length - 1]);
             System.out.println("relaxation is integer: " + arrayIsInteger(relaxationRight)); 
+            /* /DEBUGGING */
             
             boolean noLeftSubtree = false;
             boolean noRightSubtree = false;
@@ -124,12 +123,12 @@ public class BranchAndBound extends Algorithm {
             if(!fathomTest(relaxationLeft)) {
                 //removeLastVarConstraint();
                 labelToDoLeft = 0;
-                System.out.println("LEFT");
+                //System.out.println("LEFT");
             } else {
                 if(arrayIsInteger(relaxationLeft)) {
                     //we have found the incumbent
                     if(relaxationLeft[relaxationLeft.length - 1] > getCurrentIncumbentValue()) {
-                        System.out.println("LEFT2");
+                        //System.out.println("LEFT2");
                         setCurrentIncumbent(relaxationLeft);
                         setCurrentRelaxationValue(relaxationLeft[relaxationLeft.length - 1]);
                     } 
@@ -140,12 +139,12 @@ public class BranchAndBound extends Algorithm {
             if(!hasActiveConflictingLabels(nextLabel)) { 
                 if(!fathomTest(relaxationRight)) {
                     labelToDoRight = 1;
-                    System.out.println("RIGHT");
+                    //System.out.println("RIGHT");
                 } else {
                     if(arrayIsInteger(relaxationRight)) {
                         //we have found the incumbent
                         if(relaxationRight[relaxationRight.length - 1] > getCurrentIncumbentValue()) {
-                            System.out.println("RIGHT2");
+                            //System.out.println("RIGHT2");
                             setCurrentIncumbent(relaxationRight);
                             setCurrentRelaxationValue(relaxationRight[relaxationRight.length - 1]);
                         }
@@ -159,72 +158,72 @@ public class BranchAndBound extends Algorithm {
             
             if(noLeftSubtree && noRightSubtree) {
                 finish();
-                System.out.println("finish0");
+                //System.out.println("finish0");
                 
             } else {
                 if(labelToDoRight == labelToDoLeft) {// labelToDoLeft != -1) {
-                    System.out.println("setlabel0");
+                    //System.out.println("setlabel0");
                     setVariable(labelList.get(nextLabel), labelToDoLeft);
                 } else {
                     
-                    System.out.println("test - labeltodo: " + labelToDoLeft + " " + labelToDoRight );
+                    //System.out.println("test - labeltodo: " + labelToDoLeft + " " + labelToDoRight );
                     
                     
                     if(noLeftSubtree && labelToDoRight == 1) {
-                        System.out.println("setlabel21");
+                        //System.out.println("setlabel21");
                         setVariable(labelList.get(nextLabel), 1);
                     }
                     
                     if(noRightSubtree && labelToDoLeft == 0) {
-                        System.out.println("setlabel20");
+                        //System.out.println("setlabel20");
                         setVariable(labelList.get(nextLabel), 0);
                     }
                     
                     if(noLeftSubtree && labelToDoRight == 0) {
                         if(!noRightSubtree && labelToDoLeft == 1) {
-                            System.out.println("setlabel1");
+                            //System.out.println("setlabel1");
                             setVariable(labelList.get(nextLabel), 1);
                         } else {
-                            System.out.println("finish1");
+                            //System.out.println("finish1");
                             finish();
                         }
                     }
                     
                     if(noRightSubtree && labelToDoLeft == 1) {
                         if(!noLeftSubtree && labelToDoRight == 0) {
-                            System.out.println("setlabel2");
+                            //System.out.println("setlabel2");
                             setVariable(labelList.get(nextLabel), 0);
                         } else {
-                            System.out.println("finish2");
+                            //System.out.println("finish2");
                             finish();
                         }
                     }
                     
                     if(!noLeftSubtree && labelToDoRight == 0 && !noRightSubtree && labelToDoLeft == 1) {
                         if(relaxationLeft[relaxationLeft.length - 1] > relaxationRight[relaxationRight.length - 1])  {
-                            System.out.println("setlabel3");
+                            //System.out.println("setlabel3");
                             setVariable(labelList.get(nextLabel), 1);
                         } else {
-                            System.out.println("setlabel4");
+                            //System.out.println("setlabel4");
                             setVariable(labelList.get(nextLabel), 0);
                         }
                     }
                     
                     if(!noLeftSubtree && labelToDoRight == 1 && !noRightSubtree && labelToDoLeft == 0) {
                         if(relaxationLeft[relaxationLeft.length - 1] > relaxationRight[relaxationRight.length - 1])  {
-                            System.out.println("setlabel3");
+                            //System.out.println("setlabel3");
                             setVariable(labelList.get(nextLabel), 0);
                         } else {
-                            System.out.println("setlabel4");
+                            //System.out.println("setlabel4");
                             setVariable(labelList.get(nextLabel), 1);
                         }
                     }
                 }
             }
             
-            System.out.println("noLeftSubtree: " + noLeftSubtree + " noRightSubtree: " + noRightSubtree);
+            //System.out.println("noLeftSubtree: " + noLeftSubtree + " noRightSubtree: " + noRightSubtree);
             
-            System.out.println("ENDLOOP");
+            //System.out.println("ENDLOOP");
         }
         
         setActiveLabels();
@@ -239,7 +238,7 @@ public class BranchAndBound extends Algorithm {
             Label label = labelList.get(labelIndex);
             label.active = currentIncumbent[labelIndex] == 1;
             numLabels += currentIncumbent[labelIndex] == 1 ? 1 : 0;
-            System.out.println(currentIncumbent[labelIndex] == 1 ? "TRUE" : "FALSE");
+            //System.out.println(currentIncumbent[labelIndex] == 1 ? "TRUE" : "FALSE");
         }
         
     }
@@ -285,7 +284,7 @@ public class BranchAndBound extends Algorithm {
                 //we use quadrant and (x,y) as unique identifiers of a certain label
                 int quadrant = l.getQuadrant();
                 int labelHashCode = combineIntegers(quadrant, xCoord, yCoord);
-                System.out.println(labelIndex + ". " + labelHashCode + " - quadrant: " + quadrant + " - x: " + xCoord + " - y: " + yCoord);
+                //System.out.println(labelIndex + ". " + labelHashCode + " - quadrant: " + quadrant + " - x: " + xCoord + " - y: " + yCoord);
                 labelPositions.put(labelHashCode, labelIndex); //add the label position t the hashset
                 labelList.add(l); //add the label itself to the labellist
                 labelIndex++;  
@@ -339,7 +338,7 @@ public class BranchAndBound extends Algorithm {
                 }
             }
         } else {
-            System.out.println("pointPosition: "  + pointPosition + " labelPosition: " + labelPosition +  " arraylist size: " + currentVarValues.length + "," + currentVarValues[0].length);
+            //System.out.println("pointPosition: "  + pointPosition + " labelPosition: " + labelPosition +  " arraylist size: " + currentVarValues.length + "," + currentVarValues[0].length);
             currentVarValues[pointPosition][labelPosition] = 0;
             nextLabel = getLabelPosition(label, false) + 1;
         }
@@ -384,7 +383,7 @@ public class BranchAndBound extends Algorithm {
 
                 int tempLabelPos = getLabelPosition(l, false);
                 Set<Label> conflicts = cD.getPosConflictLabels(l);
-                System.out.println("cf size: " + conflicts.size());
+                //System.out.println("cf size: " + conflicts.size());
                 
                 int[] tempPositions = new int[conflicts.size()];
                 if(conflicts.size() > 0) { //we have conflicts for labels in this point
@@ -392,7 +391,7 @@ public class BranchAndBound extends Algorithm {
                     int conflictIndex = 0;
                     for(Label conflictLabel : conflicts) { //iterate over those conflicting labels
                        int tempConfLabelPos = getLabelPosition(conflictLabel, false);
-                       System.out.println("confl pos: " + tempConfLabelPos);
+                       //System.out.println("confl pos: " + tempConfLabelPos);
                        tempPositions[conflictIndex] = getLabelPosition(conflictLabel, false); //add to list of temporary positions, used to create a constraint ruel
                        int hashCode = combineIntegers(tempLabelPos, tempConfLabelPos); //create the hashcode for the label and the conflicting label
                        conflictIndex++;
@@ -482,12 +481,12 @@ public class BranchAndBound extends Algorithm {
      */
     public void addNewConstraint(ArrayList<Integer> labelPosPair) {
         double[] tempLine = new double[getNumberOfLabels()]; //store new temp constraint rule
-        System.out.println("Adding new constraint for labels: ");
+        //System.out.println("Adding new constraint for labels: ");
         for(int varIndex = 0; varIndex < getNumberOfLabels(); varIndex++) {
             tempLine[varIndex] = labelPosPair.contains(varIndex) ? 1 : 0;
-            System.out.print(labelPosPair.contains(varIndex) ? " " + varIndex : "");
+            //System.out.print(labelPosPair.contains(varIndex) ? " " + varIndex : "");
         }
-        System.out.println();
+        //System.out.println();
        
         tableau.add(tempLine); //add the constraint rule to the tableau
         cValues.add(1); //add the constraint value too
@@ -665,16 +664,4 @@ public class BranchAndBound extends Algorithm {
     private boolean finished() {
         return finished;
     }
-    
-    private void test() {
-        double[] array = new double[4];
-        System.out.println(arrayIsInteger(array) ? "yes" : "no");
-    }
-    
-    /*
-    public static void main(String args[]) {
-        BranchAndBound bb = new BranchAndBound();
-        bb.test();
-    }*/
-    
 }
