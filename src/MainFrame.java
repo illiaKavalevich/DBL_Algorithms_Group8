@@ -42,14 +42,14 @@ public class MainFrame {
     Timer timer;
 
     //COMMENT BEFORE SUBMITTING TO PEACH
-    int n = 10;
+    int n = 100;
     int maxGrid = 10;
 
     //SET EMPTY BEFORE SUBMITTING TO PEACH, aka remove '= "..."'
-    String model = "1slider";
+    String model = "4pos";
     int numPoints = n;
-    int w = 30;
-    int h = 30;
+    int w = 3;
+    int h = 3;
 
     public void readInput() {
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
@@ -114,16 +114,16 @@ public class MainFrame {
          */
         Algorithm timerAlg = new Falp();
         if (model.equals("2pos")) {
-            alg = n <= 20 ? new BranchAndBound() : new ClaimFreeDecorator(timerAlg);
+            alg = n <= 20 ? new BranchAndBound() : timerAlg;
         } else if (model.equals("4pos")) {
-            alg = n <= 20 ? new BranchAndBound() : new ClaimFreeDecorator(timerAlg);
+            alg = n <= 20 ? new BranchAndBound() : timerAlg;
         } else if (model.equals("1slider")) {
             alg = new AnnealingSimulatorSlider();
             timerAlg = alg;
         } else {
             System.out.println(model + " is not a valid model");
         }
-        timer = new Timer(270, timerAlg);
+        timer = new Timer(3, timerAlg);
         timer.start();
 
         q = new Quadtree2();

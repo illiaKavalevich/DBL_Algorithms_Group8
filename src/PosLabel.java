@@ -14,6 +14,7 @@ public class PosLabel extends Label {
     public PosLabel(int w, int h, Point p) {
         super(w, h, p);
     }
+    
 
     public PosLabel(int w, int h, Point p, int quadrant) {
         super(w, h, p, quadrant);

@@ -24,7 +24,11 @@ public class Falp extends Algorithm {
         removeConflicts();
         int totaldegree = 0;
         for (Point p : points) {
-            totaldegree += cD.getActDegree(p.getActiveLabelPos());
+            for (Label l : p.possibleLabels) {
+                if (l.active) {
+                    totaldegree += cD.getActDegree(l);
+                }
+            }
         }
         if (totaldegree < 100000) {
             giveActiveLabel();
@@ -39,19 +43,26 @@ public class Falp extends Algorithm {
     @Override
     public void stopRunning() {
         stop = true;
-        System.out.println(stop);
     }
 
     //select the best result: either the final result or the result of the first step
     public void selectBestResult() {
-        //System.out.println("Selecting the best result");
         if (numLabels < firstNumlabels) {
-            //System.out.println("The result of the first step was better");
-            int i = 0;
+            System.out.println("The result of the first step was better");
             points.clear();
             for (Point p : firstPoints) {
                 points.add(p);
             }
+            
+        int totaldegree = 0;
+            for (Point p : points) {
+                for (Label l : p.possibleLabels) {
+                    if (l.active) {
+                        totaldegree += 1;
+                    }
+                }
+            }
+            System.out.println("active label nr: " + totaldegree);
             numLabels = firstNumlabels;
         }
     }
@@ -63,6 +74,11 @@ public class Falp extends Algorithm {
     public void removeConflicts() {
         System.out.println("Started to remove conflicts");
         Set<Label> posLabelSet = new HashSet<>();
+        for (Point p : points) {
+            for (Label l : p.possibleLabels) {
+                posLabelSet.add(l);
+            }
+        }
         ConflictDetector cdCopy = new ConflictDetector(points, model, new Quadtree2());
         firstNumlabels = 0;
         numLabels = points.size();
@@ -71,25 +87,16 @@ public class Falp extends Algorithm {
             noActiveLabelPoints.add(point);
         }
         while (!posLabelSet.isEmpty()) {
-            //System.out.println("loop");
             Label bestLabel = null;
             int lowestDegree = Integer.MAX_VALUE;
 
             for (Label l : posLabelSet) {
-//                System.out.println("degree of l: "+quadCopy.query(l).size());
-//                System.out.println("Quadrant of l: "+l.quadrant);
                 if (cdCopy.getPosDegree(l) < lowestDegree) {
                     bestLabel = l;
                     lowestDegree = cdCopy.getPosDegree(l);
 
                 }
-                //System.out.println(quadCopy.getPosDegree(l));
             }
-//            System.out.println("LowestDegree: " + quadCopy.query(bestLabel).size());
-//            System.out.println("posSet size: " + posLabelSet.size());
-//            System.out.println(bestLabel.minX);
-//            System.out.println(bestLabel.minY);
-
             for (Label l : cdCopy.getPosConflictLabels(bestLabel)) {
                 if (l != bestLabel) {
                     cdCopy.removeLabel(l);
@@ -99,7 +106,6 @@ public class Falp extends Algorithm {
             for (Label l : bestLabel.getPoint().getPossibleLabels()) {
                 if (l != bestLabel) {
                     cdCopy.removeLabel(l);
-                    //System.out.println("l!=bestLabel");
                 }
                 posLabelSet.remove(l);
             }
@@ -107,12 +113,10 @@ public class Falp extends Algorithm {
             noActiveLabelPoints.remove(p);
             activeLabelPoints.add(p);
             bestLabel.active = true;
-            //System.out.println(bestLabel.getQuadrant());
             firstNumlabels++;
         }
         for (Point p : points) {
-            Point point = new PosPoint(p);
-            firstPoints.add(point);
+            firstPoints.add(new PosPoint(p));
         }
     }
 
@@ -122,11 +126,11 @@ public class Falp extends Algorithm {
     public void giveActiveLabel() {
         System.out.println("Started to give active labels");
         for (Point point : noActiveLabelPoints) {
+            
             Label bestLabel = null;
             int bestDegree = Integer.MAX_VALUE;
             for (Label label : point.possibleLabels) {
                 int labelDegree = cD.getActConflictLabels(label).size();
-                //System.out.println(labelDegree);
                 if (labelDegree < bestDegree) {
                     bestDegree = labelDegree;
                     bestLabel = label;
@@ -142,12 +146,8 @@ public class Falp extends Algorithm {
     //Check for each point if it has a label with less overlap than the current active one.
     public void localSearch() {
         //System.out.println("local search");
-        boolean changed = false;                                            //indicates if for any point its active label was changed
         for (Point point : activeLabelPoints) {
-            Label bestLabel = null;                                     //this will be the best label of a point
-            /*for (Label posLabel : point.getPossibleLabels()) {
-             bestLabel = posLabel;                                       //initialize bestLabel to some random possible label of that point
-             }*/
+            Label bestLabel = null;
             int bestDegree = Integer.MAX_VALUE;
             for (Label label : point.getPossibleLabels()) {
 
@@ -158,18 +158,11 @@ public class Falp extends Algorithm {
                     bestDegree = labelDegree;
                 }
             }
-            if (bestLabel != point.getActiveLabelPos()) {
-                for (Label l : point.possibleLabels) {
-                    l.active = false;
-                }
-                bestLabel.active = true;
-                changed = true;
+            for (Label l : point.possibleLabels) {
+                l.active = false;
             }
+            bestLabel.active = true;
         }
-        //Stop the local search if none of the active labels have overlap, or if none of the active labels got changed in the last iteration
-            /*if (cL.actConflict.isEmpty() || !changed) {
-         break;
-         }*/
     }
 
 }

@@ -1,3 +1,6 @@
+
+import java.util.HashSet;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -37,11 +40,12 @@ public class PosPoint extends Point {
     //Copy constructor
     public PosPoint(Point p){
         super(p);
-        this.possibleLabels = p.getPossibleLabels();
-        this.xCoord = p.xCoord;
-        this.yCoord = p.yCoord;
-        Label l = p.getActiveLabelPos();
-        setActiveLabelPos(new PosLabel(l.w, l.h, p, l.quadrant));
+        this.possibleLabels = new HashSet<>();
+        for(Label l : p.possibleLabels){
+            Label label = new PosLabel(l.w, l.h, this, l.quadrant);
+            label.active = l.active;            
+            this.possibleLabels.add(label);
+        }
     }
     
     @Override

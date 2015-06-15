@@ -57,6 +57,8 @@ public abstract class Label {
 
         }
     }
+    
+    
 
     public int getMinX() {
         return minX;
