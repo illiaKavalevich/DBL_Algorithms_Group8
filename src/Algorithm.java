@@ -53,7 +53,7 @@ public abstract class Algorithm {
     public abstract void determineLabels();
 
     public void removeOverlap() {
-        //System.out.println("Started to remove overlap");
+        System.out.println("Started to remove overlap");
         List<Point> copyPoints = new ArrayList<>(points);
 
         for (Point p : points) {
@@ -61,14 +61,14 @@ public abstract class Algorithm {
                 p.actOverlap = cD.getActDegree(p.getActiveLabelSlider());
                 //System.out.println(p.actOverlap);
                 if (p.actOverlap == 0) {
-                    copyPoints.remove(p.getActiveLabelSlider());
+                    copyPoints.remove(p);
                 }
             } else {
                 for (Label l : p.possibleLabels) {
                     if (l.active == true) {
                         p.actOverlap = cD.getActDegree(l);
                         if (p.actOverlap == 0) {
-                            copyPoints.remove(l);
+                            copyPoints.remove(p);
                         }
                         break;
                     }
@@ -96,8 +96,8 @@ public abstract class Algorithm {
                 }
                 if (label != null) {
 
-                    int labelDegree = p.actOverlap;
-                    //System.out.println(p.actOverlap);
+                    int labelDegree = cD.getActDegree(label);
+                    //System.out.println(labelDegree);
 //                    System.out.println(label.p.possibleLabels);
                     //System.out.println(cD.getActConflictLabels(label));
 //                    System.out.println(labelDegree);

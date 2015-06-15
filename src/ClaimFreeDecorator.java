@@ -40,6 +40,7 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
     public void setParameters(int w, int h, ArrayList<Point> points, ConflictDetector cD, Timer timer, String model) {
         this.cD = cD;
         this.points = points;
+        this.model = model;
         decoratedAlgorithm.setParameters(w, h, pointsSubSet, cD, timer, model);
     }
     
@@ -51,7 +52,7 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
         for(Point point : pointsSubSet) { //loop all points
             for(Label label : point.getPossibleLabels()) { //loop all labels
                 if(cD.getPosDegree(label) == 0) {
-                    label.active = true;
+                    activateLabel(label);
                     cD.removePoint(point);
                     pointsToBeRemoved.add(point);
                     //System.out.println("rule 1 applied");
@@ -87,14 +88,14 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
                                     if(label3.getPoint().equals(point) && !label3.equals(label)) {
                                         //System.out.println("rule 2 applied");
                                         //System.out.println(point.xCoord + " " + point.yCoord);
-                                        point.setActiveLabelPos((PosLabel) label);
-                                        nearPoint.setActiveLabelPos((PosLabel) labelNearPoint);
+                                        //point.setActiveLabelPos((PosLabel) label);
+                                        //nearPoint.setActiveLabelPos((PosLabel) labelNearPoint);
                                         cD.removePoint(point);
                                         cD.removePoint(nearPoint);
                                         pointsToBeRemoved.add(point);
                                         pointsToBeRemoved.add(nearPoint);
-                                        labelNearPoint.active = true;
-                                        label.active = true;
+                                        activateLabel(labelNearPoint);
+                                        activateLabel(label);
                                         numLabelsClaimed += 2;
                                         //needs break
                                     }
@@ -108,6 +109,18 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
         
         for(Point p : pointsToBeRemoved) {
             pointsSubSet.remove(p);
+        }
+    }
+    
+    private void activateLabel(Label l) {
+        if(model.equals("1slider")) {
+            if(l.quadrant == 1) {
+                l.p.getActiveLabelSlider().setPlacement(1.0f);
+            } else {
+                l.p.getActiveLabelSlider().setPlacement(0.0f);
+            }
+        } else {
+            l.active = true;
         }
     }
 }

@@ -18,14 +18,12 @@ import java.util.Set;
 public abstract class AnnealingSimulator extends Algorithm {
     
     protected Point lastPoint;
-    Set<Label> labelsAffectedLastChange = new HashSet();
     protected double T; //temperature
     protected int oldE; 
     protected int E; //score of the current itteration
     protected int deltaE; //the change in score
     protected int iterationsSinceTempChange;
     protected Random rand;
-    public boolean complicatedScoring = true;
     protected int numPoints;
 
     public AnnealingSimulator() {
@@ -44,7 +42,7 @@ public abstract class AnnealingSimulator extends Algorithm {
         Point point; //current point being altered
         iterationsSinceTempChange = 0;
         doInitialPlacement();
-        computeInitialScore();
+        //computeInitialScore();
         
         //algorithm that optimizes the number of labels
         while(T >= 0) {
@@ -52,8 +50,8 @@ public abstract class AnnealingSimulator extends Algorithm {
             
             //System.out.println(point.xCoord);
             moveLabelRandomly((SliderPoint) point);
-            if(deltaE < 0) {
-                if(rand.nextDouble() <= (1 - Math.pow(Math.E, -(deltaE/T)))) {
+            if(deltaE > 0) {
+                if(rand.nextDouble() <= (Math.pow(Math.E, -(deltaE/T)))) {
                 undoLastPlacement();
                 }
             }
