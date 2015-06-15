@@ -30,6 +30,8 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
         super.determineLabels();
     }
     
+   
+    
     @Override
     public void setParameters(int w, int h, ArrayList<Point> points, ConflictDetector cD, Timer timer, String model) {
         this.cD = cD;
