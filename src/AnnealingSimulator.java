@@ -25,6 +25,8 @@ public abstract class AnnealingSimulator extends Algorithm {
     protected int iterationsSinceTempChange;
     protected Random rand;
     protected int numPoints;
+    protected int varRunsPerStage = 50;
+    boolean stop = false;
 
     public AnnealingSimulator() {
         this.rand = new Random(56467984);
@@ -39,13 +41,14 @@ public abstract class AnnealingSimulator extends Algorithm {
     public void determineLabels() {
         numLabels = points.size();
         numPoints = points.size();
+        if(numLabels >= 1000) varRunsPerStage = 5;
         Point point; //current point being altered
         iterationsSinceTempChange = 0;
         doInitialPlacement();
         //computeInitialScore();
         
         //algorithm that optimizes the number of labels
-        while(T >= 0) {
+        while(T >= 0 && !stop) {
             point = points.get(rand.nextInt(numPoints));
             
             //System.out.println(point.xCoord);
@@ -73,12 +76,12 @@ public abstract class AnnealingSimulator extends Algorithm {
 
     protected void updateTemperature() {
         
-        if(iterationsSinceTempChange == (50 * numPoints)) {
+        if(iterationsSinceTempChange == (varRunsPerStage * numPoints)) {
             System.out.println("Temp update " + T);
-            if(T < 0.2) {
+            if(T < 0.5) {
                 T -= 0.05;
             } else {
-                T = 0.9 * T;
+                T = 0.8 * T;
             }
             iterationsSinceTempChange = 0;
         }
@@ -88,6 +91,6 @@ public abstract class AnnealingSimulator extends Algorithm {
     
     @Override
     public void stopRunning() {
-        T = 0;
+        stop = true;
     }
 }
