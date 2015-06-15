@@ -11,6 +11,7 @@ import java.util.Set;
 
 public class ClaimFreeDecorator extends AlgorithmDecorator {
     int numLabelsClaimed;
+    int numLabelsClaimedFinal;
     ArrayList<Point> pointsSubSet = new ArrayList<>();
     
     public ClaimFreeDecorator(Algorithm decoratedAlgorithm) {
@@ -22,12 +23,15 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
         //System.out.println("Started decorating");
         pointsSubSet.addAll(points);
         numLabelsClaimed = 1; //1 so loop does not terminate immediately
+        numLabelsClaimedFinal = 0;
         while(numLabelsClaimed > 0) {
             numLabelsClaimed = 0;
             applyRule1();
             applyRule2();
+            numLabelsClaimedFinal += numLabelsClaimed;
         }
         super.determineLabels();
+        super.addNumLabels(numLabelsClaimedFinal);
     }
     
    

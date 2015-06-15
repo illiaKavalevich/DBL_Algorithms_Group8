@@ -26,6 +26,10 @@ public abstract class Algorithm {
     public Algorithm() {
         //needed for extending classes
     }
+    
+    public void addNumLabels(int i) {
+        numLabels += i;
+    }
 
     public void setParameters(int w, int h, ArrayList<Point> points, ConflictDetector cD, Timer timer, String model) {
         this.w = w;

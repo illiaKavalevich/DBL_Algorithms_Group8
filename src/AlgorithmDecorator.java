@@ -29,4 +29,9 @@ public class AlgorithmDecorator extends Algorithm {
     public void setParameters(int w, int h, ArrayList<Point> points, ConflictDetector cD, Timer timer, String model) {
         decoratedAlgorithm.setParameters(w, h, points, cD, timer, model);
     }
+    
+    @Override
+    public void addNumLabels(int i) {
+        decoratedAlgorithm.addNumLabels(i);
+    }
 }

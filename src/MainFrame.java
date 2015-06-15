@@ -43,10 +43,10 @@ public class MainFrame {
 
     //COMMENT BEFORE SUBMITTING TO PEACH
     int n = 10;
-    int maxGrid = 1000;
+    int maxGrid = 100;
 
     //SET EMPTY BEFORE SUBMITTING TO PEACH, aka remove '= "..."'
-    String model = "1slider";
+    String model = "4pos";
     int numPoints = n;
     int w = 10;
     int h = 20;

@@ -39,6 +39,7 @@ public abstract class AnnealingSimulator extends Algorithm {
     
     @Override
     public void determineLabels() {
+        numLabels = points.size();
         numPoints = points.size();
         Point point; //current point being altered
         iterationsSinceTempChange = 0;
