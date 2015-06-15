@@ -23,9 +23,7 @@ public class SliderPoint extends Point {
             possibleLabels.add(new PosLabel(w, h, this, 2));
             possibleLabels.add(new PosLabel(w, h, this, 1));
             activeLabel = new SliderLabel(w, h, this, 2);
-        } else {
-            System.out.println("Point.Point: no valid model provided");
-        }
+        } 
     }
     
     @Override

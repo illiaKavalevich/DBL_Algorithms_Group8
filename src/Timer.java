@@ -21,7 +21,6 @@ public class Timer {
                 while(System.currentTimeMillis() < end){
                     //wait
                 }
-                System.out.println("Going to stopRunning");
                 a.stopRunning();
             }
         };

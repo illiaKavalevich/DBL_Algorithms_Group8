@@ -68,9 +68,7 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
 //                newLocalE ++;
 //            }
 
-        //System.out.println(numLabelsCleared + " " + numLabelsCovered + " " + changeSelf);
         deltaE = numLabelsCovered - numLabelsCleared + changeSelf;
-        //System.out.println(deltaE);
     }
 
     @Override
@@ -81,7 +79,6 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
                 tempE++;
             }
         }
-        //System.out.println(tempE);
         E = tempE;
     }
 

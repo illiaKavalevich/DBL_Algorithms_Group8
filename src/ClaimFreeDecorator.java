@@ -20,7 +20,6 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
     
     @Override
     public void determineLabels() {
-        //System.out.println("Started decorating");
         pointsSubSet.addAll(points);
         numLabelsClaimed = 1; //1 so loop does not terminate immediately
         numLabelsClaimedFinal = 0;
@@ -55,7 +54,6 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
                     activateLabel(label);
                     cD.removePoint(point);
                     pointsToBeRemoved.add(point);
-                    //System.out.println("rule 1 applied");
                     numLabelsClaimed ++;
                     break;
                 }
@@ -86,8 +84,6 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
                                 for(Label label3 : cD.getPosConflictLabels(labelNearPoint)) { //loop over labels conflicting the label of nearby point
                                     //if this label conflicts with a label of the starting point but is not 'label' we've got a winner
                                     if(label3.getPoint().equals(point) && !label3.equals(label)) {
-                                        //System.out.println("rule 2 applied");
-                                        //System.out.println(point.xCoord + " " + point.yCoord);
                                         //point.setActiveLabelPos((PosLabel) label);
                                         //nearPoint.setActiveLabelPos((PosLabel) labelNearPoint);
                                         cD.removePoint(point);

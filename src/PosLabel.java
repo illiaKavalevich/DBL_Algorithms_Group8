@@ -28,9 +28,7 @@ public class PosLabel extends Label {
             placement = "SE";
         } else if (quadrant == 0) {
             placement = "#"; //needed for exhaustive search
-        } else {
-            System.out.println("PosLabel.PosLabel: no valid quadrant provided");
-        }
+        } 
     }
     
     public void setLabel(int quadrant) {

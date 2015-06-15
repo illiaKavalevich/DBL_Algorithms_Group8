@@ -202,15 +202,9 @@ public class Quadtree2 {
         Set<Label> labelSet = query(label);
         Set<Label> returnSet = new HashSet<>();
         for (Label l : labelSet) {
-            //System.out.println("label quadrant "+l.quadrant);
             if (l.minX == l.getPoint().getActiveLabelPos().minX && l.minY == l.getPoint().getActiveLabelPos().minY) {
                 returnSet.add(l);
-                //System.out.println("minX: " + l.minX + " minY: " + l.minY + " quadrant: " + l.quadrant);
-                //System.out.println("label being checked, minX: " + label.minX + " minY: " + label.minY);
-
-                //System.out.println("active label found" + labelSet.size());
             } else {
-                //System.out.println("not an active label");
             }
         }
         return returnSet;

@@ -32,9 +32,7 @@ public class PosPoint extends Point {
             possibleLabels.add(new PosLabel(w, h, this, 3));
             possibleLabels.add(new PosLabel(w, h, this, 4));
             activeLabel = new PosLabel(w, h, this);
-        } else {
-            System.out.println("PosPoint.PosPoint: no valid model provided");
-        }
+        } 
     }
     
     //Copy constructor
