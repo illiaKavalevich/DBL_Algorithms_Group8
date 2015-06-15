@@ -71,7 +71,7 @@ public class SimplexNew {
         // used to print matrix initially
         for(int i = 0; i < 1+b.length+1; i++){
            for(int j = 0; j < 1 + b.length + c.length + 1; j++){
-               System.out.print(d[i][j] + " ");
+               System.out.print(d[i][j] + "\t");
              
            }
              System.out.println("\n");
@@ -96,9 +96,11 @@ public class SimplexNew {
     
     private int findpivotColumn(){ //find most negative index column in the last row
         int lowestIndex = 0;
+        double lowestValue = 0;
          for(int j = 0; j < this.c.length; j++){
               if((d[this.b.length+1][j+1] < lowestIndex) && d[this.b.length+1][j+1] < 0 ){
                 lowestIndex = j+1;
+                lowestValue = d[this.b.length+1][j+1];
             }
              
          }
@@ -124,6 +126,18 @@ public class SimplexNew {
  }   
     private void pivotting(int u, int v){
         double x;
+        
+      //scale the pivot row
+      for(int  j = 0; j < b.length+c.length+1;j++){
+              if(j+1!=v){
+          
+                   d[u][j+1] = d[u][j+1]/d[u][v];
+                  
+              }
+           
+           
+       }
+     d[u][v] = 1.0; 
     
        //obtain zeros in the rest of the pivot column by row operations
         for(int i = 0; i < b.length +1; i++){//also the last row will be operated on
@@ -137,17 +151,7 @@ public class SimplexNew {
             
         } 
         d[u][0] = d[0][v]; 
-              //scale the pivot row
-      for(int  j = 0; j < b.length+c.length+1;j++){
-              if(j!=u){
-          
-                   d[u][j+1] = d[u][j+1]/d[u][v];
-                  
-              }
-           
-           
-       }
-     d[u][v] = 1.0; 
+ 
       
     }
     
