@@ -82,7 +82,6 @@ public class DataHandler {
 
             //start upwards motion
             for(upwards=lowestY+1; upwards<=heighestY+1; upwards++) {
-                //System.out.println("x=" + leftMostX + " y=" + upwards);
                 newGeoPoint = new GeoPoint(leftMostX, upwards);
                 //two things are done below
                 //first, a coinflip is done, deciding wether or not to include a certain point with a probability of .5 (to get randomized datasets)
@@ -99,7 +98,6 @@ public class DataHandler {
 
             //start rightwards motion
             for(rightwards=leftMostX + 1; rightwards<=rightMostX + 1; rightwards++) {
-                //System.out.println("x=" + rightwards + " y=" + heighestY);
                 newGeoPoint = new GeoPoint(rightwards, heighestY);
                 if(flipCoin() == 1 && pointMap.containsKey(newGeoPoint.hashCode())) {
                     pointCol.add(newGeoPoint);
@@ -113,7 +111,6 @@ public class DataHandler {
 
             //start downwards motion
             for(downwards=heighestY - 1; downwards>=lowestY - 1; downwards--) {
-                //System.out.println("x=" + rightMostX + " y=" + downwards);
                 newGeoPoint = new GeoPoint(rightMostX, downwards);
                 if(flipCoin() == 1 && pointMap.containsKey(newGeoPoint.hashCode())) {
                     pointCol.add(newGeoPoint);
@@ -127,7 +124,6 @@ public class DataHandler {
 
             //start leftwards motion
             for(leftwards=rightMostX - 1; leftwards>=leftMostX - 1; leftwards--) {
-                //System.out.println("x=" + leftwards + " y=" + lowestY);
                 newGeoPoint = new GeoPoint(leftwards, lowestY);
                 if(flipCoin() == 1 && pointMap.containsKey(newGeoPoint.hashCode())) {
                     pointCol.add(newGeoPoint);
@@ -196,7 +192,6 @@ public class DataHandler {
         int i = 0;
         for(Iterator<GeoPoint> p = pointCol.iterator(); i < limit - 1;) {
             GeoPoint point = p.next();
-            System.out.println(point.getxCoord()+" "+point.getyCoord());
             i++;
         }  
     }

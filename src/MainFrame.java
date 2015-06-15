@@ -238,10 +238,8 @@ public class MainFrame {
             if (hasActive == true) {
                 XYLineAndShapeRenderer rendererL = new XYLineAndShapeRenderer(true, false);
                 if (cD.getActDegree(l) == 0) {
-                    //System.out.println("no conflict");
                     rendererL.setSeriesPaint(0, Color.BLACK);
                 } else {
-                    //System.out.println("conflict");
                     rendererL.setSeriesPaint(0, Color.RED);
                 }
                 rendererL.setSeriesVisibleInLegend(Boolean.FALSE);

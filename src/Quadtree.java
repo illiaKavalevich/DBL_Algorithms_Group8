@@ -73,7 +73,6 @@ public class Quadtree {
      * @param l the Label to be inserted
      */
     public void insertLabel(Label l) {
-        //System.out.println("label added to quadtree");
         Rectangle rectLabel = new Rectangle(l.getMinX(), l.getMaxX(), 
                 l.getMinY(), l.getMaxY());
         insert(root, l, rectLabel);
@@ -83,8 +82,6 @@ public class Quadtree {
     private void insert(Node n, Label l, Rectangle rectLabel) {
         //if we are in a leaf add the label to the leaf
         if (n.depth == maxDepth) {
-            //System.out.println("ended up in leaf");
-            //System.out.println(n.x + " " + n.y);
             n.labels.add(l);
             return; //stop the propagation
         }
@@ -161,7 +158,6 @@ public class Quadtree {
         HashSet<Label> result = new HashSet<>(); //result set passed to query
         Rectangle rectangle = new Rectangle(minX, maxX, minY, maxY); //construct rectangle
         query(root, rectangle, result);
-        //System.out.println(result);
         return result;
     }
     
@@ -171,7 +167,6 @@ public class Quadtree {
         
         //if the node is 'covered' by the rectangle add associated labels to result
         if (n.depth == maxDepth && rectangle.contains(n.x, n.y)){
-            //System.out.println(n.labels);
             for (Label l : n.labels){
                 result.add(l); //IMPORTANT: maybe a check needs to be done that l is not in result already, depends on how add is handled by java
             }

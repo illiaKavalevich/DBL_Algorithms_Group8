@@ -17,7 +17,6 @@ public class ConflictDetector implements ConflictDetectorInterface {
     
     //adds all the labels of all the points to the quadtree
     private void addAllPoints() {
-        //System.out.println("started adding labels to quadtree");
         for(Point p : points) {
             for(Label l : p.getPossibleLabels()) {
                 quadtree.insertLabel(l);
@@ -66,10 +65,8 @@ public class ConflictDetector implements ConflictDetectorInterface {
     private Set<Label> getActConflictLabelsDiscrete(Label l) {
         Set<Label> result = new HashSet<Label>(); //active labels conflicting with l
         Set<Label> posConflicts = getPosConflictLabels(l); //labels conflicting with given label
-        //System.out.println("test");
         for(Label posLabel : posConflicts) { //for all the conflicting labels...
             if(posLabel.active == true) { //...check if label is active
-                //System.out.println("label added to result getActConflictLabelsDiscrete");
                 result.add(posLabel); //add to result
             }
         }
@@ -97,7 +94,6 @@ public class ConflictDetector implements ConflictDetectorInterface {
     public Set<Label> getPosConflictLabels(Label l) {
         Set<Label> result = quadtree.query(l.getMinX(), l.getMaxX(), l.getMinY(), l.getMaxY()); //query the area of l
         boolean contains = result.remove(l); //remove the label itself from the result
-        //System.out.println(contains);
         return result;
     }
 }

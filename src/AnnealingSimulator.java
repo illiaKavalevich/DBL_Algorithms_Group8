@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 import java.lang.Math;
 import java.util.HashSet;
@@ -51,7 +50,6 @@ public abstract class AnnealingSimulator extends Algorithm {
         while(T >= 0 && !stop) {
             point = points.get(rand.nextInt(numPoints));
             
-            //System.out.println(point.xCoord);
             moveLabelRandomly((SliderPoint) point);
             if(deltaE > 0) {
                 if(rand.nextDouble() <= (Math.pow(Math.E, -(deltaE/T)))) {
@@ -61,7 +59,6 @@ public abstract class AnnealingSimulator extends Algorithm {
             iterationsSinceTempChange ++;
             updateTemperature();
         }
-        System.out.println("start remove overlap");
         removeOverlap();
     }
     
@@ -77,7 +74,6 @@ public abstract class AnnealingSimulator extends Algorithm {
     protected void updateTemperature() {
         
         if(iterationsSinceTempChange == (varRunsPerStage * numPoints)) {
-            System.out.println("Temp update " + T);
             if(T < 0.5) {
                 T -= 0.05;
             } else {

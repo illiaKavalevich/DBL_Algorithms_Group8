@@ -53,13 +53,11 @@ public abstract class Algorithm {
     public abstract void determineLabels();
 
     public void removeOverlap() {
-        System.out.println("Started to remove overlap");
         List<Point> copyPoints = new ArrayList<>(points);
 
         for (Point p : points) {
             if ("1slider".equals(model)) {
                 p.actOverlap = cD.getActDegree(p.getActiveLabelSlider());
-                //System.out.println(p.actOverlap);
                 if (p.actOverlap == 0) {
                     //copyPoints.remove(p);
                 }
@@ -97,23 +95,15 @@ public abstract class Algorithm {
                 if (label != null) {
 
                     int labelDegree = cD.getActDegree(label);
-                    //System.out.println(labelDegree);
-//                    System.out.println(label.p.possibleLabels);
-                    //System.out.println(cD.getActConflictLabels(label));
-//                    System.out.println(labelDegree);
                     if (labelDegree > worstDegree) {
-                        //System.out.println("sup");
                         worstLabel = label;
                         worstDegree = labelDegree;
                         noMoreOverlap = false;
-                        //System.out.println("removeOverlap 1");
                     }
                 }
-                //System.out.println("worstdegree: " + worstDegree);
 
             }
             if (!noMoreOverlap) {
-                //System.out.println("hier komtie");
                 Set<Label> labelsToBeUpdated = new HashSet<>();
                 labelsToBeUpdated.addAll(cD.getActConflictLabels(worstLabel));
                 for (Label l : labelsToBeUpdated) {
@@ -121,7 +111,6 @@ public abstract class Algorithm {
                     l.p.actOverlap--;
                 }
                 if ("1slider".equals(model)) {
-                    //System.out.println("removeOverlap 2");
                     SliderLabel worstSliderLabel = (SliderLabel) worstLabel;
                     worstSliderLabel.deactivate();
                     cD.removePoint(worstSliderLabel.p);
