@@ -66,34 +66,38 @@ public abstract class Algorithm {
                         }
 
                     }
-                    
-                    if (label != null) {
+                }
+                if (label != null) {
 
-                        int labelDegree = cD.getActConflictLabels(label).size();
-                        //System.out.println(labelDegree);
-                        if (labelDegree > worstDegree) {
-                            //System.out.println("sup");
-                            worstLabel = label;
-                            worstDegree = labelDegree;
-                            noMoreOverlap = false;
-                        }
+                    int labelDegree = cD.getActConflictLabels(label).size();
+//                    System.out.println(label.p.possibleLabels);
+//                    System.out.println(cD.getActConflictLabels(label));
+//                    System.out.println(labelDegree);
+                    if (labelDegree > worstDegree) {
+                        //System.out.println("sup");
+                        worstLabel = label;
+                        worstDegree = labelDegree;
+                        noMoreOverlap = false;
                     }
-                    //System.out.println("worstdegree: " + worstDegree);
                 }
+                //System.out.println("worstdegree: " + worstDegree);
+                
             }
-                if (!noMoreOverlap) {
-                    //System.out.println("hier komtie");
-                    cD.removeLabel(worstLabel);
-                    if ("1slider".equals(model)) {
-                        SliderLabel worstSliderLabel = (SliderLabel) worstLabel;
-                        worstSliderLabel.deactivate();
-                    } else {
-                        worstLabel.active = false;
-                    }
-                    numLabels--;
+            if (!noMoreOverlap) {
+                //System.out.println("hier komtie");
+                
+                if ("1slider".equals(model)) {
+                    SliderLabel worstSliderLabel = (SliderLabel) worstLabel;
+                    worstSliderLabel.deactivate();
+                    cD.removePoint(worstSliderLabel.p);
                 } else {
-                    break;
+                    worstLabel.active = false;
+                    cD.removeLabel(worstLabel);
                 }
+                numLabels--;
+            } else {
+                break;
+            }
             
         }
     }

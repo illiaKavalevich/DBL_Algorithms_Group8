@@ -42,14 +42,14 @@ public class MainFrame {
     Timer timer;
 
     //COMMENT BEFORE SUBMITTING TO PEACH
-    int n = 25;
-    int maxGrid = 10;
+    int n = 1000;
+    int maxGrid = 1000;
 
     //SET EMPTY BEFORE SUBMITTING TO PEACH, aka remove '= "..."'
-    String model = "4pos";
+    String model = "1slider";
     int numPoints = n;
-    int w = 30;
-    int h = 40;
+    int w = 10;
+    int h = 20;
 
     public void readInput() {
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
@@ -115,7 +115,7 @@ public class MainFrame {
         if (model.equals("2pos")) {
             alg = new ClaimFreeDecorator(new Falp());
         } else if (model.equals("4pos")) {
-            alg = new ClaimFreeDecorator(new Falp());
+            alg = new Falp();
         } else if (model.equals("1slider")) {
             alg = new AnnealingSimulatorSlider();
         } else {

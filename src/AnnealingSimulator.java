@@ -30,7 +30,7 @@ public abstract class AnnealingSimulator extends Algorithm {
 
     public AnnealingSimulator() {
         this.rand = new Random(56467984);
-        this.T = 0.0;
+        this.T = 2.0;
     }    
     
     public void setTemperature(double temperature) {

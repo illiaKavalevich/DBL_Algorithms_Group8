@@ -54,11 +54,12 @@ public class ConflictDetector implements ConflictDetectorInterface {
         }
         
         //check if they indeed overlap and add to result
-        for(Label label: posConflictSlider) {
+        for(SliderLabel label: posConflictSlider) {
             if(label.active == true && l.active == true && label.overlaps(l)) {
                 result.add(label);
             }
         }
+        result.remove(l);
         return result;
     }
     

@@ -19,6 +19,7 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
     
     @Override
     public void determineLabels() {
+        //System.out.println("Started decorating");
         pointsSubSet.addAll(points);
         numLabelsClaimed = 1; //1 so loop does not terminate immediately
         while(numLabelsClaimed > 0) {
