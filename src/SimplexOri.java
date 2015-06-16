@@ -294,11 +294,11 @@ public class SimplexOri {
 
 
     // test client
-    public static void main(String[] args) {
+   // public static void main(String[] args) {
 
-        test1();
+        //test1();
         
 
-    }
+   // }
 
 }
