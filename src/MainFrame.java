@@ -52,6 +52,7 @@ public class MainFrame {
     int h;// = 5;
 
     public void readInput() {
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
 
         //only used for testing purposes to create random points
         //COMMENT BEFORE SUBMITTING TO PEACH
@@ -143,7 +144,11 @@ public class MainFrame {
 //                q.insertLabel(l);
 //            }
 //        }
+        //alg = new AnnealingSimulatorSlider();
         alg.setParameters(w, h, points, cD, timer, model);
+//        alg.moveLabelRandomly(point1);
+//        System.out.println(cD.getActDegree(point1.getActiveLabelSlider()));
+//        System.out.println(cD.getActDegree(point2.getActiveLabelSlider()));
 
         processOutput();
 

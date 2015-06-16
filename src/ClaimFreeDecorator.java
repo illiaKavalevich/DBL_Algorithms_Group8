@@ -31,6 +31,7 @@ public class ClaimFreeDecorator extends AlgorithmDecorator {
         }
         super.determineLabels();
         super.addNumLabels(numLabelsClaimedFinal);
+        //System.out.println("Claimed " + numLabelsClaimedFinal);
     }
     
    
