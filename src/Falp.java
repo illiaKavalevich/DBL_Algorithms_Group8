@@ -81,7 +81,7 @@ public class Falp extends Algorithm {
         for (Point point : points) {
             noActiveLabelPoints.add(point);
         }
-        while (!posLabelSet.isEmpty()) {
+        while (!posLabelSet.isEmpty() && !stop) {
             Label bestLabel = null;
             int lowestDegree = Integer.MAX_VALUE;
 
