@@ -42,11 +42,11 @@ public class MainFrame {
     Timer timer;
 
     //COMMENT BEFORE SUBMITTING TO PEACH
-    int n = 100;
-    int maxGrid = 20;
+    int n = 10000;
+    int maxGrid = 200;
 
     //SET EMPTY BEFORE SUBMITTING TO PEACH, aka remove '= "..."'
-    String model = "1slider";
+    String model = "4pos";
     int numPoints = n;
     int w = 100;
     int h = 100;
@@ -126,7 +126,7 @@ public class MainFrame {
         } else {
             System.out.println(model + " is not a valid model");
         }
-        timer = new Timer(3, timerAlg);
+        timer = new Timer(200, timerAlg);
         timer.start();
 
         q = new Quadtree2();
