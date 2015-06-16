@@ -21,6 +21,7 @@ public class Falp extends Algorithm {
     @Override
     public void determineLabels() {
         removeConflicts();
+        giveActiveLabel();
         int totaldegree = 0;
         for (Point p : points) {
             for (Label l : p.possibleLabels) {
@@ -30,12 +31,19 @@ public class Falp extends Algorithm {
             }
         }
         if (totaldegree < 100000) {
-            giveActiveLabel();
+            
             while (!stop) {
                 localSearch();
             }
             removeOverlap();
             selectBestResult();
+        }
+        else{
+            points.clear();
+            for (Point p : firstPoints) {
+                points.add(p);
+            }
+            numLabels = firstNumlabels;
         }
     }
 

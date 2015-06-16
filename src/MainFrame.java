@@ -48,40 +48,44 @@ public class MainFrame {
     //SET EMPTY BEFORE SUBMITTING TO PEACH, aka remove '= "..."'
     String model = "1slider";
     int numPoints = n;
-    int w = 3;
-    int h = 3;
+    int w = 100;
+    int h = 100;
 
     public void readInput() {
-        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
 
         //only used for testing purposes to create random points
         //COMMENT BEFORE SUBMITTING TO PEACH
-        int pointsPlaced = 0;
-        while (pointsPlaced < n) {
-            Random rand = new Random();
-            int x = rand.nextInt(maxGrid + 1);
-            Random rand2 = new Random();
-            int y = rand2.nextInt(maxGrid + 1);
-            boolean alreadyExists = false;
-            for (Point p : points) {
-                if (p.xCoord == x && p.yCoord == y) {
-                    alreadyExists = true;
-                    break;
-                }
-            }
-            if (!alreadyExists) {
-                pointsPlaced++;
-                if (model.equals("1slider")) {
-                    Point point = new SliderPoint(x, y, model, w, h);
-                    points.add(point);
-                } else {
-                    Point point = new PosPoint(x, y, model, w, h);
-                    points.add(point);
-                }
+//        int pointsPlaced = 0;
+//        while (pointsPlaced < n) {
+//            Random rand = new Random();
+//            int x = rand.nextInt(maxGrid + 1);
+//            Random rand2 = new Random();
+//            int y = rand2.nextInt(maxGrid + 1);
+//            boolean alreadyExists = false;
+//            for (Point p : points) {
+//                if (p.xCoord == x && p.yCoord == y) {
+//                    alreadyExists = true;
+//                    break;
+//                }
+//            }
+//            if (!alreadyExists) {
+//                pointsPlaced++;
+//                if (model.equals("1slider")) {
+//                    Point point = new SliderPoint(x, y, model, w, h);
+//                    points.add(point);
+//                } else {
+//                    Point point = new PosPoint(x, y, model, w, h);
+//                    points.add(point);
+//                }
+//            }
+//        }
+        for(int i = 0;i<n;i++){
+            for(int j=0;j<n;j++){
+                Point point = new PosPoint(100*i, 100*j, model, w, h);
+                points.add(point);
             }
         }
-
-        /* used for PEACH, UN-COMMENT BEFORE SUBMITTING TO PEACH
+        // used for PEACH, UN-COMMENT BEFORE SUBMITTING TO PEACH
          int firstPoint;
          int secondPoint;
          Scanner input = new Scanner(System.in);
@@ -111,12 +115,11 @@ public class MainFrame {
          } else {
          System.out.println("MainFrame.readInput: no valid model provided");
          }
-         */
         Algorithm timerAlg = new Falp();
         if (model.equals("2pos")) {
-            alg = n <= 20 ? new BranchAndBound() : timerAlg;
+            alg = numPoints <= 20 ? new BranchAndBound() : timerAlg;
         } else if (model.equals("4pos")) {
-            alg = n <= 20 ? new BranchAndBound() : timerAlg;
+            alg = numPoints <= 20 ? new BranchAndBound() : timerAlg;
         } else if (model.equals("1slider")) {
             alg = new AnnealingSimulatorSlider();
             timerAlg = alg;
@@ -138,7 +141,7 @@ public class MainFrame {
         processOutput();
 
         //COMMENT BEFORE SUBMITTING TO PEACH
-        plotLabels();
+        //plotLabels();
     }
 
     public void processOutput() {
