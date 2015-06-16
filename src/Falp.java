@@ -81,7 +81,6 @@ public class Falp extends Algorithm {
         for (Point point : points) {
             noActiveLabelPoints.add(point);
         }
-        int lastDegree = 0;
         while (!posLabelSet.isEmpty()) {
             Label bestLabel = null;
             int lowestDegree = Integer.MAX_VALUE;
@@ -91,12 +90,11 @@ public class Falp extends Algorithm {
                 if (labelDegree < lowestDegree) {
                     bestLabel = l;
                     lowestDegree = labelDegree;
-                    if(labelDegree == lastDegree){
+                    if(labelDegree == 0){
                         break;
                     }
                 }
             }
-            lastDegree = lowestDegree;
             for (Label l : cdCopy.getPosConflictLabels(bestLabel)) {
                 if (l != bestLabel) {
                     cdCopy.removeLabel(l);

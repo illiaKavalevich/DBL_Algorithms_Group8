@@ -79,9 +79,13 @@ public class MainFrame {
 //                }
 //            }
 //        }
-        for(int i = 0;i<n;i++){
-            for(int j=0;j<n;j++){
-                Point point = new PosPoint(5*i, 5*j, model, w, h);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                Random rand = new Random();
+                int x = rand.nextInt(n);
+                Random rand2 = new Random();
+                int y = rand2.nextInt(n);
+                Point point = new PosPoint(10 * x, 10 * y, model, w, h);
                 points.add(point);
             }
         }
@@ -141,7 +145,7 @@ public class MainFrame {
         processOutput();
 
         //COMMENT BEFORE SUBMITTING TO PEACH
-        //plotLabels();
+        plotLabels();
     }
 
     public void processOutput() {
@@ -322,4 +326,3 @@ public class MainFrame {
 //       
     }
 }
-
