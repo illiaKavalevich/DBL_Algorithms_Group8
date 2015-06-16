@@ -12,8 +12,8 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
 
     float lastPosition;
 
-    public AnnealingSimulatorSlider() {
-
+    public AnnealingSimulatorSlider(Falp alg) {
+        super(alg);
     }
 
     @Override
@@ -56,7 +56,6 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
             changeSelf = 0;
         }
         deltaE = - numLabelsCovered + numLabelsCleared + changeSelf;
-        System.out.println(numLabelsCovered + " " + numLabelsCleared + " " + changeSelf + " " + deltaE);
     }
 
     @Override
@@ -69,7 +68,6 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
             
             Set<Label> oldConflicts = new HashSet(cD.getActConflictLabels(p.activeLabel));
             int oldLocalE = oldConflicts.size();
-            //System.out.println("deactivate");
             
             for(Label l : oldConflicts) {
                 if(cD.getActDegree(l) == 1) numLabelsCleared++;
@@ -84,7 +82,6 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
             activePoints.remove(lastPoint);
             numLabels--;
         } else {
-            //System.out.println("activate");
             p.getActiveLabelSlider().active = true;
             activePoints.add(lastPoint);
             Set<Label> newConflicts = new HashSet(cD.getActConflictLabels(p.activeLabel));
@@ -103,7 +100,6 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
         }
         
         deltaE = - numLabelsCovered + numLabelsCleared + changeSelf;
-        //System.out.println(numLabelsCovered + " " + numLabelsCleared + " " + changeSelf + " " + deltaE);
     }
     
     @Override
@@ -137,8 +133,27 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
 
     @Override
     protected void doInitialPlacement() {
-        for (Point point : points) {
-            point.getActiveLabelSlider().setPlacement(rand.nextFloat());
+        if(useDiscreteAlg) {
+            discreteAlg.setParameters(w, h, points, cD, timer, "2pos");
+            //discreteAlg.removeConflicts();
+            cD.setModel("2pos");
+            discreteAlg.determineLabels();
+            cD.setModel("1slider");
+            for(Point p : points) {
+                for(Label l : p.getPossibleLabels()) {
+                    if(l.active = true) {
+                        if(l.quadrant == 1) {
+                            p.getActiveLabelSlider().setPlacement(1.0f);
+                        } else {
+                            p.getActiveLabelSlider().setPlacement(0.0f);
+                        }
+                    }
+                }
+            }
+        } else {
+            for (Point point : points) {
+                point.getActiveLabelSlider().setPlacement(rand.nextFloat());
+            }
         }
     }
 }

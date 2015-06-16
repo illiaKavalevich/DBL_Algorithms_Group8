@@ -42,95 +42,97 @@ public class MainFrame {
     Timer timer;
 
     //COMMENT BEFORE SUBMITTING TO PEACH
-    int n = 100;
-    int maxGrid = 200;
+    int n = 1000;
+    int maxGrid = 100;
 
     //SET EMPTY BEFORE SUBMITTING TO PEACH, aka remove '= "..."'
-    String model = "4pos";
+    String model = "1slider";
     int numPoints = n;
     int w = 5;
-    int h = 5;
+    int h = 3;
 
     public void readInput() {
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
 
         //only used for testing purposes to create random points
         //COMMENT BEFORE SUBMITTING TO PEACH
-//        int pointsPlaced = 0;
-//        while (pointsPlaced < n) {
-//            Random rand = new Random();
-//            int x = rand.nextInt(maxGrid + 1);
-//            Random rand2 = new Random();
-//            int y = rand2.nextInt(maxGrid + 1);
-//            boolean alreadyExists = false;
-//            for (Point p : points) {
-//                if (p.xCoord == x && p.yCoord == y) {
-//                    alreadyExists = true;
-//                    break;
-//                }
-//            }
-//            if (!alreadyExists) {
-//                pointsPlaced++;
-//                if (model.equals("1slider")) {
-//                    Point point = new SliderPoint(x, y, model, w, h);
-//                    points.add(point);
-//                } else {
-//                    Point point = new PosPoint(x, y, model, w, h);
-//                    points.add(point);
-//                }
-//            }
-//        }
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                Random rand = new Random();
-                int x = rand.nextInt(n);
-                Random rand2 = new Random();
-                int y = rand2.nextInt(n);
-                Point point = new PosPoint(10 * x, 10 * y, model, w, h);
-                points.add(point);
+        int pointsPlaced = 0;
+        while (pointsPlaced < n) {
+            Random rand = new Random();
+            int x = rand.nextInt(maxGrid + 1);
+            Random rand2 = new Random();
+            int y = rand2.nextInt(maxGrid + 1);
+            boolean alreadyExists = false;
+            for (Point p : points) {
+                if (p.xCoord == x && p.yCoord == y) {
+                    alreadyExists = true;
+                    break;
+                }
+            }
+            if (!alreadyExists) {
+                pointsPlaced++;
+                if (model.equals("1slider")) {
+                    Point point = new SliderPoint(x, y, model, w, h);
+                    points.add(point);
+                } else {
+                    Point point = new PosPoint(x, y, model, w, h);
+                    points.add(point);
+                }
             }
         }
-        // used for PEACH, UN-COMMENT BEFORE SUBMITTING TO PEACH
-//         int firstPoint;
-//         int secondPoint;
-//         Scanner input = new Scanner(System.in);
-//         //pattern used to skip input "...: "
-//         String template = "\\n*[a-zA-Z\\s]*[^\\w\\s]\\s*";
-//
-//         input.skip(template);
-//         model = input.next();
-//         input.skip(template);
-//         w = input.nextInt();
-//         input.skip(template);
-//         h = input.nextInt();
-//         input.skip(template);
-//         numPoints = input.nextInt();
-//         if (model.equals("2pos") || model.equals("4pos")) {
-//         while (input.hasNext()) {
-//         firstPoint = input.nextInt();
-//         secondPoint = input.nextInt();
-//         points.add(new PosPoint(firstPoint, secondPoint, model, w, h));
-//         }
-//         } else if (model.equals("1slider")) {
-//         while (input.hasNext()) {
-//         firstPoint = input.nextInt();
-//         secondPoint = input.nextInt();
-//         points.add(new SliderPoint(firstPoint, secondPoint, model, w, h));
-//         }
-//         } else {
-//         System.out.println("MainFrame.readInput: no valid model provided");
-//         }
+        
+//        SliderPoint point1 = new SliderPoint(4, 4, model, w, h);
+//        points.add(point1);
+//        SliderPoint point2 = new SliderPoint(14, 4, model, w, h);
+//        points.add(point2);
+
+        /* used for PEACH, UN-COMMENT BEFORE SUBMITTING TO PEACH
+         int firstPoint;
+         int secondPoint;
+         Scanner input = new Scanner(System.in);
+         //pattern used to skip input "...: "
+         String template = "\\n*[a-zA-Z\\s]*[^\\w\\s]\\s*";
+
+         input.skip(template);
+         model = input.next();
+         input.skip(template);
+         w = input.nextInt();
+         input.skip(template);
+         h = input.nextInt();
+         input.skip(template);
+         numPoints = input.nextInt();
+         if (model.equals("2pos") || model.equals("4pos")) {
+         while (input.hasNext()) {
+         firstPoint = input.nextInt();
+         secondPoint = input.nextInt();
+         points.add(new PosPoint(firstPoint, secondPoint, model, w, h));
+         }
+         } else if (model.equals("1slider")) {
+         while (input.hasNext()) {
+         firstPoint = input.nextInt();
+         secondPoint = input.nextInt();
+         points.add(new SliderPoint(firstPoint, secondPoint, model, w, h));
+         }
+         } else {
+         System.out.println("MainFrame.readInput: no valid model provided");
+         }
+         */
         Algorithm timerAlg = new Falp();
         if (model.equals("2pos")) {
-            alg = n <= 20 ? new BranchAndBound() : timerAlg;
+            alg = n <= 20 ? new BranchAndBound() : new ClaimFreeDecorator(timerAlg);
         } else if (model.equals("4pos")) {
             alg = n <= 20 ? new BranchAndBound() : timerAlg;
         } else if (model.equals("1slider")) {
-            alg = new AnnealingSimulatorSlider();
+            if (n >= 250) {
+                alg = new AnnealingSimulatorSlider(null);
+            } else {
+                alg = new ClaimFreeDecorator(new AnnealingSimulatorSlider(new Falp()));
+            }
             timerAlg = alg;
         } else {
             System.out.println(model + " is not a valid model");
         }
-        timer = new Timer(3, timerAlg);
+        timer = new Timer(30, timerAlg);
         timer.start();
 
         q = new Quadtree2();
@@ -140,7 +142,11 @@ public class MainFrame {
 //                q.insertLabel(l);
 //            }
 //        }
+        //alg = new AnnealingSimulatorSlider();
         alg.setParameters(w, h, points, cD, timer, model);
+//        alg.moveLabelRandomly(point1);
+//        System.out.println(cD.getActDegree(point1.getActiveLabelSlider()));
+//        System.out.println(cD.getActDegree(point2.getActiveLabelSlider()));
 
         processOutput();
 

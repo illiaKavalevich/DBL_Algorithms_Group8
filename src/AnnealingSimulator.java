@@ -30,10 +30,16 @@ public abstract class AnnealingSimulator extends Algorithm {
     protected int varRunsPerStage = 50;
     boolean stop = false;
     protected List<Point> activePoints;
+    protected Falp discreteAlg;
+    protected boolean useDiscreteAlg = false;
 
-    public AnnealingSimulator() {
+    public AnnealingSimulator(Falp alg) {
         this.rand = new Random(56467984);
-        this.T = 2.5;
+        this.T = 2.0;
+        if (alg != null) {
+            this.discreteAlg = alg;
+            useDiscreteAlg = true;
+        }
     }
 
     public void setTemperature(double temperature) {
@@ -45,43 +51,40 @@ public abstract class AnnealingSimulator extends Algorithm {
         activePoints = new ArrayList<>(points);
         numLabels = points.size();
         numPoints = points.size();
-        if (numLabels >= 1000) {
-            varRunsPerStage = 5;
+        if (numLabels >= 500) {
+            varRunsPerStage = 25;
         }
         Point point; //current point being altered
         iterationsSinceTempChange = 0;
         doInitialPlacement();
         computeInitialScore();
-        System.out.println(E);
 
         //algorithm that optimizes the number of labels
         while (T >= 0 && !stop) {
-//            if (rand.nextDouble() <= 1) {
-//                point = points.get(rand.nextInt(numLabels));
-//                activateDeactivate((SliderPoint) point);
-//                if (deltaE < 0) {
-//                    //System.out.println(Math.pow(Math.E, (deltaE / T)));
-//                    if (rand.nextDouble() >= (Math.pow(Math.E, (deltaE / T)))) {
-//                        undoLastActivationDeactvation();
-//                        E -= deltaE;
-//                    }
-//                }
-//            } else {
-//                point = activePoints.get(rand.nextInt(activePoints.size()));
-//                moveLabelRandomly((SliderPoint) point);
-//                if (deltaE < 0) {
-//                    if (rand.nextDouble() >= (Math.pow(Math.E, (deltaE / T)))) {
-//                        undoLastPlacement();
-//                        E -= deltaE;
-//                    }
-//                }
-//            }    }
-
-//            E += deltaE;
+            if (rand.nextDouble() <= 0.2) {
+                point = points.get(rand.nextInt(numLabels));
+                activateDeactivate((SliderPoint) point);
+                if (deltaE < 0) {
+                    //System.out.println(Math.pow(Math.E, (deltaE / T)));
+                    if (rand.nextDouble() >= (Math.pow(Math.E, (deltaE / T)))) {
+                        undoLastActivationDeactvation();
+                        E -= deltaE;
+                    }
+                }
+            } else {
+                point = activePoints.get(rand.nextInt(activePoints.size()));
+                moveLabelRandomly((SliderPoint) point);
+                if (deltaE < 0) {
+                    if (rand.nextDouble() >= (Math.pow(Math.E, (deltaE / T)))) {
+                        undoLastPlacement();
+                        E -= deltaE;
+                    }
+                }
+            }    
+            E += deltaE;
             iterationsSinceTempChange++;
             updateTemperature();
         }
-        System.out.println(E);
         removeOverlap();
     }
 
@@ -106,9 +109,9 @@ public abstract class AnnealingSimulator extends Algorithm {
 
         if (iterationsSinceTempChange == (varRunsPerStage * numPoints)) {
             if (T < 0.5) {
-                T -= 0.02;
+                T -= 0.05;
             } else {
-                T = 0.95 * T;
+                T = 0.8 * T;
             }
             iterationsSinceTempChange = 0;
         }

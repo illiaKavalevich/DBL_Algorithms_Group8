@@ -15,6 +15,10 @@ public class ConflictDetector implements ConflictDetectorInterface {
         addAllPoints();
     }
     
+    public void setModel(String model) {
+        this.model = model;
+    }
+    
     //adds all the labels of all the points to the quadtree
     private void addAllPoints() {
         for(Point p : points) {
@@ -39,13 +43,15 @@ public class ConflictDetector implements ConflictDetectorInterface {
     private Set<Label> getActConflictLabelsSlider(SliderLabel l) {
         Set<Label> result = new HashSet<Label>(); //result containing SliderLabels 
         Set<Label> posLabels = new HashSet<Label>(l.getPoint().getPossibleLabels()); //pos labels of point
+        //System.out.println(posLabels);
         Set<Label> posConflicts = new HashSet<Label>(); //pos conflicts of PosLabels
         Set<SliderLabel> posConflictSlider = new HashSet<SliderLabel>(); //pos conflicts SliderLabels
         
         //get all the labels pos labels the possible labels of l intersect with
         for (Label label : posLabels) {
-            posConflicts.addAll(getPosConflictLabels(l));
+            posConflicts.addAll(getPosConflictLabels(label));
         }
+        //System.out.println("posConflicts" + posConflicts);
         
         //get all the associated Slider Labels
         for(Label label : posConflicts) {

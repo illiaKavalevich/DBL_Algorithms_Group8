@@ -94,7 +94,7 @@ public abstract class Algorithm {
                 }
                 if (label != null) {
 
-                    int labelDegree = cD.getActDegree(label);
+                    int labelDegree = label.p.actOverlap;
                     if (labelDegree > worstDegree) {
                         worstLabel = label;
                         worstDegree = labelDegree;
