@@ -11,6 +11,7 @@ public class Falp extends Algorithm {
     ArrayList<Integer> firstQuadrants = new ArrayList<>();
     Thread thread;
     boolean stop = false;
+    boolean changed = false;
 
     public Falp() {
 
@@ -21,7 +22,7 @@ public class Falp extends Algorithm {
     @Override
     public void determineLabels() {
         removeConflicts();
-        if (!stop) {
+        if (!stop && points.size()<10000) {
             giveActiveLabel();
             int totaldegree = 0;
             for (Point p : points) {
@@ -33,7 +34,7 @@ public class Falp extends Algorithm {
             }
             if (totaldegree < 100000) {
 
-                while (!stop) {
+                while (!stop && changed) {
                     localSearch();
                 }
                 removeOverlap();
@@ -77,7 +78,7 @@ public class Falp extends Algorithm {
         }
         ConflictDetector cdCopy = new ConflictDetector(points, model, new Quadtree2());
         firstNumlabels = 0;
-        numLabels = points.size();
+        numLabels = 0;
         for (Point point : points) {
             noActiveLabelPoints.add(point);
         }
@@ -112,6 +113,7 @@ public class Falp extends Algorithm {
             activeLabelPoints.add(p);
             bestLabel.active = true;
             firstNumlabels++;
+            numLabels++;
         }
         for (Point p : points) {
             firstPoints.add(new PosPoint(p));
@@ -141,6 +143,7 @@ public class Falp extends Algorithm {
     //step 3 of FALP: the local search
     //Check for each point if it has a label with less overlap than the current active one.
     public void localSearch() {
+        changed = false;
         for (Point point : activeLabelPoints) {
             Label bestLabel = null;
             int bestDegree = Integer.MAX_VALUE;
@@ -151,6 +154,9 @@ public class Falp extends Algorithm {
                     bestLabel = label;                                      //update bestlabel if there is a label with lower degree
                     bestDegree = labelDegree;
                 }
+            }
+            if(bestLabel.active == false){
+                changed = true;
             }
             for (Label l : point.possibleLabels) {
                 l.active = false;
