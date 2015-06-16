@@ -26,7 +26,6 @@ public class Quadtree2 {
     private class Rectangle {
 
         //coordinates defining the rectangle
-
         double minX;
         double maxX;
         double minY;
@@ -90,28 +89,36 @@ public class Quadtree2 {
             return; //stop the propagation
         }
 
+        //System.out.println(n.labels.size() + " depth: " + n.depth);
+
         //create children if non existent
         if (!n.hasChildren) {
-            n.NW = new Node(n.x + (n.nodeSize / 2), n.y + (n.nodeSize / 2), n.depth + 1);
-            n.NE = new Node(n.x - (n.nodeSize / 2), n.y + (n.nodeSize / 2), n.depth + 1);
-            n.SE = new Node(n.x - (n.nodeSize / 2), n.y - (n.nodeSize / 2), n.depth + 1);
-            n.SW = new Node(n.x + (n.nodeSize / 2), n.y - (n.nodeSize / 2), n.depth + 1);
+            n.NW = new Node(n.x - (n.nodeSize / 2), n.y + (n.nodeSize / 2), n.depth + 1);
+            n.NE = new Node(n.x + (n.nodeSize / 2), n.y + (n.nodeSize / 2), n.depth + 1);
+            n.SE = new Node(n.x + (n.nodeSize / 2), n.y - (n.nodeSize / 2), n.depth + 1);
+            n.SW = new Node(n.x - (n.nodeSize / 2), n.y - (n.nodeSize / 2), n.depth + 1);
             n.hasChildren = true;
         }
 
-        //propagate the insertion to the right subtree(s)
-        if (n.x > l.getMaxX() && n.y < l.getMinY()) {
+        //propagate the insertion to the right subtree
+        if (n.x >= l.getMaxX() && n.y <= l.getMinY() && n.x - n.nodeSize <= l.getMinX() && n.y + n.nodeSize >= l.getMaxY()) {
             insert(n.NW, l, rectLabel);
-        } else if (n.x > l.getMaxX() && n.y > l.getMaxY()) {
-            insert(n.SW, l, rectLabel);
-        } else if (n.x < l.getMinX() && n.y > l.getMaxY()) {
-            insert(n.SE, l, rectLabel);
-        } else if (n.x < l.getMinX() && n.y < l.getMinY()) {
-            insert(n.NE, l, rectLabel);
-        } else {
-            n.labels.add(l);
             return;
         }
+        if (n.x >= l.getMaxX() && n.y >= l.getMaxY() && n.x - n.nodeSize <= l.getMinX() && n.y - n.nodeSize <= l.getMinY()) {
+            insert(n.SW, l, rectLabel);
+            return;
+        }
+        if (n.x <= l.getMinX() && n.y >= l.getMaxY() && n.x + n.nodeSize >= l.getMaxX() && n.y - n.nodeSize <= l.getMinY()) {
+            insert(n.SE, l, rectLabel);
+            return;
+        }
+        if (n.x <= l.getMinX() && n.y <= l.getMinY() && n.x + n.nodeSize >= l.getMaxX() && n.y + n.nodeSize >= l.getMaxY()) {
+            insert(n.NE, l, rectLabel);
+            return;
+        }
+        n.labels.add(l);
+        return;
 
     }
 
@@ -135,16 +142,17 @@ public class Quadtree2 {
             n.labels.remove(l);
             return;
         }
-
-        //propagate call to subtree(s)
-        if (n.x > l.getMaxX() && n.y < l.getMinY()) {
-            remove(n.NW, l, rectLabel);
-        } else if (n.x > l.getMaxX() && n.y > l.getMaxY()) {
-            remove(n.SW, l, rectLabel);
-        } else if (n.x < l.getMinX() && n.y > l.getMaxY()) {
-            remove(n.SE, l, rectLabel);
-        } else if (n.x < l.getMinX() && n.y < l.getMinY()) {
-            remove(n.NE, l, rectLabel);
+        if (n.hasChildren) {
+            //propagate call to subtree(s)
+            if (n.x > l.getMaxX() && n.y < l.getMinY() && n.x - n.nodeSize < l.getMinX() && n.y + n.nodeSize > l.getMaxY()) {
+                remove(n.NW, l, rectLabel);
+            } else if (n.x > l.getMaxX() && n.y > l.getMaxY() && n.x - n.nodeSize < l.getMinX() && n.y - n.nodeSize < l.getMinY()) {
+                remove(n.SW, l, rectLabel);
+            } else if (n.x < l.getMinX() && n.y > l.getMaxY() && n.x + n.nodeSize > l.getMaxX() && n.y - n.nodeSize < l.getMinY()) {
+                remove(n.SE, l, rectLabel);
+            } else if (n.x < l.getMinX() && n.y < l.getMinY() && n.x + n.nodeSize > l.getMaxX() && n.y + n.nodeSize > l.getMaxY()) {
+                remove(n.NE, l, rectLabel);
+            }
         }
     }
 
@@ -163,6 +171,7 @@ public class Quadtree2 {
 
     //take the labels from each node until the node that (fully!) contains the rectangle is found
     private void query(Node n, Rectangle rectangle, HashSet<Label> result) {
+
         if (n == null) {
             return; //non existent node, always doesnt contain any label
         }

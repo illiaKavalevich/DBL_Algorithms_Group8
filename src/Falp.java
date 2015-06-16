@@ -21,7 +21,7 @@ public class Falp extends Algorithm {
     @Override
     public void determineLabels() {
         removeConflicts();
-        giveActiveLabel();
+        /*giveActiveLabel();
         int totaldegree = 0;
         for (Point p : points) {
             for (Label l : p.possibleLabels) {
@@ -44,7 +44,7 @@ public class Falp extends Algorithm {
                 points.add(p);
             }
             numLabels = firstNumlabels;
-        }
+        }*/
     }
 
     @Override
@@ -85,10 +85,10 @@ public class Falp extends Algorithm {
             int lowestDegree = Integer.MAX_VALUE;
 
             for (Label l : posLabelSet) {
-                if (cdCopy.getPosDegree(l) < lowestDegree) {
+                int labelDegree = cdCopy.getPosDegree(l);
+                if (labelDegree < lowestDegree) {
                     bestLabel = l;
-                    lowestDegree = cdCopy.getPosDegree(l);
-
+                    lowestDegree = labelDegree;
                 }
             }
             for (Label l : cdCopy.getPosConflictLabels(bestLabel)) {
