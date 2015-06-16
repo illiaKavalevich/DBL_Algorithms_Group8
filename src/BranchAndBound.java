@@ -190,7 +190,12 @@ public class BranchAndBound extends Algorithm {
         for(int labelIndex = 0; labelIndex < currentIncumbent.length - 1; labelIndex++) {
             Label label = labelList.get(labelIndex);
             label.active = currentIncumbent[labelIndex] == 1;
-            numLabels += currentIncumbent[labelIndex] == 1 ? 1 : 0;
+            //numLabels += currentIncumbent[labelIndex] == 1 ? 1 : 0;
+            for(Label l:labelList){
+                if(l.active == true){
+                    numLabels++;
+                }
+            }
         }
         
     }

@@ -123,13 +123,17 @@ public class MainFrame {
         Algorithm timerAlg = new Falp();
         if (model.equals("2pos")) {
             alg = numPoints <= 20 ? new BranchAndBound() : timerAlg;
-            timer = new Timer(250, timerAlg);
+            timer = new Timer(200, timerAlg);
         } else if (model.equals("4pos")) {
             alg = numPoints <= 20 ? new BranchAndBound() : timerAlg;
-            timer = new Timer(250, timerAlg);
+            timer = new Timer(170, timerAlg);
         } else if (model.equals("1slider")) {
-            alg = new AnnealingSimulatorSlider();
-            timer = new Timer(150, timerAlg);
+            if (numPoints >= 250) {
+                alg = new AnnealingSimulatorSlider(null);
+            } else {
+                alg = new ClaimFreeDecorator(new AnnealingSimulatorSlider(new Falp()));
+            }
+            timer = new Timer(170, timerAlg);
             timerAlg = alg;
         } else {
             System.out.println(model + " is not a valid model");
