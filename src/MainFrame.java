@@ -48,8 +48,8 @@ public class MainFrame {
     //SET EMPTY BEFORE SUBMITTING TO PEACH, aka remove '= "..."'
     String model = "4pos";
     int numPoints = n;
-    int w = 100;
-    int h = 100;
+    int w = 5;
+    int h = 5;
 
     public void readInput() {
 
@@ -81,7 +81,7 @@ public class MainFrame {
 //        }
         for(int i = 0;i<n;i++){
             for(int j=0;j<n;j++){
-                Point point = new PosPoint(100*i, 100*j, model, w, h);
+                Point point = new PosPoint(5*i, 5*j, model, w, h);
                 points.add(point);
             }
         }
@@ -141,7 +141,7 @@ public class MainFrame {
         processOutput();
 
         //COMMENT BEFORE SUBMITTING TO PEACH
-        plotLabels();
+        //plotLabels();
     }
 
     public void processOutput() {

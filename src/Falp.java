@@ -21,30 +21,31 @@ public class Falp extends Algorithm {
     @Override
     public void determineLabels() {
         removeConflicts();
-        /*giveActiveLabel();
-        int totaldegree = 0;
-        for (Point p : points) {
-            for (Label l : p.possibleLabels) {
-                if (l.active) {
-                    totaldegree += cD.getActDegree(l);
+        if (!stop) {
+            giveActiveLabel();
+            int totaldegree = 0;
+            for (Point p : points) {
+                for (Label l : p.possibleLabels) {
+                    if (l.active) {
+                        totaldegree += cD.getActDegree(l);
+                    }
                 }
             }
-        }
-        if (totaldegree < 100000) {
-            
-            while (!stop) {
-                localSearch();
+            if (totaldegree < 100000) {
+
+                while (!stop) {
+                    localSearch();
+                }
+                removeOverlap();
+                selectBestResult();
+            } else {
+                points.clear();
+                for (Point p : firstPoints) {
+                    points.add(p);
+                }
+                numLabels = firstNumlabels;
             }
-            removeOverlap();
-            selectBestResult();
         }
-        else{
-            points.clear();
-            for (Point p : firstPoints) {
-                points.add(p);
-            }
-            numLabels = firstNumlabels;
-        }*/
     }
 
     @Override
@@ -80,6 +81,7 @@ public class Falp extends Algorithm {
         for (Point point : points) {
             noActiveLabelPoints.add(point);
         }
+        int lastDegree = 0;
         while (!posLabelSet.isEmpty()) {
             Label bestLabel = null;
             int lowestDegree = Integer.MAX_VALUE;
@@ -89,8 +91,12 @@ public class Falp extends Algorithm {
                 if (labelDegree < lowestDegree) {
                     bestLabel = l;
                     lowestDegree = labelDegree;
+                    if(labelDegree == lastDegree){
+                        break;
+                    }
                 }
             }
+            lastDegree = lowestDegree;
             for (Label l : cdCopy.getPosConflictLabels(bestLabel)) {
                 if (l != bestLabel) {
                     cdCopy.removeLabel(l);
@@ -118,7 +124,7 @@ public class Falp extends Algorithm {
     //Give all points that did not yet have a label an active label
     //this label may have conflicts with other labels
     public void giveActiveLabel() {
-        for (Point point : noActiveLabelPoints) {            
+        for (Point point : noActiveLabelPoints) {
             Label bestLabel = null;
             int bestDegree = Integer.MAX_VALUE;
             for (Label label : point.possibleLabels) {
