@@ -1,3 +1,6 @@
+
+import java.util.HashSet;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -24,6 +27,20 @@ public class SliderPoint extends Point {
             possibleLabels.add(new PosLabel(w, h, this, 1));
             activeLabel = new SliderLabel(w, h, this, 2);
         } 
+    }
+    
+    //Copy constructor
+    public SliderPoint(Point p){
+        super(p);
+        this.possibleLabels = new HashSet<>();
+        for(Label l : p.possibleLabels){
+            Label label = new SliderLabel(l.w, l.h, this, l.quadrant);
+            label.active = l.active;     
+            this.possibleLabels.add(label);
+            if(l.active){
+                activeLabel = (SliderLabel) label;
+            }    
+        }
     }
     
     @Override

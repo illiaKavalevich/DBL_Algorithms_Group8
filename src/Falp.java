@@ -76,7 +76,14 @@ public class Falp extends Algorithm {
                 posLabelSet.add(l);
             }
         }
-        ConflictDetector cdCopy = new ConflictDetector(points, model, new Quadtree2());
+        ConflictDetector cdCopy = null;
+        if(model.equals("1slider")){
+            cdCopy = new ConflictDetector(points, "2pos", new Quadtree2());
+        } else{
+            cdCopy = new ConflictDetector(points, model, new Quadtree2());
+        }
+        
+        model="1slider";
         firstNumlabels = 0;
         numLabels = 0;
         for (Point point : points) {
@@ -116,7 +123,13 @@ public class Falp extends Algorithm {
             numLabels++;
         }
         for (Point p : points) {
-            firstPoints.add(new PosPoint(p));
+            if(model.equals("1slider")){
+                firstPoints.add(new SliderPoint(p));
+            }
+            else{
+                firstPoints.add(new PosPoint(p));
+            }
+            
         }
     }
 
