@@ -60,7 +60,7 @@ public abstract class AnnealingSimulator extends Algorithm {
         computeInitialScore();
 
         //algorithm that optimizes the number of labels
-        while (T >= 0 && !stop) {
+        while (T >= 0 && !stop && E < points.size())  {
             if (rand.nextDouble() <= 0.2) {
                 point = points.get(rand.nextInt(numLabels));
                 activateDeactivate((SliderPoint) point);

@@ -134,10 +134,10 @@ public class AnnealingSimulatorSlider extends AnnealingSimulator {
     @Override
     protected void doInitialPlacement() {
         if(useDiscreteAlg) {
-            discreteAlg.setParameters(w, h, points, cD, timer, "2pos");
+            discreteAlg.setParameters(w, h, points, cD, timer, "1slider");
             //discreteAlg.removeConflicts();
             cD.setModel("2pos");
-            discreteAlg.determineLabels();
+            discreteAlg.removeConflicts();
             cD.setModel("1slider");
             for(Point p : points) {
                 for(Label l : p.getPossibleLabels()) {
