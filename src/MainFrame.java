@@ -46,7 +46,7 @@ public class MainFrame {
     //SET EMPTY BEFORE SUBMITTING TO PEACH, aka remove '= "..."'
     String model = "4pos";
     int numPoints = n;
-    int w = 4;
+    int w = 40;
     int h = 3;
 
     public void readInput() {
@@ -120,7 +120,7 @@ public class MainFrame {
 //        }
         Algorithm timerAlg = new Falp();
         if (model.equals("2pos")) {
-            alg = numPoints <= 20 ? new BranchAndBound() : timerAlg;
+            alg = numPoints <= 10 ? new ExhaustiveSearch(): timerAlg;
             if (numPoints == 10000) {
                 timer = new Timer(160, timerAlg);
             } else {
@@ -128,7 +128,7 @@ public class MainFrame {
             }
 
         } else if (model.equals("4pos")) {
-            alg = numPoints <= 20 ? new BranchAndBound() : timerAlg;
+            alg = numPoints <= 10 ? new ExhaustiveSearch(): timerAlg;
             if (numPoints == 10000) {
                 timer = new Timer(125, timerAlg);
             } else {
