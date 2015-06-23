@@ -83,7 +83,6 @@ public class Falp extends Algorithm {
             cdCopy = new ConflictDetector(points, model, new Quadtree2());
         }
         
-        model="1slider";
         firstNumlabels = 0;
         numLabels = 0;
         for (Point point : points) {
