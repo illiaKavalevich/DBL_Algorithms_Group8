@@ -71,30 +71,29 @@ public class BranchAndBound extends Algorithm {
             addNewEqualityConstraint(nextLabel, 0); // This is the actual branching. We temporarily set one variable fixed, to bound: check the LP Relaxation value.
             convertTempTableauLists(); // Convert the working lists to Arrays
             simplex = new SimplexOri(t, b, c); // Initiate the actual Simplex algorithm
-
             double[] relaxationLeft = simplex.getPrimalResult(); // Get the left branch result
-
+            boolean solutionCheckLeft = simplex.check();
             removeLastVarConstraint(); // We have to remove the constraints set for the last branch, otherwise we will assign two values to a variable.
-            convertTempTableauLists(); // Convert the working lists to Arrays because of the constraint removal
-                            
-
+            convertTempTableauLists(); // Convert the working lists to Arrays because of the constraint removal                         
+            System.out.println("solveException: " + simplex.solveException());
+            
             // alreadyConstrained.clear(); // Not needed anymore
             rebuildTableau(); // Re-rebuild the tableau
             addNewEqualityConstraint(nextLabel, 1); // Branch again
             convertTempTableauLists();
+            System.out.println("solveException: " + simplex.solveException());
 
             simplex = new SimplexOri(t, b, c);
-
             double[] relaxationRight = simplex.getPrimalResult();
-            
-            
-            
+            boolean solutionCheckRight = simplex.check();
+            //removeLastVarConstraint(); // We have to remove the constraints set for the last branch, otherwise we will assign two values to a variable.
+
             boolean noLeftSubtree = false;
             boolean noRightSubtree = false;
             int labelToDoLeft = -1;
             int labelToDoRight = -1;
 
-            if(!fathomTest(relaxationLeft)) {
+            if(!fathomTest(relaxationLeft) && solutionCheckLeft) {
                 //removeLastVarConstraint();
                 labelToDoLeft = 0;
             } else {
@@ -109,10 +108,12 @@ public class BranchAndBound extends Algorithm {
                 labelToDoLeft = 1;
             }
             if(!hasActiveConflictingLabels(nextLabel)) { 
-                if(!fathomTest(relaxationRight)) {
+                if(!fathomTest(relaxationRight) && solutionCheckRight) {
                     labelToDoRight = 1;
                 } else {
                     if(arrayIsInteger(relaxationRight)) {
+                        
+                        printArray(relaxationRight);
                         //we have found the incumbent
                         if(relaxationRight[relaxationRight.length - 1] > getCurrentIncumbentValue()) {
                             setCurrentIncumbent(relaxationRight);
@@ -128,6 +129,10 @@ public class BranchAndBound extends Algorithm {
             
             if(noLeftSubtree && noRightSubtree) {
                 finish();
+                System.out.println("no subtrees");
+                printArray(relaxationLeft);
+                System.out.println("-");
+                printArray(relaxationRight);
                 
             } else {
                 if(labelToDoRight == labelToDoLeft) {// labelToDoLeft != -1) {
@@ -395,14 +400,14 @@ public class BranchAndBound extends Algorithm {
      */
     public final void rebuildTableau() {
         
-            // As extra step in the tableau rebuilding, we set equality constraints
-            for(int pIndex = 0; pIndex < currentVarValues.length; pIndex++) {
-                for(int vIndex = 0; vIndex < currentVarValues[pIndex].length; vIndex++) {
-                    if(currentVarValues[pIndex][vIndex] != 5) { // A variable has been set
-                        addNewEqualityConstraint(pIndex * numberOfLabelsPerPoint + vIndex, currentVarValues[pIndex][vIndex]); //add equality constraint with the found value
-                    }
+        // As extra step in the tableau rebuilding, we set equality constraints
+        for(int pIndex = 0; pIndex < currentVarValues.length; pIndex++) {
+            for(int vIndex = 0; vIndex < currentVarValues[pIndex].length; vIndex++) {
+                if(currentVarValues[pIndex][vIndex] != 5) { // A variable has been set
+                    addNewEqualityConstraint(pIndex * numberOfLabelsPerPoint + vIndex, currentVarValues[pIndex][vIndex]); //add equality constraint with the found value
                 }
             }
+        }
      
     }
     
@@ -583,6 +588,16 @@ public class BranchAndBound extends Algorithm {
             aIndex++;
         }
         return true;
+    }
+    
+    public void printArray(double[] array) {
+        System.out.println("----------------------------");
+        System.out.println();
+        for(double elm : array) {
+            System.out.print(elm + "-");
+        }
+        System.out.println();
+        System.out.println("----------------------------");
     }
     
     /*
