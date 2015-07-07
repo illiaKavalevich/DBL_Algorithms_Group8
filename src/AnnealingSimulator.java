@@ -61,8 +61,8 @@ public abstract class AnnealingSimulator extends Algorithm {
 
         //algorithm that optimizes the number of labels
         while (T >= 0 && !stop && E < points.size())  {
-            if (rand.nextDouble() <= 0.2) {
-                point = points.get(rand.nextInt(numLabels));
+            if ((rand.nextDouble() <= 0.0 || activePoints.isEmpty()) && !points.isEmpty()) {
+                point = points.get(rand.nextInt(points.size()));
                 activateDeactivate((SliderPoint) point);
                 if (deltaE < 0) {
                     //System.out.println(Math.pow(Math.E, (deltaE / T)));
@@ -114,7 +114,9 @@ public abstract class AnnealingSimulator extends Algorithm {
                 T = 0.8 * T;
             }
             iterationsSinceTempChange = 0;
+            //System.out.println("Temp: " + T);
         }
+        
     }
 
     abstract protected void undoLastPlacement();
