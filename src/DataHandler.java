@@ -13,7 +13,6 @@ import java.io.OutputStreamWriter;
 import static java.lang.System.exit;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -31,12 +30,12 @@ import java.util.logging.Logger;
  */
 public class DataHandler {
     
-    String                      fileName, delimiter;
-    int                         lonPos, latPos;
-    double                      scale; //scaling factor     
-    ArrayList<GeoPoint>         pointCol = new ArrayList();  //pointcollection
-    Map                         pointMap = new HashMap();   //point hashmap
-    final static Charset        ENCODING = StandardCharsets.UTF_8;
+    String                  fileName, delimiter;
+    int                     lonPos, latPos;
+    double                  scale; //scaling factor     
+    ArrayList<GeoPoint>     pointCol = new ArrayList();  //pointcollection
+    Map                     pointMap = new HashMap();   //point hashmap
+    final static Charset    ENCODING = StandardCharsets.UTF_8;
     
     public DataHandler(String f, String d, int lonp, int latp) {
         fileName = f;  //filename of the dataset
@@ -79,7 +78,7 @@ public class DataHandler {
         
         counter = 1; //start the counter
         
-        while(counter <= maxPoints) {
+        while(counter < maxPoints) {
 
             //start upwards motion
             for(upwards=lowestY+1; upwards<=heighestY+1; upwards++) {
@@ -164,16 +163,13 @@ public class DataHandler {
     void writeToFile(String fn, int limit) {
         BufferedWriter writer;
         try {
-            Path pathToFile = Paths.get(fn);
-            Files.createDirectories(pathToFile.getParent());
-            Files.createFile(pathToFile);
             File file = new File(fn);
             if(!file.exists()) {
                 file.createNewFile();
             } 
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
             int i = 0;
-            for(Iterator<GeoPoint> p = pointCol.iterator(); i < limit && p.hasNext();) {
+            for(Iterator<GeoPoint> p = pointCol.iterator(); i < limit || p.hasNext();) {
                 GeoPoint point = p.next();
                 if(i > 0) {
                     writer.newLine();
@@ -221,7 +217,6 @@ public class DataHandler {
      */
     public void flush() {
         pointCol = new ArrayList();
-        
     }
     
     /**
@@ -238,40 +233,37 @@ public class DataHandler {
      * @param args
      */
     
-    public static void main(String args[]) {
+    /*public static void main(String args[]) {
         //ask for input file
         Scanner scanner = new Scanner(System.in);
-        /*System.out.println("Give input filename (including path):");
+        System.out.println("Give input filename (including path):");
         String inputFile = scanner.nextLine();
         System.out.println("Give a CSV delimiter string (leaving blank will default to \\t)");
         String separator = scanner.nextLine();
         if(separator.equals("")) {
             separator = "\t";
         }
-        System.out.println("Give the position (counting from 1) of the longitude in the file line: (default 5)");
+        System.out.println("Give the position (counting from 1) of the longitude in the file line: (leaving blank will default to 5)");
         int lonPos = scanner.nextInt();
         if(lonPos == 0) {
            lonPos = 5;
         }
-        System.out.println("Give the position (counting from 1) of the lattitude in the file line: (default 6)");
+        System.out.println("Give the position (counting from 1) of the lattitude in the file line: (leaving blank will default to 6)");
         int latPos = scanner.nextInt();
         if(latPos == 0) {
            latPos = 6;
-        }*/
-        String inputFile = "D:\\Cloud\\2IO90 - DBL Algorithms\\Datasets\\cities5000\\cities5000.txt";
-        String separator = "\t";
-        int lonPos = 5;
-        int latPos = 6;
+        }
         DataHandler dataObject = new DataHandler(inputFile, separator, lonPos, latPos);
         
-        //System.out.println("What's the maximum number of points you want to convert?");
-        //int numPoints = scanner.nextInt();
+        System.out.println("What's the maximum number of points you want to convert?");
+        int numPoints = scanner.nextInt();
 
+        dataObject.readDataFile(numPoints);
 
         //String inputFile = "D:\\\\Cloud\\\\2IO90 - DBL Algorithms\\\\Datasets\\\\cities5000\\cities5000.txt";
         //String outputFile = "D:\\\\Cloud\\\\2IO90 - DBL Algorithms\\\\Datasets\\test.txt";
         
-        /*System.out.println("Do you want to print the output to screen (Y/N)? If your answer is no, you will be asked for an output filename.");
+        System.out.println("Do you want to print the output to screen (Y/N)? If your answer is no, you will be asked for an output filename.");
         scanner.nextLine(); //fire empty line
         String inputType = scanner.nextLine();  
         int numSets = 0;
@@ -288,9 +280,9 @@ public class DataHandler {
         } else {
             dataObject.spiralWalk(numPoints);
             dataObject.writeToScreen(numPoints);
-        }*/
+        }
         
-        /*if(numSets > 1) {
+        if(numSets > 1) {
             System.out.println("output file" + opFile);
             String[] fileArray = opFile.split("\\.");
             int numberOfSplits = fileArray.length;
@@ -313,33 +305,9 @@ public class DataHandler {
         } else {
             dataObject.spiralWalk(numPoints);
             dataObject.writeToFile(opFile, numPoints);
-        }*/
-        
-        dataObject.readDataFile(30000);
-        
-        int datasetIndex = 5;
-        while(datasetIndex <= 10000) {
-
-            for(int index = 0; index < 5; index++) {
-            
-                dataObject.spiralWalk(datasetIndex);
-                String filename = "D:\\Cloud\\2IO90 - DBL Algorithms\\Datasets\\generated\\" + datasetIndex + " points\\set" + "_" + index + ".txt";
-                dataObject.writeToFile(filename, datasetIndex);
-                dataObject.flush();
-   
-            }
-            
-            dataObject.pointMap.clear();
-            dataObject.readDataFile(30000);
-            
-            if(datasetIndex < 100) {
-                datasetIndex = datasetIndex + 5;
-            } else {
-                datasetIndex = datasetIndex + 100;
-            }
         }
 
         //dataObject.Plot(10000);
-    }
+    }*/
     
 }

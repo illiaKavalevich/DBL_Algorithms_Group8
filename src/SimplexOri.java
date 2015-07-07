@@ -11,20 +11,14 @@
 public class SimplexOri {
     private static final double EPSILON = 1.0E-10;
     private double[][] a;   // tableaux
-    double[] c, b;
     private int M;          // number of constraints
     private int N;          // number of original variables
 
     private int[] basis;    // basis[i] = basic variable corresponding to row i
                             // only needed to print out solution, not book
-    boolean solveException;
-    
-    // sets up the simplex ta         B = b;
+
+    // sets up the simplex tableaux
     public SimplexOri(double[][] A, double[] b, double[] c) {
-        
-        this.b = b;
-        this.c = c;
-        
         M = b.length;
         N = c.length;
         a = new double[M+1][N+M+1];
@@ -41,13 +35,12 @@ public class SimplexOri {
         solve();
 
         // check optimality conditions
-        //check(A, b, c); //done manually in B&B
+        assert check(A, b, c);
     }
 
     // run simplex algorithm starting from initial BFS
     private void solve() {
-        solveException = false;
-        while (solveException==false) {
+        while (true) {
 
             // find entering column q
             int q = bland();
@@ -55,9 +48,7 @@ public class SimplexOri {
 
             // find leaving row p
             int p = minRatioRule(q);
-            if (p == -1) {
-                solveException = true;
-            }
+            if (p == -1) throw new ArithmeticException("Linear program is unbounded");
 
             // pivot
             pivot(p, q);
@@ -142,7 +133,7 @@ public class SimplexOri {
         // check that x >= 0
         for (int j = 0; j < x.length; j++) {
             if (x[j] < 0.0) {
-                //System.out.println("x[" + j + "] = " + x[j] + " is negative");
+                System.out.println("x[" + j + "] = " + x[j] + " is negative");
                 return false;
             }
         }
@@ -154,8 +145,8 @@ public class SimplexOri {
                 sum += A[i][j] * x[j];
             }
             if (sum > b[i] + EPSILON) {
-                //System.out.println("not primal feasible");
-                //System.out.println("b[" + i + "] = " + b[i] + ", sum = " + sum);
+                System.out.println("not primal feasible");
+                System.out.println("b[" + i + "] = " + b[i] + ", sum = " + sum);
                 return false;
             }
         }
@@ -169,7 +160,7 @@ public class SimplexOri {
         // check that y >= 0
         for (int i = 0; i < y.length; i++) {
             if (y[i] < 0.0) {
-                //System.out.println("y[" + i + "] = " + y[i] + " is negative");
+                System.out.println("y[" + i + "] = " + y[i] + " is negative");
                 return false;
             }
         }
@@ -181,8 +172,8 @@ public class SimplexOri {
                 sum += A[i][j] * y[i];
             }
             if (sum < c[j] - EPSILON) {
-                //System.out.println("not dual feasible");
-                //System.out.println("c[" + j + "] = " + c[j] + ", sum = " + sum);
+                System.out.println("not dual feasible");
+                System.out.println("c[" + j + "] = " + c[j] + ", sum = " + sum);
                 return false;
             }
         }
@@ -203,23 +194,15 @@ public class SimplexOri {
         for (int i = 0; i < y.length; i++)
             value2 += y[i] * b[i];
         if (Math.abs(value - value1) > EPSILON || Math.abs(value - value2) > EPSILON) {
-            //System.out.println("value = " + value + ", cx = " + value1 + ", yb = " + value2);
+            System.out.println("value = " + value + ", cx = " + value1 + ", yb = " + value2);
             return false;
         }
 
         return true;
     }
 
-    boolean check() {
-        return isPrimalFeasible(a, b) && isDualFeasible(a, c) && isOptimal(b, c);
-    }
-    
-    public double[][] getTableau() {
-        return a;
-    }
-    
-    public boolean solveException() {
-        return solveException;
+    private boolean check(double[][]A, double[] b, double[] c) {
+        return isPrimalFeasible(A, b) && isDualFeasible(A, c) && isOptimal(b, c);
     }
 
     // print tableaux

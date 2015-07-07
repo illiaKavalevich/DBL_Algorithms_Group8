@@ -1,3 +1,4 @@
+
 import java.util.*;
 
 public class Falp extends Algorithm {
@@ -20,40 +21,32 @@ public class Falp extends Algorithm {
     //During the local search
     @Override
     public void determineLabels() {
-//        removeConflicts();
-//        if (!stop && points.size()<10000) {
-//            giveActiveLabel();
-//            int totaldegree = 0;
-//            for (Point p : points) {
-//                for (Label l : p.possibleLabels) {
-//                    if (l.active) {
-//                        totaldegree += cD.getActDegree(l);
-//                    }
-//                }
-//            }
-//            if (totaldegree < 100000) {
-//
-//                while (!stop && changed) {
-//                    localSearch();
-//                }
-//                removeOverlap();
-//                selectBestResult();
-//            } else {
-//                points.clear();
-//                for (Point p : firstPoints) {
-//                    points.add(p);
-//                }
-//                numLabels = firstNumlabels;
-//            }
-//        }
         removeConflicts();
-        giveActiveLabel();
-        for (int i = 0; i < 5; i++) {
-            localSearch();
+        if (!stop && points.size()<10000) {
+            giveActiveLabel();
+            int totaldegree = 0;
+            for (Point p : points) {
+                for (Label l : p.possibleLabels) {
+                    if (l.active) {
+                        totaldegree += cD.getActDegree(l);
+                    }
+                }
+            }
+            if (totaldegree < 100000) {
+
+                while (!stop && changed) {
+                    localSearch();
+                }
+                removeOverlap();
+                selectBestResult();
+            } else {
+                points.clear();
+                for (Point p : firstPoints) {
+                    points.add(p);
+                }
+                numLabels = firstNumlabels;
+            }
         }
-        numLabels = points.size();
-        removeOverlap();
-        //selectBestResult();
     }
 
     @Override
@@ -84,17 +77,18 @@ public class Falp extends Algorithm {
             }
         }
         ConflictDetector cdCopy = null;
-        if (model.equals("1slider")) {
+        if(model.equals("1slider")){
             cdCopy = new ConflictDetector(points, "2pos", new Quadtree2());
-        } else {
+        } else{
             cdCopy = new ConflictDetector(points, model, new Quadtree2());
         }
+        
         firstNumlabels = 0;
         numLabels = 0;
         for (Point point : points) {
             noActiveLabelPoints.add(point);
         }
-        while (!posLabelSet.isEmpty()){// && !stop) {
+        while (!posLabelSet.isEmpty() && !stop) {
             Label bestLabel = null;
             int lowestDegree = Integer.MAX_VALUE;
 
@@ -103,7 +97,7 @@ public class Falp extends Algorithm {
                 if (labelDegree < lowestDegree) {
                     bestLabel = l;
                     lowestDegree = labelDegree;
-                    if (labelDegree == 0) {
+                    if(labelDegree == 0){
                         break;
                     }
                 }
@@ -128,12 +122,13 @@ public class Falp extends Algorithm {
             numLabels++;
         }
         for (Point p : points) {
-            if (model.equals("1slider")) {
+            if(model.equals("1slider")){
                 firstPoints.add(new SliderPoint(p));
-            } else {
+            }
+            else{
                 firstPoints.add(new PosPoint(p));
             }
-
+            
         }
     }
 
@@ -172,7 +167,7 @@ public class Falp extends Algorithm {
                     bestDegree = labelDegree;
                 }
             }
-            if (bestLabel.active == false) {
+            if(bestLabel.active == false){
                 changed = true;
             }
             for (Label l : point.possibleLabels) {
